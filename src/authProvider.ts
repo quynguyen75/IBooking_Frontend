@@ -1,5 +1,5 @@
 import { AuthProvider } from "@pankod/refine-core";
-import { AuthHelper } from "@pankod/refine-strapi";
+import { AuthHelper } from "@pankod/refine-strapi-v4";
 import axios from "axios";
 
 const strapiAuthProvider = (apiUrl: string) => {
@@ -12,6 +12,16 @@ const strapiAuthProvider = (apiUrl: string) => {
     login: async ({ username, password }) => {
       const { data, status } = await strapiAuthHelper.login(username, password);
       if (status === 200) {
+        const { data: userData, status } = await strapiAuthHelper.me(data.jwt);
+
+        if (!(status === 200)) {
+          return Promise.reject();
+        }
+
+        if (userData.role.name !== "Admin") {
+          return Promise.reject();
+        }
+
         localStorage.setItem(TOKEN_KEY, data.jwt);
 
         // set header axios instance
@@ -48,7 +58,8 @@ const strapiAuthProvider = (apiUrl: string) => {
 
       const { data, status } = await strapiAuthHelper.me(token);
       if (status === 200) {
-        const { id, username, email } = data;
+        const { id, username, email, role } = data;
+
         return Promise.resolve({
           id,
           username,

@@ -19,3 +19,44 @@ export const ROLE_API = root + "/users-permissions/roles";
 export const GENDER_OPTIONS = ["Male", "Female", "Other"];
 
 export const STATUS_OPTIONS = ["Active", "Deleted"];
+
+export const AMENITIES = [
+  {
+    label: "Bể bơi",
+    name: "hasPool",
+  },
+  {
+    label: "Phòng tập thể hình",
+    name: "hasGym",
+  },
+
+  {
+    label: "Wifi",
+    name: "hasWifi",
+  },
+
+  {
+    label: "Điều hoà nhiệt độ",
+    name: "hasConditioning",
+  },
+
+  {
+    label: "Bếp",
+    name: "hasKitchen",
+  },
+
+  {
+    label: "Máy giặt",
+    name: "hasWashingMachine",
+  },
+
+  {
+    label: "Không gian riêng để làm việc",
+    name: "hasDedicatedWorkspace",
+  },
+
+  {
+    label: "Chấp nhận thú cưng",
+    name: "acceptPet",
+  },
+];

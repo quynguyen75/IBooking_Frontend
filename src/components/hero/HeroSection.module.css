@@ -1,0 +1,19 @@
+
+.card {
+    padding: 24px;
+    background: url(../../assets/img/cover.jpg) center / cover no-repeat;
+
+    min-height: 50vh;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.card span {
+    color:white;
+}

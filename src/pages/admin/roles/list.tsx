@@ -10,7 +10,6 @@ import { IRole } from "interfaces";
 import React from "react";
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { Pie } from "react-chartjs-2";
 import { formatDate } from "utils/date";
 
 ChartJS.register(ArcElement, Tooltip, Legend);

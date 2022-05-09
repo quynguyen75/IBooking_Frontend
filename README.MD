@@ -20,3 +20,8 @@
 - Roles
 
 # CUSTOMER FACING
+
+- Home
+- Authenticate (Login / Register)
+- Search
+- Host

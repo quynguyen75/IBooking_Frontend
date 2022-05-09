@@ -1,0 +1,16 @@
+.dialog__top {
+    padding: 0 16px;
+}
+
+.dialogInput {
+    width: 100%;
+}
+
+.dialog__list > div {
+    padding: 16px;
+}
+
+.dialogInput::before, .dialogInput::after {
+    display: none;
+}
+

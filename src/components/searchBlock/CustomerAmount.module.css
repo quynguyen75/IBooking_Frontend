@@ -1,0 +1,35 @@
+
+.popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  right: 0;
+
+  z-index: 1;
+
+  background-color: white;
+  padding: 16px 32px;
+  border-radius: 32px;
+
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+}
+
+.popover > div + div {
+  margin-top: 8px;
+}
+
+
+
+div.form-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.form-control label {
+  color: #222;
+  font-size: 16px;
+  font-weight: 600;
+}

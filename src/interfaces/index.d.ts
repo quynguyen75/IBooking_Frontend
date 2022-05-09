@@ -61,3 +61,17 @@ export interface IRole {
   nb_users: number;
   status: string;
 }
+
+export interface IBookingFilterVariable {
+  user: string;
+  room: string;
+  bookingStatus: string;
+  paymentStatus: string;
+  paymentType: string;
+}
+
+export interface IRoomFilterVariable {
+  user: string;
+  status: string;
+  roomType: string;
+}

@@ -221,7 +221,7 @@ export const Dashboard: React.FC = () => {
 
       <div
         style={{
-          padding: "2rem 4rem",
+          padding: "2rem 0",
         }}
       >
         <ProfitChart />

@@ -1,0 +1,25 @@
+.inputSeach {
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+.tourSearchPopover {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 50%;
+    border-radius: 32px;
+
+    background-color: white;
+    overflow: hidden;
+}
+
+.tourSearchList li {
+    padding: 12px 16px;
+}
+
+.tourSearchList li:hover {
+    background-color: #fafafa;
+    cursor: pointer;
+}

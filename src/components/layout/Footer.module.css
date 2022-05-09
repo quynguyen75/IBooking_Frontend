@@ -1,0 +1,17 @@
+
+.footer {
+    padding: 46px 0 80px;
+    background-color: #fafafa;
+}
+
+@media(min-width: 600px) {
+    .copyright {
+        text-align: center;
+    }
+}
+
+@media (min-width: 768px) {
+    .footer {
+        padding-bottom: 0;
+    }
+}

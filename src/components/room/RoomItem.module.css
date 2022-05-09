@@ -1,0 +1,66 @@
+
+
+.roomItem__content {
+  font-size: 16px;
+
+  display: flex;
+  flex-direction: column;
+
+  flex: 1;
+}
+
+
+
+.roomItem__star {
+  display: flex;
+  align-items: center;
+
+  font-size: 14px;
+}
+
+
+
+.roomItem__title {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  font-weight: 500;
+}
+
+.roomItem__roomCount, 
+.roomItem__amenities {
+  display: none;
+  align-items: center;
+  gap: 6px;
+
+}
+
+.roomItem__price {
+  font-weight: 600;
+}
+
+/* @media(min-width: 600px) {
+
+  .roomItem__title {
+    font-size: 18px;
+
+  }
+
+  .roomItem__price_container {
+    margin-top: auto;
+    font-size: 18px;
+    text-align: right;
+  }
+
+  
+} */
+
+/* @media (min-width: 768px) {
+  .roomItem__roomCount, 
+  .roomItem__amenities {
+  display: flex;
+
+}
+} */

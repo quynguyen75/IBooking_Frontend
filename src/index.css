@@ -1,4 +1,123 @@
+:root {
+    --color-pink: rgb(255, 56, 92);
+    --header-height: 80px;
+}
+
+body {
+    padding-right: 0!important;
+    overflow: auto !important;
+}
+
+body.disableScroll {
+    overflow-y: hidden !important;
+}
 
 .ReactQueryDevtools {
     display: none;
+}
+
+.section {
+    padding-top: 46px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+
+button  {
+    outline: none;
+    border: none;
+    background-color: transparent;
+    text-align:left;
+}
+
+.searchBlock__heading {
+    font-size: 14px;
+    color: black;
+    font-weight: 500;
+}
+
+.searchBlock__item {
+    padding: 10px;
+    border-radius: 32px;
+
+}
+
+.searchBlock__item:hover {
+    background-color: #fafafa;
+    cursor: pointer;
+}
+
+.searchBlock__item:hover * {
+    cursor: pointer;
+}
+
+.materialui-daterange-picker-makeStyles-dateRangeBackdrop-3 {
+    display: none;
+}
+
+.materialui-daterange-picker-MuiList-root-257.materialui-daterange-picker-MuiList-padding-258 {
+    display: none;
+}
+
+.hide {
+    display: none;
+}
+
+.MuiTabs-flexContainer > * {
+    flex: 1;
+}
+
+.dialog__top {
+    padding: 0 16px;
+}
+
+div.MuiMobileStepper-dot:not(.MuiMobileStepper-dotActive) {
+    background-color: #fff;
+}
+
+span.MuiBottomNavigationAction-label {
+    opacity: 1;
+}   
+
+.roomDetail__title,
+.checkout__title  {
+    font-size: 22px;
+    font-weight: 600;
+    color: #000;
+}
+
+div.rdrMonth {
+    width: 100%;
+}
+
+span.rdrDayNumber {
+    font-weight: 500;
+}
+
+div.checkStatus__dialog {
+    width: 60vw;
+    font-size: 15px;
+}
+
+.textBold {
+    font-weight: 600;
+}
+
+.textUnderline {
+    text-decoration: underline;
+}
+
+.cursorPointer {
+    cursor: pointer;
+}
+
+.colorBlack {
+    color: #000;
+}
+
+.mb-4 {
+    margin-bottom: 4px;
 }

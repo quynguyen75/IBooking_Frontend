@@ -61,22 +61,37 @@ const RootAdmin = () => {
           {
             name: "Dashboard",
             list: Dashboard,
+            options: {
+              route: "admin/dashboard",
+            },
           },
           {
             name: "User-management",
             list: UserList,
             edit: UserEdit,
             create: UserCreate,
+            options: {
+              route: "admin/user-management",
+            },
           },
           {
             name: "Room-manangement",
+            options: {
+              route: "admin/room-management",
+            },
           },
           {
             name: "Booking-management",
+            options: {
+              route: "admin/booking-management",
+            },
           },
 
           {
             name: "Payment-management",
+            options: {
+              route: "admin/payment-management",
+            },
           },
           {
             name: "room-types",
@@ -84,6 +99,9 @@ const RootAdmin = () => {
             edit: GeneralEdit,
             create: GeneralCreate,
             parentName: "Room-manangement",
+            options: {
+              route: "admin/room-types",
+            },
           },
           {
             name: "payment-types",
@@ -91,6 +109,9 @@ const RootAdmin = () => {
             edit: GeneralEdit,
             create: GeneralCreate,
             parentName: "Payment-management",
+            options: {
+              route: "admin/payment-types",
+            },
           },
           {
             name: "payment-statuses",
@@ -98,6 +119,9 @@ const RootAdmin = () => {
             edit: GeneralEdit,
             create: GeneralCreate,
             parentName: "Payment-management",
+            options: {
+              route: "admin/payment-statuses",
+            },
           },
           {
             name: "booking-statuses",
@@ -105,6 +129,9 @@ const RootAdmin = () => {
             edit: GeneralEdit,
             create: GeneralCreate,
             parentName: "Booking-management",
+            options: {
+              route: "admin/booking-statuses",
+            },
           },
 
           {
@@ -113,6 +140,9 @@ const RootAdmin = () => {
             edit: BookingEdit,
             create: BookingCreate,
             parentName: "Booking-management",
+            options: {
+              route: "admin/bookings",
+            },
           },
           {
             name: "rooms",
@@ -120,10 +150,16 @@ const RootAdmin = () => {
             edit: RoomEdit,
             create: RoomCreate,
             parentName: "Room-manangement",
+            options: {
+              route: "admin/rooms",
+            },
           },
           {
             name: "roles",
             list: RoleList,
+            options: {
+              route: "admin/roles",
+            },
           },
         ]}
         catchAll={<ErrorComponent />}

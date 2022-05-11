@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./AuthForm.module.css";
 import {
   Box,
@@ -17,16 +17,22 @@ import {
 import { Facebook, Google } from "@mui/icons-material";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import { Link } from "react-router-dom";
 
-type Props = {};
+type Props = {
+  type: string;
+};
 
-function AuthForm({}: Props) {
+function AuthForm({ type }: Props) {
   const [tabIndex, setTabIndex] = useState(0);
 
   const tabChangeHandler = (event: React.SyntheticEvent, newValue: number) =>
     setTabIndex(newValue);
 
-  console.log(tabIndex);
+  useEffect(() => {
+    setTabIndex(type === "signin" ? 0 : 1);
+  }, [type]);
+
   return (
     <Card className={styles.form}>
       <header className={styles["card-header"]}>
@@ -35,8 +41,25 @@ function AuthForm({}: Props) {
           aria-label="basic tabs example"
           onChange={tabChangeHandler}
         >
-          <Tab label="Đăng nhập" />
-          <Tab label="Đăng ký" />
+          <Link to="/auth/signin">
+            <Tab
+              label="Đăng nhập"
+              style={{
+                color: "#1976d2",
+                opacity: 1,
+              }}
+            />
+          </Link>
+
+          <Link to="/auth/register">
+            <Tab
+              label="Đăng ký"
+              style={{
+                color: "#1976d2",
+                opacity: 1,
+              }}
+            />
+          </Link>
         </Tabs>
       </header>
       <Divider />

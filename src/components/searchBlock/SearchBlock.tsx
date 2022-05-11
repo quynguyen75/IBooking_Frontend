@@ -1,6 +1,7 @@
 import { Box, Button, Grid, Paper, useMediaQuery } from "@mui/material";
 import { Search } from "@mui/icons-material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
+
 import CustomerAmount from "./CustomerAmount";
 import TourDateSearch from "./TourDateSearch";
 import TourSearch from "./TourSearch";
@@ -8,20 +9,102 @@ import SearchBlockItem from "./SearchBlockItem";
 
 type Props = {};
 
+type Action = {
+  type: string;
+  payload: any;
+};
+
+type reducerState = {
+  tourSearch: any;
+  checkInDate: string;
+  checkOutDate: string;
+  guestCount: number;
+  petCount: number;
+};
+
+function searchReducer(state: reducerState, action: Action): reducerState {
+  switch (action.type) {
+    case "TOURSEARCH":
+      return {
+        ...state,
+        tourSearch: action.payload,
+      };
+
+    case "CHECKINDATE":
+      return {
+        ...state,
+        checkInDate: action.payload,
+      };
+
+    case "CHECKOUTDATE":
+      return {
+        ...state,
+        checkOutDate: action.payload,
+      };
+
+    case "GUESTCOUNT":
+      return {
+        ...state,
+        guestCount: action.payload,
+      };
+
+    case "PETCOUNT":
+      return {
+        ...state,
+        petCount: action.payload,
+      };
+  }
+
+  return state;
+}
+
 function SearchBlock({}: Props) {
+  const [tabActive, setTabActive] = useState(0);
+  const [searchData, dispatch] = useReducer(searchReducer, {
+    tourSearch: null,
+    checkInDate: "",
+    checkOutDate: "",
+    guestCount: 1,
+    petCount: 0,
+  });
+
   const min768px = useMediaQuery("(min-width: 768px)");
 
   const min900px = useMediaQuery("(min-width: 900px)");
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const [tabActive, setTabActive] = useState(0);
 
+  const autoChangeTabHandler = () => {
+    const nextTab = () => setTabActive((tab) => tab + 1);
+
+    if (tabActive === 4) {
+      return;
+    }
+
+    if (searchData.checkOutDate) {
+      nextTab();
+      return;
+    }
+
+    if (searchData.checkInDate) {
+      nextTab();
+      return;
+    }
+
+    if (searchData.tourSearch) {
+      nextTab();
+      return;
+    }
+  };
+
+  // handle click outside search block
   useEffect(() => {
     function handleClickOutside(event: any) {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target)
       ) {
+        console.log(containerRef.current.contains(event.target), event.target);
         setTabActive(0);
       }
     }
@@ -32,6 +115,11 @@ function SearchBlock({}: Props) {
 
     return () => document.removeEventListener("click", handleClickOutside);
   }, [containerRef, tabActive]);
+
+  // auto change tab
+  useEffect(() => {
+    autoChangeTabHandler();
+  }, [searchData]);
 
   return (
     <div
@@ -59,11 +147,22 @@ function SearchBlock({}: Props) {
               tabActive={tabActive}
               setTabActive={setTabActive}
             >
-              <TourSearch id={1} tabActive={tabActive} />
+              <TourSearch
+                id={1}
+                tabActive={tabActive}
+                tourSearch={searchData.tourSearch}
+                dispatch={dispatch}
+              />
             </SearchBlockItem>
           </Grid>
           <Grid item xs={5.5}>
-            <TourDateSearch tabActive={tabActive} setTabActive={setTabActive} />
+            <TourDateSearch
+              tabActive={tabActive}
+              setTabActive={setTabActive}
+              dispatch={dispatch}
+              checkInDate={searchData.checkInDate}
+              checkOutDate={searchData.checkOutDate}
+            />
           </Grid>
 
           <Grid item xs={2.75}>
@@ -72,7 +171,11 @@ function SearchBlock({}: Props) {
               tabActive={tabActive}
               setTabActive={setTabActive}
             >
-              <CustomerAmount id={4} tabActive={tabActive} />
+              <CustomerAmount
+                id={4}
+                tabActive={tabActive}
+                dispatch={dispatch}
+              />
             </SearchBlockItem>
           </Grid>
 

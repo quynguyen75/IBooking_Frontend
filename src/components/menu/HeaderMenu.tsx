@@ -14,13 +14,15 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
-import React, { useState } from "react";
+import { UserContext } from "context/UserContext";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 
 type Props = {};
 
 function HeaderMenu({}: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const userContext = useContext(UserContext);
 
   const open = Boolean(anchorEl);
 
@@ -86,35 +88,61 @@ function HeaderMenu({}: Props) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <Link to="/auth/signin">
-          <MenuItem
-            sx={{
-              color: "#000",
-            }}
-          >
-            Đăng nhập
-          </MenuItem>
-        </Link>
+        {!userContext.user && (
+          <>
+            <Link to="/auth/signin">
+              <MenuItem
+                sx={{
+                  color: "#000",
+                }}
+              >
+                Đăng nhập
+              </MenuItem>
+            </Link>
 
-        <Link to="/auth/register">
-          <MenuItem
-            sx={{
-              color: "#000",
-            }}
-          >
-            Đăng kí
-          </MenuItem>
-        </Link>
-        <Divider />
-        <Link to="/host/create">
-          <MenuItem
-            sx={{
-              color: "#000",
-            }}
-          >
-            Cho thuê nhà
-          </MenuItem>
-        </Link>
+            <Link to="/auth/register">
+              <MenuItem
+                sx={{
+                  color: "#000",
+                }}
+              >
+                Đăng kí
+              </MenuItem>
+            </Link>
+          </>
+        )}
+        {userContext.user && (
+          <>
+            <Link to="/host/create">
+              <MenuItem
+                sx={{
+                  color: "#000",
+                }}
+              >
+                Cho thuê nhà
+              </MenuItem>
+            </Link>
+
+            <Link to="/host/create">
+              <MenuItem
+                sx={{
+                  color: "#000",
+                }}
+              >
+                Quản lí phòng
+              </MenuItem>
+            </Link>
+            <Divider />
+
+            <MenuItem
+              sx={{
+                color: "#000",
+              }}
+            >
+              Đăng xuất
+            </MenuItem>
+          </>
+        )}
       </Menu>
     </>
   );

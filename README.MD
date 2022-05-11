@@ -25,3 +25,42 @@
 - Authenticate (Login / Register)
 - Search
 - Host
+
+# FUNCTIONALITY
+
+## Home
+
+- Search (main)
+- Login (local): done
+- Login (Facebook)
+- Login (Google)
+- Register
+
+## Search
+
+- Filter:
+  - Price
+  - Room Type
+  - Amenities
+  - Filter All
+
+## Room Detail
+
+- Render room
+- Book room
+
+## Checkout
+
+- Render
+- Payment with Momo
+
+## Host create
+
+- Upload images
+- Create room
+
+## Host manage
+
+- Render room
+- Edit Room
+- Render reviews

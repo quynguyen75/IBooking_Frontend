@@ -7,12 +7,15 @@ import "./index.css";
 
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
+import UserContextProvider from "./context/UserContext";
 
 ReactDOM.render(
   <BrowserRouter>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <UserContextProvider>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </UserContextProvider>
   </BrowserRouter>,
   document.getElementById("root")
 );

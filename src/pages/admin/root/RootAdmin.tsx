@@ -29,13 +29,13 @@ import { Title } from "components/Title";
 import { RoomCreate } from "pages/admin/rooms/create";
 import { BookingCreate } from "pages/admin/booking/create";
 
+import { root } from "constant/resource";
+
 const { Link } = routerProvider;
 
 const RootAdmin = () => {
-  const API_URL = "http://localhost:1337/api";
-
-  const { authProvider, axiosInstance } = strapiAuthProvider(API_URL);
-  const dataProvider = DataProvider(API_URL, axiosInstance);
+  const { authProvider, axiosInstance } = strapiAuthProvider(root);
+  const dataProvider = DataProvider(root, axiosInstance);
   return (
     <>
       <Title title="Admin" />

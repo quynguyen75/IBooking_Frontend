@@ -1,14 +1,28 @@
 import { TextField, FormControl } from "@mui/material";
+import React from "react";
 
 import styles from "./CustomerAmount.module.css";
 
 type Props = {
   id: number;
   tabActive: number;
+  dispatch: React.Dispatch<any>;
 };
 
-function CustomerAmount({ id, tabActive }: Props) {
+function CustomerAmount({ id, tabActive, dispatch }: Props) {
   const isDisplay = id === tabActive;
+
+  const guestCountChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    dispatch({
+      type: "GUESTCOUNT",
+      payload: +e.target.value,
+    });
+
+  const petCountChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    dispatch({
+      type: "PETCOUNT",
+      payload: +e.target.value,
+    });
 
   return (
     <>
@@ -32,10 +46,11 @@ function CustomerAmount({ id, tabActive }: Props) {
                 InputProps={{
                   inputProps: {
                     max: 20,
-                    min: 0,
+                    min: 1,
                     defaultValue: 1,
                   },
                 }}
+                onChange={guestCountChangeHandler}
               />
             </FormControl>
           </div>
@@ -53,6 +68,7 @@ function CustomerAmount({ id, tabActive }: Props) {
                     defaultValue: 0,
                   },
                 }}
+                onChange={petCountChangeHandler}
               />
             </FormControl>
           </div>

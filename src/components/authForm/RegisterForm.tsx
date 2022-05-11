@@ -1,24 +1,47 @@
-import React from "react";
+import React, { useRef } from "react";
 import styles from "./AuthForm.module.css";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  FormControl,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, Grid, TextField } from "@mui/material";
 import { Facebook, Google } from "@mui/icons-material";
+import { REGISTER_API } from "constant/resource";
 
 type Props = {};
 
 function RegisterForm({}: Props) {
+  const firstNameRef = useRef<HTMLInputElement>(null);
+  const lastNameRef = useRef<HTMLInputElement>(null);
+  const phoneNumberRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const userData = {
+      username: `${firstNameRef.current?.value} ${lastNameRef.current?.value}`,
+      email: emailRef.current?.value,
+      phoneNumber: phoneNumberRef.current?.value,
+      password: passwordRef.current?.value,
+    };
+
+    e.preventDefault();
+
+    const register = async () => {
+      try {
+        const response = await fetch(REGISTER_API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    register();
+  };
+
   return (
-    <Box component="form" autoComplete="off">
+    <Box component="form" autoComplete="off" onSubmit={submitHandler}>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <TextField
@@ -29,6 +52,7 @@ function RegisterForm({}: Props) {
             id="firstName"
             label="First Name"
             autoFocus
+            inputRef={firstNameRef}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -39,26 +63,28 @@ function RegisterForm({}: Props) {
             label="Last Name"
             name="lastName"
             autoComplete="family-name"
+            inputRef={lastNameRef}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             required
             fullWidth
-            id="email"
             label="Phone Number"
             name="phoneNumber"
-            autoComplete="tel"
+            type="tel"
+            inputRef={phoneNumberRef}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             required
             fullWidth
-            id="email"
             label="Email Address"
             name="email"
             autoComplete="email"
+            type="email"
+            inputRef={emailRef}
           />
         </Grid>
         <Grid item xs={12}>
@@ -70,6 +96,7 @@ function RegisterForm({}: Props) {
             type="password"
             id="password"
             autoComplete="new-password"
+            inputRef={passwordRef}
           />
         </Grid>
       </Grid>

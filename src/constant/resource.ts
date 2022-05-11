@@ -1,4 +1,16 @@
-const root = "http://localhost:1337/api";
+export const root = "https://ibooking-backend.herokuapp.com/api";
+
+export const HERE_APIKEY = "uxQXVxbMVhslhknWkyikni7Cw50cTaPF-rGZNXEYN98";
+
+export const HERE_QUERY_URL = "https://geocode.search.hereapi.com/v1/geocode";
+
+export const AUTH_API = root + "/auth/local";
+
+export const REGISTER_API = AUTH_API + "/register";
+
+export const LOGIN_FACEBOOK_API = root + "/connect/facebook";
+
+export const LOGIN_GOOGLE_API = root + "/connect/google";
 
 export const USER_API = root + "/users";
 

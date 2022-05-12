@@ -6,6 +6,8 @@ import CustomerAmount from "./CustomerAmount";
 import TourDateSearch from "./TourDateSearch";
 import TourSearch from "./TourSearch";
 import SearchBlockItem from "./SearchBlockItem";
+import { objectToURLParams } from "utils/search";
+import { useHistory } from "react-router-dom";
 
 type Props = {};
 
@@ -67,6 +69,7 @@ function SearchBlock({}: Props) {
     guestCount: 1,
     petCount: 0,
   });
+  const history = useHistory();
 
   const min768px = useMediaQuery("(min-width: 768px)");
 
@@ -97,6 +100,38 @@ function SearchBlock({}: Props) {
     }
   };
 
+  const submitHandler = () => {
+    if (searchData.tourSearch) {
+      let tourSearchParams = objectToURLParams(searchData.tourSearch);
+
+      if (searchData.checkInDate) {
+        tourSearchParams = tourSearchParams.concat(
+          `&checkInDate=${searchData.checkInDate}`
+        );
+      }
+
+      if (searchData.checkOutDate) {
+        tourSearchParams = tourSearchParams.concat(
+          `&checkOutDate=${searchData.checkOutDate}`
+        );
+      }
+
+      if (searchData.guestCount > 1) {
+        tourSearchParams = tourSearchParams.concat(
+          `&guestCount=${searchData.guestCount}`
+        );
+      }
+
+      if (searchData.petCount) {
+        tourSearchParams = tourSearchParams.concat(
+          `&petCount=${searchData.petCount}`
+        );
+      }
+
+      history.push(`/search?${tourSearchParams}`);
+    }
+  };
+
   // handle click outside search block
   useEffect(() => {
     function handleClickOutside(event: any) {
@@ -104,7 +139,6 @@ function SearchBlock({}: Props) {
         containerRef.current &&
         !containerRef.current.contains(event.target)
       ) {
-        console.log(containerRef.current.contains(event.target), event.target);
         setTabActive(0);
       }
     }
@@ -200,6 +234,7 @@ function SearchBlock({}: Props) {
                 color: "white",
                 minWidth: "unset",
               }}
+              onClick={submitHandler}
             >
               <Search />
             </Button>

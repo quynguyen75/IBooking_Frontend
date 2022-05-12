@@ -11,13 +11,12 @@ import React from "react";
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { formatDate } from "utils/date";
+import { ROLE_API } from "constant/resource";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const RoleList: React.FC = () => {
-  const [status, roleData] = useFetch(
-    "http://localhost:1337/api/users-permissions/roles"
-  );
+  const [status, roleData] = useFetch(ROLE_API);
 
   const formatedData =
     roleData &&

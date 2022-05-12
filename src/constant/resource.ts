@@ -14,6 +14,10 @@ export const LOGIN_GOOGLE_API = root + "/connect/google";
 
 export const USER_API = root + "/users";
 
+export const BOOKING_ANALYST_API = root + "/booking-analyst";
+
+export const ROOM_ANALYST_API = root + "/room-analyst";
+
 export const ROOM_API = root + "/rooms";
 
 export const BOOKING_API = root + "/bookings";

@@ -53,7 +53,7 @@ const Filter: React.FC<FilterProps> = ({ setUsers, setIsLoading }) => {
 
         setIsLoading(true);
 
-        const response = await fetch(USER_API + urlQuery);
+        const response = await fetch(USER_API + urlQuery + "&populate=role");
         const filteredUsers = await response.json();
 
         const formatedData =
@@ -132,7 +132,7 @@ const Filter: React.FC<FilterProps> = ({ setUsers, setIsLoading }) => {
 export const UserList: React.FC = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [status, userData] = useFetch(USER_API);
+  const [status, userData] = useFetch(USER_API + "?populate=role");
 
   useEffect(() => {
     if (userData) {

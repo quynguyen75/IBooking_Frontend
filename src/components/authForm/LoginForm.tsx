@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   Box,
   Button,
@@ -24,9 +25,10 @@ import {
   LOGIN_GOOGLE_API,
 } from "constant/resource";
 
-import styles from "./AuthForm.module.css";
 import { IUser } from "interfaces";
 import { UserContext } from "../../context/UserContext";
+
+import styles from "./AuthForm.module.css";
 
 type Props = {};
 
@@ -65,6 +67,7 @@ function LoginForm({}: Props) {
     setPassword(e.target.value);
 
   const loginSuccessfullHandler = (token: string, user: IUser) => {
+    toast.success("Đăng nhập thành công");
     localStorage.setItem("token", token);
     userContext.setUser(user);
     history.goBack();
@@ -103,8 +106,6 @@ function LoginForm({}: Props) {
 
   const loginWithFacebookHandler = () => {
     const newTab = window.open(LOGIN_FACEBOOK_API, "", "popup=true");
-
-    console.log(newTab);
   };
 
   const loginWithGoogleHandler = () => {

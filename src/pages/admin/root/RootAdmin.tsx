@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Refine } from "@pankod/refine-core";
 import {
   notificationProvider,
@@ -30,12 +30,15 @@ import { RoomCreate } from "pages/admin/rooms/create";
 import { BookingCreate } from "pages/admin/booking/create";
 
 import { root } from "constant/resource";
+import { useHistory } from "react-router-dom";
 
 const { Link } = routerProvider;
 
 const RootAdmin = () => {
   const { authProvider, axiosInstance } = strapiAuthProvider(root);
   const dataProvider = DataProvider(root, axiosInstance);
+  const history = useHistory();
+
   return (
     <>
       <Title title="Admin" />
@@ -62,7 +65,7 @@ const RootAdmin = () => {
             name: "Dashboard",
             list: Dashboard,
             options: {
-              route: "admin/dashboard",
+              route: "admin/",
             },
           },
           {

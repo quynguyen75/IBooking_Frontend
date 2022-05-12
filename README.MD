@@ -32,9 +32,9 @@
 
 - Search (main)
 - Login (local): done
-- Login (Facebook)
-- Login (Google)
-- Register
+- Login (Facebook): done
+- Login (Google): done
+- Register : no email confirmation
 
 ## Search
 

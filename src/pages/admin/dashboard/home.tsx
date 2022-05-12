@@ -16,6 +16,7 @@ import React from "react";
 
 import { Bar, Line, Pie } from "react-chartjs-2";
 import { formatMoney } from "utils/money";
+import { BOOKING_ANALYST_API, ROOM_ANALYST_API } from "constant/resource";
 
 const { Title: TypographyTitle } = Typography;
 
@@ -87,9 +88,7 @@ const CountCard: React.FC<{
 };
 
 const BookingCountChart: React.FC = () => {
-  const [status, bookingAnalystData] = useFetch(
-    "http://localhost:1337/api/booking-analyst"
-  );
+  const [status, bookingAnalystData] = useFetch(BOOKING_ANALYST_API);
 
   const currentMonth = new Date().getMonth();
 
@@ -113,9 +112,7 @@ const BookingCountChart: React.FC = () => {
 };
 
 const ProfitInMonth: React.FC = () => {
-  const [status, bookingAnalystData] = useFetch(
-    "http://localhost:1337/api/booking-analyst"
-  );
+  const [status, bookingAnalystData] = useFetch(BOOKING_ANALYST_API);
 
   const currentMonth = new Date().getMonth();
   return (
@@ -141,9 +138,7 @@ const ProfitInMonth: React.FC = () => {
 };
 
 const ProfitChart: React.FC = () => {
-  const [status, bookingAnalystData] = useFetch(
-    "http://localhost:1337/api/booking-analyst"
-  );
+  const [status, bookingAnalystData] = useFetch(BOOKING_ANALYST_API);
 
   const options = {
     responsive: true,
@@ -182,9 +177,7 @@ const ProfitChart: React.FC = () => {
 };
 
 const RoomChart: React.FC = () => {
-  const [status, roomAnalyst] = useFetch(
-    "http://localhost:1337/api/room-analyst"
-  );
+  const [status, roomAnalyst] = useFetch(ROOM_ANALYST_API);
 
   return (
     <CountCard

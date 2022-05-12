@@ -34,6 +34,11 @@ function HeaderMenu({}: Props) {
     setAnchorEl(null);
   };
 
+  const logoutHandler = () => {
+    localStorage.removeItem("token");
+    userContext.setUser(null);
+  };
+
   return (
     <>
       <Tooltip title="Account settings">
@@ -135,6 +140,7 @@ function HeaderMenu({}: Props) {
             <Divider />
 
             <MenuItem
+              onClick={logoutHandler}
               sx={{
                 color: "#000",
               }}

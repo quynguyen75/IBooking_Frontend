@@ -1,4 +1,8 @@
-import { IResourceComponentsProps } from "@pankod/refine-core";
+import {
+  IResourceComponentsProps,
+  useNavigation,
+  useNotification,
+} from "@pankod/refine-core";
 
 import {
   useForm,
@@ -11,6 +15,7 @@ import {
   InputNumber,
   Typography,
   DatePicker,
+  Button,
 } from "@pankod/refine-antd";
 
 import { IBooking, IRoom, IUser } from "interfaces";
@@ -37,6 +42,9 @@ const { RangePicker } = DatePicker;
 export const BookingCreate: React.FC<IResourceComponentsProps> = () => {
   const { formProps, saveButtonProps } = useForm<IBooking>();
 
+  const { open } = useNotification();
+  const { list } = useNavigation();
+
   const [userFetchStatus, userOptions] = useFetch(USER_API);
   const [roomFetchStatus, roomOptions] = useFetch(ROOM_API);
   const [_, bookingStatus] = useFetch(BOOKING_STATUS_API);
@@ -49,6 +57,7 @@ export const BookingCreate: React.FC<IResourceComponentsProps> = () => {
     checkInDate: "",
     checkOutDate: "",
     nightCount: 0,
+    totalPrice: 0,
   });
 
   const [disabledDates, setDisabledDates] = useState<string[]>([]);
@@ -86,6 +95,9 @@ export const BookingCreate: React.FC<IResourceComponentsProps> = () => {
         checkInDate,
         checkOutDate,
         nightCount,
+        totalPrice:
+          Number(currentRoom?.nightPrice) * nightCount +
+          Number(currentRoom?.cleanlinessFee),
       });
     }
   };
@@ -99,6 +111,28 @@ export const BookingCreate: React.FC<IResourceComponentsProps> = () => {
       (date) => date === moment(current.$d).format("YYYY-MM-DD")
     );
     return index !== -1;
+  };
+
+  const saveHandler = async () => {
+    const response = await fetch(BOOKING_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: {
+          ...formProps.form?.getFieldsValue(true),
+          ...bookingDates,
+        },
+      }),
+    });
+    if (response.ok) {
+      open({
+        message: "Create successfully",
+        type: "success",
+      });
+      list("bookings");
+    }
   };
 
   useEffect(() => {
@@ -175,7 +209,19 @@ export const BookingCreate: React.FC<IResourceComponentsProps> = () => {
   }, [currentRoom]);
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Create
+      actionButtons={
+        <Button
+          onClick={saveHandler}
+          style={{
+            backgroundColor: "#67be23",
+            color: "#fff",
+          }}
+        >
+          Save
+        </Button>
+      }
+    >
       <Form {...formProps} layout="vertical">
         <Row>
           <Col span={8}>
@@ -322,10 +368,7 @@ export const BookingCreate: React.FC<IResourceComponentsProps> = () => {
               <Title type="secondary" level={5}>
                 {currentRoom &&
                   bookingDates.checkInDate &&
-                  formatMoney(
-                    currentRoom.nightPrice * bookingDates.nightCount +
-                      currentRoom.cleanlinessFee
-                  )}
+                  formatMoney(bookingDates.totalPrice)}
               </Title>
             </Form.Item>
           </Col>

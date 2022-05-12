@@ -124,8 +124,8 @@ export const RoomList: React.FC = () => {
     ...item,
     createdAt: formatDate(item.createdAt),
     updatedAt: formatDate(item.updatedAt),
-    roomType: item.roomType.name,
-    user: item.user.username,
+    roomType: item.roomType?.name,
+    user: item.user?.username,
     nightPrice: item.nightPrice.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",

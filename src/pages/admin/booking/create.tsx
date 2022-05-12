@@ -351,14 +351,14 @@ export const BookingCreate: React.FC<IResourceComponentsProps> = () => {
           <Col span={8}>
             <Form.Item label="Night Price">
               <Title type="secondary" level={5}>
-                {currentRoom && formatMoney(currentRoom.nightPrice)}
+                {currentRoom ? formatMoney(currentRoom.nightPrice) : 0}
               </Title>
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="Cleanliness Fee">
               <Title type="secondary" level={5}>
-                {currentRoom && formatMoney(currentRoom.cleanlinessFee)}
+                {currentRoom ? formatMoney(currentRoom.cleanlinessFee) : 0}
               </Title>
             </Form.Item>
           </Col>
@@ -366,9 +366,9 @@ export const BookingCreate: React.FC<IResourceComponentsProps> = () => {
           <Col span={8}>
             <Form.Item label="Total Price">
               <Title type="secondary" level={5}>
-                {currentRoom &&
-                  bookingDates.checkInDate &&
-                  formatMoney(bookingDates.totalPrice)}
+                {currentRoom && bookingDates.checkInDate
+                  ? formatMoney(bookingDates.totalPrice)
+                  : 0}
               </Title>
             </Form.Item>
           </Col>

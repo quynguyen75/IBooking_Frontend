@@ -7,7 +7,7 @@ import { ChevronLeft } from "@mui/icons-material";
 import styles from "./Header.module.css";
 import Logo from "components/Logo/Logo";
 import HeaderNav from "components/headerNav/HeaderNav";
-import { useState } from "react";
+import { Dispatch, useState } from "react";
 import SearchDialog from "components/searchDialog/SearchDialog";
 import RoomFilter from "components/roomFilter/RoomFilter";
 

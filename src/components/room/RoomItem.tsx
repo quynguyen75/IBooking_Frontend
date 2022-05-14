@@ -12,13 +12,38 @@ import RoomItemImage from "./RoomItemImage";
 import { yellow } from "@mui/material/colors";
 
 import styles from "./RoomItem.module.css";
+import { formatMoney } from "utils/money";
 
-type Props = {};
+type Props = {
+  room: any;
+};
 
-function RoomItem({}: Props) {
+function RoomItem({ room }: Props) {
   const min600px = useMediaQuery("(min-width:600px)");
+
+  const reviewCount = room.reviews.data.length;
+
+  const averageStar =
+    reviewCount &&
+    (
+      room.reviews.data.reduce((acc: number, value: any) => {
+        const review = value.attributes;
+
+        const star =
+          (review.cleanlinessStar +
+            review.accuracyStar +
+            review.communicationStar +
+            review.locationStar +
+            review.checkInStar +
+            review.valueStar) /
+          6;
+
+        return acc + star;
+      }, 0) / reviewCount
+    ).toFixed(1);
+
   return (
-    <Link to="/room/1">
+    <Link to={`/room/${room.id}`}>
       <Card>
         <Grid container>
           <Grid item xs={12}>
@@ -39,33 +64,25 @@ function RoomItem({}: Props) {
                     color: yellow["A700"],
                   }}
                 />
-                <span>5,0(7{min600px ? " đánh giá" : ""})</span>
+                <span>
+                  {averageStar}({reviewCount} {min600px ? " đánh giá" : ""})
+                </span>
               </div>
 
               <div>
-                <span>Phòng riêng</span> - <span>Thành phố Hồ Chí Minh</span>
+                <span>{room.roomType.data.attributes.label}</span> -{" "}
+                <span>{room.county}</span>
               </div>
 
               <div className={styles["roomItem__title"]}>
-                <span>Home away from home. Clean and modern studio.</span>
-              </div>
-
-              <div className={styles["roomItem__roomCount"]}>
-                <span>2 khách</span>
-                <span>1 phòng ngủ</span>
-                <span>1 giường</span>
-                <span>1 phòng tắm</span>
-              </div>
-
-              <div className={styles["roomItem__amenities"]}>
-                <span>Wifi</span>
-                <span>Bếp</span>
-                <span>Máy giặt</span>
+                <span>{room.title}</span>
               </div>
 
               <div className={styles["roomItem__price_container"]}>
-                <span className={styles["roomItem__price"]}>100,000đ</span> /
-                <span>đêm</span>
+                <span className={styles["roomItem__price"]}>
+                  {formatMoney(room.nightPrice)}
+                </span>{" "}
+                /<span>đêm</span>
               </div>
             </CardContent>
           </Grid>

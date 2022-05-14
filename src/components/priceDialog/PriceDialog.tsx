@@ -1,9 +1,18 @@
-import { Slider, Box, TextField, Stack } from "@mui/material";
+import {
+  Slider,
+  Box,
+  TextField,
+  Stack,
+  Divider,
+  DialogActions,
+  Button,
+} from "@mui/material";
 
 import NumberFormat from "react-number-format";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import RoomFilterDialog from "components/roomFilter/RoomFilterDialog";
+import { FilterContext } from "context/FilterContext";
 
 type Props = {
   isOpen: boolean;
@@ -12,14 +21,36 @@ type Props = {
 
 function PriceDialog({ isOpen, onClose }: Props) {
   const [value, setValue] = useState<number[]>([100000, 10000000]);
+  const filterContext = useContext(FilterContext);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number[]);
   };
 
+  const filterHandler = () => {
+    onClose();
+
+    filterContext.filterDispatch({
+      type: "PRICE",
+      payload: {
+        from: value[0],
+        to: value[1],
+      },
+    });
+  };
+
   return (
     <div>
-      <RoomFilterDialog isOpen={isOpen} onClose={onClose} title="Giá nơi ở">
+      <RoomFilterDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Giá nơi ở"
+        buttonAction={
+          <Button variant="contained" onClick={filterHandler}>
+            Lọc
+          </Button>
+        }
+      >
         <Box>
           <Slider
             value={value}

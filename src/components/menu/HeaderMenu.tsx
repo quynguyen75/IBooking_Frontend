@@ -93,62 +93,59 @@ function HeaderMenu({}: Props) {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        {!userContext.user && (
-          <>
-            <Link to="/auth/signin">
-              <MenuItem
-                sx={{
-                  color: "#000",
-                }}
-              >
-                Đăng nhập
-              </MenuItem>
-            </Link>
-
-            <Link to="/auth/register">
-              <MenuItem
-                sx={{
-                  color: "#000",
-                }}
-              >
-                Đăng kí
-              </MenuItem>
-            </Link>
-          </>
-        )}
-        {userContext.user && (
-          <>
-            <Link to="/host/create">
-              <MenuItem
-                sx={{
-                  color: "#000",
-                }}
-              >
-                Cho thuê nhà
-              </MenuItem>
-            </Link>
-
-            <Link to="/host/create">
-              <MenuItem
-                sx={{
-                  color: "#000",
-                }}
-              >
-                Quản lí phòng
-              </MenuItem>
-            </Link>
-            <Divider />
-
+        {!userContext.user && [
+          <Link to="/auth/signin" key="signin">
             <MenuItem
-              onClick={logoutHandler}
               sx={{
                 color: "#000",
               }}
             >
-              Đăng xuất
+              Đăng nhập
             </MenuItem>
-          </>
-        )}
+          </Link>,
+
+          <Link to="/auth/register" key="register">
+            <MenuItem
+              sx={{
+                color: "#000",
+              }}
+            >
+              Đăng kí
+            </MenuItem>
+          </Link>,
+        ]}
+        {userContext.user && [
+          <Link to="/host/create" key="create">
+            <MenuItem
+              sx={{
+                color: "#000",
+              }}
+            >
+              Cho thuê nhà
+            </MenuItem>
+          </Link>,
+
+          <Link to="/host/manage" key="manage">
+            <MenuItem
+              sx={{
+                color: "#000",
+              }}
+            >
+              Quản lí phòng
+            </MenuItem>
+          </Link>,
+
+          <Divider key="divider" />,
+          <MenuItem
+            onClick={logoutHandler}
+            key="logout"
+            sx={{
+              color: "#000",
+            }}
+          >
+            Đăng xuất
+          </MenuItem>,
+        ]}
       </Menu>
     </>
   );

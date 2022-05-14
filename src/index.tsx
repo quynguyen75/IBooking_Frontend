@@ -8,13 +8,16 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
 import UserContextProvider from "./context/UserContext";
+import { FilterContextProvider } from "context/FilterContext";
 
 ReactDOM.render(
   <BrowserRouter>
     <UserContextProvider>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
+      <FilterContextProvider>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      </FilterContextProvider>
     </UserContextProvider>
   </BrowserRouter>,
   document.getElementById("root")

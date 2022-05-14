@@ -13,11 +13,18 @@ import {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  children: JSX.Element | JSX.Element[];
+  children: any;
   title: string;
+  buttonAction: JSX.Element;
 };
 
-function RoomFilterDialog({ isOpen, onClose, children, title }: Props) {
+function RoomFilterDialog({
+  isOpen,
+  onClose,
+  children,
+  title,
+  buttonAction,
+}: Props) {
   return (
     <div>
       <Dialog open={isOpen} onClose={onClose} fullWidth scroll="paper">
@@ -56,9 +63,7 @@ function RoomFilterDialog({ isOpen, onClose, children, title }: Props) {
 
         <DialogContent>{children}</DialogContent>
         <Divider />
-        <DialogActions>
-          <Button variant="contained">Lọc</Button>
-        </DialogActions>
+        <DialogActions>{buttonAction}</DialogActions>
       </Dialog>
     </div>
   );

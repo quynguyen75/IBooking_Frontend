@@ -36,13 +36,15 @@
 - Login (Google): done
 - Register : no email confirmation
 
+- Fix Admin
+
 ## Search
 
 - Filter:
-  - Price
-  - Room Type
-  - Amenities
-  - Filter All
+  - Price (done)
+  - Room Type (done)
+  - Amenities (done)
+  - Filter All (done)
 
 ## Room Detail
 

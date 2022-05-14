@@ -1,4 +1,7 @@
+import React, { useContext, useEffect, useState } from "react";
+
 import {
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -7,11 +10,16 @@ import {
   Slider,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
-import { Box } from "@mui/system";
-import RoomFilterDialog from "components/roomFilter/RoomFilterDialog";
-import React, { useState } from "react";
 import NumberFormat from "react-number-format";
+import { Box } from "@mui/system";
+
+import { FilterContext } from "context/FilterContext";
+import useFetch from "hooks/useFetch";
+
+import RoomFilterDialog from "components/roomFilter/RoomFilterDialog";
+import { AMENITIES, ROOM_TYPE_API } from "constant/resource";
 
 type Props = {
   isOpen: boolean;
@@ -19,14 +27,82 @@ type Props = {
 };
 
 function FilterAllDialog({ isOpen, onClose }: Props) {
-  const [value, setValue] = useState<number[]>([100000, 10000000]);
+  const filterContext = useContext(FilterContext);
 
-  const handleChange = (event: Event, newValue: number | number[]) => {
-    setValue(newValue as number[]);
+  const [fetchStatus, roomTypes] = useFetch(ROOM_TYPE_API);
+
+  const [filterOptions, setFilterOptions] = useState(filterContext.filter);
+
+  const handlePriceChange = (event: Event, newValue: number | number[]) => {
+    const value = newValue as number[];
+
+    setFilterOptions((options) => ({
+      ...options,
+      price: {
+        from: value[0],
+        to: value[1],
+      },
+    }));
   };
+
+  const handleRoomCountChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFilterOptions((options) => ({
+      ...options,
+      roomCount: {
+        ...options.roomCount,
+        [event.target.name]: +event.target.value,
+      },
+    }));
+  };
+
+  const handleChooseRoomType = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterOptions((options) => ({
+      ...options,
+      roomType: {
+        ...options.roomType,
+        [event.target.name]: event.target.checked,
+      },
+    }));
+  };
+
+  const handleChooseAmenity = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilterOptions((options) => ({
+      ...options,
+      amenities: {
+        ...options.amenities,
+        [event.target.name]: event.target.checked,
+      },
+    }));
+  };
+
+  const filterHandler = () => {
+    onClose();
+    filterContext.filterDispatch({
+      type: "ALL",
+      payload: filterOptions,
+    });
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      setFilterOptions(filterContext.filter);
+    }
+  }, [isOpen]);
+
   return (
     <div>
-      <RoomFilterDialog isOpen={isOpen} onClose={onClose} title="Bộ lọc">
+      <RoomFilterDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Bộ lọc"
+        buttonAction={
+          <Button variant="contained" onClick={filterHandler}>
+            Lọc
+          </Button>
+        }
+      >
         <div>
           <FormControl
             sx={{
@@ -44,8 +120,8 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
             </FormLabel>
             <Box display="flex" flexDirection="row" justifyContent="center">
               <Slider
-                value={value}
-                onChange={handleChange}
+                value={[filterOptions.price.from, filterOptions.price.to]}
+                onChange={handlePriceChange}
                 min={100000}
                 max={10000000}
                 step={100000}
@@ -68,7 +144,7 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
                 thousandSeparator
                 label="Giá tối thiểu"
                 //   onValueChange={(values) => setNumberFormatState(values.value)}
-                value={value[0]}
+                value={filterOptions.price.from}
                 prefix="đ"
                 variant="outlined"
               />
@@ -78,7 +154,7 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
                 thousandSeparator
                 label="Giá tối đa"
                 //   onValueChange={(values) => setNumberFormatState(values.value)}
-                value={value[1]}
+                value={filterOptions.price.to}
                 prefix="đ"
                 variant="outlined"
               />
@@ -105,6 +181,7 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
 
             <TextField
               type="number"
+              name="livingRoom"
               label="Số lượng"
               InputProps={{
                 inputProps: {
@@ -113,6 +190,7 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
                   defaultValue: 1,
                 },
               }}
+              onChange={handleRoomCountChange}
             />
           </FormControl>
         </div>
@@ -137,6 +215,7 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
             <TextField
               type="number"
               label="Số lượng"
+              name="bedroom"
               InputProps={{
                 inputProps: {
                   max: 20,
@@ -144,6 +223,7 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
                   defaultValue: 1,
                 },
               }}
+              onChange={handleRoomCountChange}
             />
           </FormControl>
         </div>
@@ -153,41 +233,31 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
             marginTop: "8px",
           }}
         >
-          <FormControl>
-            <FormLabel
-              sx={{
-                fontWeight: 600,
-                fontSize: "18px",
-                color: "black",
-              }}
-            >
-              Loại chỗ ở
-            </FormLabel>
-            <FormGroup>
-              <FormControlLabel
-                control={<Checkbox name="Rental Unit" />}
-                label="Căn hộ cho thuê"
-              />
-              <FormControlLabel
-                control={<Checkbox name="Apartment" />}
-                label="Căn hộ chung cư cao cấp"
-              />
-              <FormControlLabel
-                control={<Checkbox name="Loft" />}
-                label="Tầng lửng"
-              />
-
-              <FormControlLabel
-                control={<Checkbox name="Serviced Apartment" />}
-                label="Căn hộ dịch vụ"
-              />
-
-              <FormControlLabel
-                control={<Checkbox name="Holiday home" />}
-                label="Nhà nghỉ dưỡng"
-              />
-            </FormGroup>
-          </FormControl>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: "18px",
+              color: "black",
+            }}
+          >
+            Loại chỗ ở
+          </Typography>
+          <FormGroup>
+            {roomTypes &&
+              roomTypes.data.map((type: any) => (
+                <FormControlLabel
+                  key={type.id}
+                  control={
+                    <Checkbox
+                      name={type.attributes.name}
+                      onChange={handleChooseRoomType}
+                      checked={filterOptions.roomType[type.attributes.name]}
+                    />
+                  }
+                  label={type.attributes.label}
+                />
+              ))}
+          </FormGroup>
         </div>
 
         <div
@@ -195,51 +265,30 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
             marginTop: "8px",
           }}
         >
-          <FormControl>
-            <FormLabel
-              sx={{
-                fontWeight: 600,
-                fontSize: "18px",
-                color: "black",
-              }}
-            >
-              Tiện ích
-            </FormLabel>
-            <FormGroup>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: "18px",
+              color: "black",
+            }}
+          >
+            Tiện ích
+          </Typography>
+          <FormGroup>
+            {AMENITIES.map((amenity) => (
               <FormControlLabel
-                control={<Checkbox name="hasPool" />}
-                label="Bể bơi"
+                control={
+                  <Checkbox
+                    name={amenity.name}
+                    onChange={handleChooseAmenity}
+                    checked={filterOptions.amenities[amenity.name]}
+                  />
+                }
+                label={amenity.label}
+                key={amenity.name}
               />
-              <FormControlLabel
-                control={<Checkbox name="hasGym" />}
-                label="Phòng tập thể hình"
-              />
-              <FormControlLabel
-                control={<Checkbox name="hasWifi" />}
-                label="Wifi"
-              />
-
-              <FormControlLabel
-                control={<Checkbox name="hasConditioning" />}
-                label="Điều hoà nhiệt độ"
-              />
-
-              <FormControlLabel
-                control={<Checkbox name="hasKitchen" />}
-                label="Bếp"
-              />
-
-              <FormControlLabel
-                control={<Checkbox name="hasWashingMachine" />}
-                label="Máy giặt"
-              />
-
-              <FormControlLabel
-                control={<Checkbox name="hasDedicatedWorkspace" />}
-                label="Không gian riêng để làm việc"
-              />
-            </FormGroup>
-          </FormControl>
+            ))}
+          </FormGroup>
         </div>
       </RoomFilterDialog>
     </div>

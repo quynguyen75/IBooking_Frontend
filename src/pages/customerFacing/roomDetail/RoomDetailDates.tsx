@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import moment from "moment";
 import { useState } from "react";
 
 import { DateRange } from "react-date-range";
@@ -8,17 +9,17 @@ import "react-date-range/dist/theme/default.css"; // theme css file
 
 import styles from "./RoomDetailDates.module.css";
 
-type Props = {};
+type Props = {
+  disableDateHandler: (date: Date) => boolean;
+  roomDate: any;
+  changeRoomDates: (range: any) => void;
+};
 
-function RoomDetailDates({}: Props) {
-  const [state, setState] = useState<any>([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
-
+function RoomDetailDates({
+  disableDateHandler,
+  roomDate,
+  changeRoomDates,
+}: Props) {
   return (
     <Box
       sx={{
@@ -31,11 +32,12 @@ function RoomDetailDates({}: Props) {
 
       <DateRange
         className={styles.daterange}
-        onChange={(item) => setState([item.selection])}
+        onChange={changeRoomDates}
         moveRangeOnFirstSelection={false}
-        ranges={state}
+        ranges={roomDate}
         showDateDisplay={false}
         minDate={new Date()}
+        disabledDay={disableDateHandler}
       />
     </Box>
   );

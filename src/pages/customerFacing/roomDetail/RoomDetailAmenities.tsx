@@ -1,18 +1,13 @@
 import { Box, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
-import { CellWifi, Countertops, Pets, Air, Work } from "@mui/icons-material";
-import React from "react";
+import { AMENITIES } from "constant/resource";
 
-type Props = {};
-
-const amenityIcon = {
-  Wifi: <CellWifi />,
-  Kitchen: <Countertops />,
-  pet: <Pets />,
-  airconditioner: <Air />,
-  work: <Work />,
+type Props = {
+  room: any;
 };
 
-function RoomDetailAmenities({}: Props) {
+function RoomDetailAmenities({ room }: Props) {
+  const displayAmenities = room && AMENITIES.filter((item) => room[item.name]);
+
   return (
     <Box
       sx={{
@@ -23,26 +18,29 @@ function RoomDetailAmenities({}: Props) {
     >
       <h2 className="roomDetail__title">Nơi này có những gì cho bạn</h2>
       <List>
-        <AmenityItem />
-        <AmenityItem />
-        <AmenityItem />
+        {displayAmenities &&
+          displayAmenities.map((item: any) => (
+            <AmenityItem
+              key={item.label}
+              Icon={<item.icon />}
+              label={item.label}
+            />
+          ))}
       </List>
     </Box>
   );
 }
 
-function AmenityItem() {
+function AmenityItem({ Icon, label }: { Icon: JSX.Element; label: string }) {
   return (
     <ListItem
       sx={{
         padding: "8px 0",
       }}
     >
-      <ListItemIcon>
-        <CellWifi />
-      </ListItemIcon>
+      <ListItemIcon>{Icon}</ListItemIcon>
 
-      <ListItemText>Wifi</ListItemText>
+      <ListItemText>{label}</ListItemText>
     </ListItem>
   );
 }

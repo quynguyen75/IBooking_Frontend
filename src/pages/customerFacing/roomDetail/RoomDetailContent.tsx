@@ -5,6 +5,8 @@ import {
   createTheme,
   ThemeProvider,
 } from "@mui/material";
+import moment from "moment";
+import React from "react";
 import RoomDetailAmenities from "./RoomDetailAmenities";
 import { RoomDetailCheckStatusTablet } from "./RoomDetailCheckStatus";
 import RoomDetailCount from "./RoomDetailCount";
@@ -14,7 +16,12 @@ import RoomDetailHost from "./RoomDetailHost";
 import RoomDetailReview from "./RoomDetailReview";
 import RoomDetailTitle from "./RoomDetailTitle";
 
-type Props = {};
+type Props = {
+  room: any;
+  roomDate: any;
+  changeRoomDates: (range: any) => void;
+  disableDateHandler: (date: Date) => boolean;
+};
 
 const theme = createTheme({
   breakpoints: {
@@ -28,33 +35,73 @@ const theme = createTheme({
   },
 });
 
-function RoomDetailContent({}: Props) {
+function RoomDetailContent({
+  room,
+  roomDate,
+  changeRoomDates,
+  disableDateHandler,
+}: Props) {
   const min768px = useMediaQuery("(min-width: 768px)");
+
+  const roomCount = room && {
+    bathRoomCount: room.bathRoomCount,
+    bedRoomCount: room.bedRoomCount,
+    livingRoomCount: room.livingRoomCount,
+  };
+
+  const averageStar =
+    room &&
+    (
+      room.reviews.data.reduce((acc: number, review: any) => {
+        const star =
+          (review.cleanlinessStar +
+            review.accuracyStar +
+            review.communicationStar +
+            review.locationStar +
+            review.checkInStar +
+            review.valueStar) /
+          6;
+
+        return acc + star;
+      }, 0) / room.reviews.data.length
+    ).toFixed(1);
 
   return (
     <ThemeProvider theme={theme}>
       <div>
         <Grid container spacing={6}>
           <Grid item xs={12} sm={8}>
-            <RoomDetailTitle />
+            <RoomDetailTitle room={room} averageStar={averageStar} />
             <Divider />
-            <RoomDetailDescription />
+            <RoomDetailDescription desc={room?.desc} />
             <Divider />
-            <RoomDetailCount />
+            <RoomDetailCount roomCount={roomCount} />
             <Divider />
-            <RoomDetailAmenities />
+            <RoomDetailAmenities room={room} />
             <Divider />
-            <RoomDetailDates />
+            <RoomDetailDates
+              disableDateHandler={disableDateHandler}
+              roomDate={roomDate}
+              changeRoomDates={changeRoomDates}
+            />
           </Grid>
 
           <Grid item xs={0} sm={4}>
-            <RoomDetailCheckStatusTablet />
+            <RoomDetailCheckStatusTablet
+              disableDateHandler={disableDateHandler}
+              room={room}
+              roomDate={roomDate}
+              changeRoomDates={changeRoomDates}
+            />
           </Grid>
         </Grid>
         <Divider />
-        <RoomDetailReview />
+        <RoomDetailReview
+          reviews={room?.reviews.data}
+          averageStar={averageStar}
+        />
         <Divider />
-        <RoomDetailHost />
+        <RoomDetailHost host={room.user} />
       </div>
     </ThemeProvider>
   );

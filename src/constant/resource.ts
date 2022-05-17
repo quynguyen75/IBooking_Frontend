@@ -1,3 +1,14 @@
+import {
+  Air,
+  FitnessCenter,
+  Kitchen,
+  LocalLaundryService,
+  Pets,
+  Pool,
+  Wifi,
+  Workspaces,
+} from "@mui/icons-material";
+
 export const root = "https://ibooking-backend.herokuapp.com/api";
 
 export const HERE_APIKEY = "uxQXVxbMVhslhknWkyikni7Cw50cTaPF-rGZNXEYN98";
@@ -40,39 +51,74 @@ export const AMENITIES = [
   {
     label: "Bể bơi",
     name: "hasPool",
+    icon: Pool,
   },
   {
     label: "Phòng tập thể hình",
     name: "hasGym",
+    icon: FitnessCenter,
   },
 
   {
     label: "Wifi",
     name: "hasWifi",
+    icon: Wifi,
   },
 
   {
     label: "Điều hoà nhiệt độ",
     name: "hasConditioning",
+    icon: Air,
   },
 
   {
     label: "Bếp",
     name: "hasKitchen",
+    icon: Kitchen,
   },
 
   {
     label: "Máy giặt",
     name: "hasWashingMachine",
+    icon: LocalLaundryService,
   },
 
   {
     label: "Không gian riêng để làm việc",
     name: "hasDedicatedWorkspace",
+    icon: Workspaces,
   },
 
   {
     label: "Chấp nhận thú cưng",
     name: "acceptPet",
+    icon: Pets,
+  },
+];
+
+export const RATING = [
+  {
+    label: "Mức độ sạch sẽ",
+    name: "cleanlinessStar",
+  },
+  {
+    label: "Độ chính xác",
+    name: "accuracyStar",
+  },
+  {
+    label: "Liên lạc",
+    name: "communicationStar",
+  },
+  {
+    label: "Vị trí",
+    name: "locationStar",
+  },
+  {
+    label: "Nhận phòng",
+    name: "checkInStar",
+  },
+  {
+    label: "Giá trị",
+    name: "valueStar",
   },
 ];

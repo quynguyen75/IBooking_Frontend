@@ -3,9 +3,12 @@ import { Box, Stack, Typography } from "@mui/material";
 import { yellow } from "@mui/material/colors";
 import React from "react";
 
-type Props = {};
+type Props = {
+  room: any;
+  averageStar: string;
+};
 
-function RoomDetailTitle({}: Props) {
+function RoomDetailTitle({ room, averageStar }: Props) {
   return (
     <Box
       sx={{
@@ -19,7 +22,7 @@ function RoomDetailTitle({}: Props) {
           fontWeight: "600",
         }}
       >
-        Tinghouse studio 4
+        {room?.title}
       </Typography>
 
       <Stack
@@ -42,11 +45,11 @@ function RoomDetailTitle({}: Props) {
               color: yellow["A700"],
             }}
           />
-          <span>5,0</span>
+          <span>{averageStar}</span>
         </div>
 
-        <div>45 đánh giá</div>
-        <div>Viet Nam</div>
+        <div>{room && room.reviews.data.length} đánh giá</div>
+        <div>{room?.county}</div>
       </Stack>
     </Box>
   );

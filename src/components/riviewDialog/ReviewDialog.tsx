@@ -18,10 +18,11 @@ import useDisableScroll from "hooks/useDisableScroll";
 type Props = {
   open: boolean;
   onClose: () => void;
-  ratingItems: { name: string; value: number }[];
+  stars: { name: string; label: string; value: number }[];
+  reviews: any[];
 };
 
-function ReviewDialog({ open, onClose, ratingItems }: Props) {
+function ReviewDialog({ open, onClose, stars, reviews }: Props) {
   useDisableScroll(open);
   const min768px = useMediaQuery("(min-width: 768px)");
 
@@ -60,10 +61,10 @@ function ReviewDialog({ open, onClose, ratingItems }: Props) {
               padding: "4px",
             }}
           >
-            {ratingItems.map((item) => (
+            {stars?.map((item) => (
               <RatingItem
-                key={item.name}
-                name={item.name}
+                key={item.label}
+                name={item.label}
                 value={item.value}
                 precision={0.1}
               />
@@ -72,10 +73,16 @@ function ReviewDialog({ open, onClose, ratingItems }: Props) {
         )}
 
         <Stack spacing={2}>
-          <ReviewItem />
-          <ReviewItem />
-          <ReviewItem />
-          <ReviewItem />
+          {reviews?.map((review) => (
+            <div
+              style={{
+                padding: "8px",
+              }}
+              key={review.id}
+            >
+              <ReviewItem review={review} />
+            </div>
+          ))}
         </Stack>
       </DialogContent>
     </Dialog>

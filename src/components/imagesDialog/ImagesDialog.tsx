@@ -6,6 +6,7 @@ import {
   IconButton,
   ImageList,
   ImageListItem,
+  useMediaQuery,
 } from "@mui/material";
 import useDisableScroll from "hooks/useDisableScroll";
 import React, { useEffect } from "react";
@@ -13,11 +14,12 @@ import React, { useEffect } from "react";
 type Props = {
   open: boolean;
   onClose: () => void;
-  images: { label: string; imgPath: string }[];
+  images: any[];
 };
 
 function ImagesDialog({ open, onClose, images }: Props) {
   useDisableScroll(open);
+  const min768px = useMediaQuery("(min-width: 768px)");
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md">
@@ -28,13 +30,13 @@ function ImagesDialog({ open, onClose, images }: Props) {
       </DialogActions>
 
       <DialogContent>
-        <ImageList cols={2} rowHeight={200}>
+        <ImageList cols={2} rowHeight={min768px ? 300 : 200}>
           {images.map((item) => (
             <ImageListItem key={item.imgPath}>
               <img
-                src={`${item.imgPath}?w=164&h=164&fit=crop&auto=format`}
-                srcSet={`${item.imgPath}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                alt={item.label}
+                src={`${item.url}`}
+                srcSet={`${item.url}`}
+                alt={item.alternativeText}
                 loading="lazy"
               />
             </ImageListItem>

@@ -10,13 +10,44 @@ import {
   Typography,
 } from "@mui/material";
 import { DateRange } from "react-date-range";
-import { Star } from "@mui/icons-material";
-import React, { useState } from "react";
-import { yellow } from "@mui/material/colors";
+import React, { useEffect, useState } from "react";
+import useDialog from "hooks/useDialog";
+import { formatMoney } from "utils/money";
+import moment from "moment";
+import { useHistory } from "react-router-dom";
 
-type Props = {};
+type Props = {
+  roomDate: any;
+  room: any;
+  disableDateHandler: (date: Date) => boolean;
+  changeRoomDates: (range: any) => void;
+};
 
-function RoomDetailCheckStatusMobile({}: Props) {
+function RoomDetailCheckStatusMobile({
+  roomDate,
+  room,
+  disableDateHandler,
+  changeRoomDates,
+}: Props) {
+  const {
+    isOpen: isOpenDateDialog,
+    open: openDateDialog,
+    close: closeDateDialog,
+  } = useDialog();
+
+  const history = useHistory();
+
+  const checkOutClickHandler = () =>
+    history.push(
+      `/checkout?room=${room.id}&checkInDate=${roomDate[0].checkInDate}&checkOutDate=${roomDate[0].checkOutDate}`
+    );
+
+  useEffect(() => {
+    if (roomDate[0].startDate.toString() !== roomDate[0].endDate.toString()) {
+      closeDateDialog();
+    }
+  }, [roomDate]);
+
   return (
     <Card
       style={{
@@ -37,34 +68,84 @@ function RoomDetailCheckStatusMobile({}: Props) {
                 fontWeight: 600,
               }}
             >
-              đ 300,000
+              {formatMoney(room.nightPrice)}
             </span>
             / đêm
           </div>
 
           <div>
-            <span>20/05/2022 - 22/05/2022</span>
+            <span>
+              {roomDate[0].startDate.toString() ===
+              roomDate[0].endDate.toString()
+                ? "Thêm ngày"
+                : moment(roomDate[0].startDate).format("DD/MM/YYYY") +
+                  " - " +
+                  moment(roomDate[0].endDate).format("DD/MM/YYYY")}
+            </span>
           </div>
         </div>
-        <Button variant="contained">Đặt phòng</Button>
+        {roomDate[0].startDate.toString() ===
+          roomDate[0].endDate.toString() && (
+          <Button variant="contained" onClick={openDateDialog}>
+            Kiểm tra phòng
+          </Button>
+        )}
+
+        {roomDate[0].startDate.toString() !==
+          roomDate[0].endDate.toString() && (
+          <Button variant="contained" onClick={checkOutClickHandler}>
+            Đặt phòng
+          </Button>
+        )}
       </Stack>
+
+      <Dialog open={isOpenDateDialog} onClose={closeDateDialog}>
+        <DateRange
+          onChange={changeRoomDates}
+          moveRangeOnFirstSelection={false}
+          months={2}
+          ranges={roomDate}
+          direction="horizontal"
+          preventSnapRefocus={true}
+          calendarFocus="backwards"
+          showDateDisplay={false}
+          className="checkStatus__dialog"
+          minDate={new Date()}
+          disabledDay={disableDateHandler}
+        />
+      </Dialog>
     </Card>
   );
 }
 
-function RoomDetailCheckStatusTablet() {
-  const [dates, setDates] = useState<any>([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
+function RoomDetailCheckStatusTablet({
+  room,
+  disableDateHandler,
+  roomDate,
+  changeRoomDates,
+}: {
+  room: any;
+  roomDate: any;
+  disableDateHandler: (date: Date) => boolean;
+  changeRoomDates: (range: any) => void;
+}) {
+  const [guestCount, setGuestCount] = useState({
+    guest: 1,
+    pet: 0,
+  });
 
-  const [isOpenDateDialog, setIsOpenDateDialog] = useState(false);
+  const {
+    isOpen: isOpenDateDialog,
+    open: openDateDialog,
+    close: closeDateDialog,
+  } = useDialog();
 
-  const openDateDialog = () => setIsOpenDateDialog(true);
-  const closeDateDialog = () => setIsOpenDateDialog(false);
+  const history = useHistory();
+
+  const checkOutClickHandler = () =>
+    history.push(
+      `/checkout?room=${room.id}&checkInDate=${roomDate[0].checkInDate}&checkOutDate=${roomDate[0].checkOutDate}`
+    );
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
@@ -79,6 +160,19 @@ function RoomDetailCheckStatusTablet() {
   };
 
   const open = Boolean(anchorEl);
+
+  const guestCountHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGuestCount((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  useEffect(() => {
+    if (roomDate[0].startDate.toString() !== roomDate[0].endDate.toString()) {
+      closeDateDialog();
+    }
+  }, [roomDate]);
 
   return (
     <Card
@@ -101,23 +195,10 @@ function RoomDetailCheckStatusTablet() {
               fontWeight: 600,
             }}
           >
-            đ 300,000
+            {room && formatMoney(room.nightPrice)}
           </span>
           / đêm
         </div>
-
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <Stack direction="row" alignItems="center">
-            <Star
-              style={{
-                color: yellow["A700"],
-              }}
-            />
-            45
-          </Stack>
-
-          <span>67 đánh giá</span>
-        </Stack>
       </Stack>
 
       <div>
@@ -144,7 +225,12 @@ function RoomDetailCheckStatusTablet() {
               >
                 Nhận phòng
               </div>
-              <span>Thêm ngày</span>
+              <span>
+                {roomDate[0].startDate.toString() ===
+                roomDate[0].endDate.toString()
+                  ? "Thêm ngày"
+                  : moment(roomDate[0].startDate).format("DD/MM/YYYY")}
+              </span>
             </Grid>
 
             <Grid
@@ -162,7 +248,12 @@ function RoomDetailCheckStatusTablet() {
               >
                 Trả phòng
               </div>
-              <span>Thêm ngày</span>
+              <span>
+                {roomDate[0].startDate.toString() ===
+                roomDate[0].endDate.toString()
+                  ? "Thêm ngày"
+                  : moment(roomDate[0].endDate).format("DD/MM/YYYY")}
+              </span>
             </Grid>
           </Grid>
         </div>
@@ -189,7 +280,10 @@ function RoomDetailCheckStatusTablet() {
           >
             Khách
           </div>
-          <span>1 Khách</span>
+          <span>
+            {guestCount.guest} Khách{" "}
+            {guestCount.pet > 0 && `,${guestCount.pet} thú cưng`}
+          </span>
         </Button>
 
         <Stack>
@@ -200,23 +294,30 @@ function RoomDetailCheckStatusTablet() {
               textAlign: "center",
             }}
             variant="contained"
+            disabled={
+              roomDate[0].startDate.toString() ===
+              roomDate[0].endDate.toString()
+            }
+            onClick={checkOutClickHandler}
           >
-            Kiểm tra tình trạng phòng
+            Đặt phòng
           </Button>
         </Stack>
       </div>
 
       <Dialog open={isOpenDateDialog} onClose={closeDateDialog}>
         <DateRange
-          onChange={(item) => setDates([item.selection])}
+          onChange={changeRoomDates}
           moveRangeOnFirstSelection={false}
           months={2}
-          ranges={dates}
+          ranges={roomDate}
           direction="horizontal"
           preventSnapRefocus={true}
           calendarFocus="backwards"
           showDateDisplay={false}
           className="checkStatus__dialog"
+          minDate={new Date()}
+          disabledDay={disableDateHandler}
         />
       </Dialog>
 
@@ -247,6 +348,7 @@ function RoomDetailCheckStatusTablet() {
               <label htmlFor="guestCount">Số lượng</label>
               <TextField
                 type="number"
+                name="guest"
                 id="guestCount"
                 InputProps={{
                   inputProps: {
@@ -255,6 +357,7 @@ function RoomDetailCheckStatusTablet() {
                     defaultValue: 1,
                   },
                 }}
+                onChange={guestCountHandler}
               />
             </FormControl>
           </div>
@@ -273,6 +376,7 @@ function RoomDetailCheckStatusTablet() {
               <TextField
                 type="number"
                 id="petCount"
+                name="pet"
                 InputProps={{
                   inputProps: {
                     max: 20,
@@ -280,6 +384,7 @@ function RoomDetailCheckStatusTablet() {
                     defaultValue: 0,
                   },
                 }}
+                onChange={guestCountHandler}
               />
             </FormControl>
           </div>

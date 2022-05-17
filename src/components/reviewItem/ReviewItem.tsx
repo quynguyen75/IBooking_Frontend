@@ -1,9 +1,14 @@
 import React from "react";
 import { Card, Avatar, Stack } from "@mui/material";
+import { BrightnessMediumTwoTone } from "@mui/icons-material";
+import moment from "moment";
 
-type Props = {};
+type Props = {
+  review: any;
+};
 
-function ReviewItem({}: Props) {
+function ReviewItem({ review }: Props) {
+  const reviewDate = new Date(review.publishedAt);
   return (
     <Card
       sx={{
@@ -21,25 +26,18 @@ function ReviewItem({}: Props) {
               fontWeight: 600,
             }}
           >
-            Truong Quy
+            {review.user.username}
           </div>
           <div
             style={{
               fontSize: "14px",
             }}
           >
-            tháng 4 năm 2022
+            Tháng {reviewDate.getMonth() + 1} năm {reviewDate.getFullYear()}
           </div>
         </div>
       </Stack>
-      <p>
-        Chỗ ở sạch sẽ, có trang bị máy giặt sấy khá tiện lợi, ở ngay khu trung
-        tâm. Nơi để xe máy thì ở bên ngoài cảm giác hơi không an toàn một chút,
-        nhưng anh chủ bảo là an ninh nên cũng yên tâm 🥲 Lorem ipsum, dolor sit
-        amet consectetur adipisicing elit. Perferendis doloremque aliquam nobis,
-        autem molestiae nulla repudiandae libero similique distinctio fugiat
-        dolor cumque eos nisi, non sit placeat eaque eligendi laboriosam.
-      </p>
+      <p>{review.content}</p>
     </Card>
   );
 }

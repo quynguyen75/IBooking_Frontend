@@ -3,7 +3,7 @@ import React from "react";
 import SwipeableViews from "react-swipeable-views";
 
 type Props = {
-  images: { label: string; imgPath: string }[];
+  images: any[];
   isOpenDialog: boolean;
   openDialog: () => void;
   closeDialog: () => void;
@@ -38,8 +38,8 @@ function ImageSwipe({ images, isOpenDialog, openDialog, closeDialog }: Props) {
                   objectFit: "cover",
                   borderRadius: 1,
                 }}
-                src={step.imgPath}
-                alt={step.label}
+                src={step.url}
+                alt={step.alternativeText}
               />
             ) : null}
           </div>

@@ -1,9 +1,11 @@
 import { Box } from "@mui/material";
 import React from "react";
 
-type Props = {};
+type Props = {
+  desc: string;
+};
 
-function RoomDetailDescription({}: Props) {
+function RoomDetailDescription({ desc }: Props) {
   return (
     <Box
       sx={{
@@ -12,14 +14,7 @@ function RoomDetailDescription({}: Props) {
         textAlign: "justify",
       }}
     >
-      <p>
-        Tôi thích đi du lịch , tôi cũng tận hưởng một không gian thoải mái và ấm
-        cúng để thư giãn và nạp năng lượng cho chuyến đi của mình. Đó là lý do
-        tại sao tôi tạo homestay này và rất vui được chia sẻ cho bạn. Ngôi nhà
-        của tôi nằm ở góc rất trung tâm của Thành phố Hồ Chí Minh. Nhà tôi là sự
-        kết hợp hoàn hảo giữa phong cách mộc mạc phương Tây và trang trí tự
-        nhiên Việt Nam. Chào mừng bạn đến với không gian của tôi.
-      </p>
+      <p>{desc}</p>
 
       <span
         style={{

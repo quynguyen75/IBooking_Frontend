@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   Box,
@@ -7,14 +7,26 @@ import {
   Avatar,
   Button,
   useMediaQuery,
+  Dialog,
+  Link,
+  Grid,
 } from "@mui/material";
 import { Star } from "@mui/icons-material";
 import { yellow } from "@mui/material/colors";
 
-type Props = {};
+type Props = {
+  host: any;
+};
 
-function RoomDetailHost({}: Props) {
+function RoomDetailHost({ host }: Props) {
   const min768px = useMediaQuery("(min-width: 768px)");
+  const [isOpenDialog, setIsOpenDialog] = useState(false);
+
+  const openDialog = () => setIsOpenDialog(true);
+
+  const closeDialog = () => setIsOpenDialog(false);
+
+  const createdAccountDate = new Date(host.createdAt);
 
   return (
     <Box
@@ -38,14 +50,15 @@ function RoomDetailHost({}: Props) {
               mb: "4px",
             }}
           >
-            Chủ nhà Huỳnh
+            Chủ nhà {host.username}
           </Typography>
           <span
             style={{
               fontSize: "14px",
             }}
           >
-            Đã tham gia vào tháng 7 năm 2017
+            Đã tham gia vào tháng {createdAccountDate.getMonth() + 1} năm{" "}
+            {createdAccountDate.getFullYear()}
           </span>
         </div>
         <Avatar
@@ -58,23 +71,8 @@ function RoomDetailHost({}: Props) {
         />
       </Stack>
 
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-        }}
-      >
-        <Star
-          style={{
-            color: yellow["A700"],
-          }}
-        />
-        557 đánh giá
-      </div>
-
       <div>
-        <p>Hello, Im Huynh, I love traveling!</p>
+        <p>{host.about}</p>
       </div>
 
       <Stack
@@ -88,10 +86,61 @@ function RoomDetailHost({}: Props) {
             p: 1,
           }}
           variant="outlined"
+          onClick={openDialog}
         >
           Liên hệ với chủ nhà
         </Button>
       </Stack>
+
+      <Dialog open={isOpenDialog} onClose={closeDialog} fullWidth maxWidth="xs">
+        <Box
+          sx={{
+            p: 4,
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Link
+                sx={{
+                  display: "block",
+                  color: "#fff",
+                }}
+                href={`tel:${host.phoneNumber}`}
+              >
+                <Button
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    p: 2,
+                  }}
+                >
+                  Liên hệ qua số điện thoại
+                </Button>
+              </Link>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Link
+                sx={{
+                  display: "block",
+                  color: "#fff",
+                }}
+                href={`mailto:${host.email}`}
+              >
+                <Button
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    p: 2,
+                  }}
+                >
+                  Liên hệ qua email
+                </Button>
+              </Link>
+            </Grid>
+          </Grid>
+        </Box>
+      </Dialog>
     </Box>
   );
 }

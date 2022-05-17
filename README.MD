@@ -48,8 +48,10 @@
 
 ## Room Detail
 
-- Render room
-- Book room
+- Render room:
+  - Add cloudinary provider strapi [done]
+  - Render Image [ok]
+- Book room [ok]
 
 ## Checkout
 

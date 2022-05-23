@@ -18,9 +18,7 @@ type Props = {
 function AmenitiesDialog({ isOpen, onClose }: Props) {
   const filterContext = useContext(FilterContext);
 
-  const [amenityOptions, setAmenityOptions] = useState<any>(
-    filterContext.filter.amenities
-  );
+  const [amenityOptions, setAmenityOptions] = useState<any>({});
 
   const checkboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmenityOptions((options: any) => ({
@@ -43,6 +41,10 @@ function AmenitiesDialog({ isOpen, onClose }: Props) {
       setAmenityOptions(filterContext.filter.amenities);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    setAmenityOptions(filterContext.filter.amenities);
+  }, [filterContext.filter]);
 
   return (
     <div>

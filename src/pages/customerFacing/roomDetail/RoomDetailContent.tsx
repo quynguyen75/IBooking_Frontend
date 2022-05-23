@@ -21,6 +21,11 @@ type Props = {
   roomDate: any;
   changeRoomDates: (range: any) => void;
   disableDateHandler: (date: Date) => boolean;
+  guestCount: {
+    guest: number;
+    pet: number;
+  };
+  guestCountHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const theme = createTheme({
@@ -40,6 +45,8 @@ function RoomDetailContent({
   roomDate,
   changeRoomDates,
   disableDateHandler,
+  guestCount,
+  guestCountHandler,
 }: Props) {
   const min768px = useMediaQuery("(min-width: 768px)");
 
@@ -49,22 +56,22 @@ function RoomDetailContent({
     livingRoomCount: room.livingRoomCount,
   };
 
-  const averageStar =
-    room &&
-    (
-      room.reviews.data.reduce((acc: number, review: any) => {
-        const star =
-          (review.cleanlinessStar +
-            review.accuracyStar +
-            review.communicationStar +
-            review.locationStar +
-            review.checkInStar +
-            review.valueStar) /
-          6;
+  const averageStar = room.reviews.data.length
+    ? (
+        room.reviews.data.reduce((acc: number, review: any) => {
+          const star =
+            (review.cleanlinessStar +
+              review.accuracyStar +
+              review.communicationStar +
+              review.locationStar +
+              review.checkInStar +
+              review.valueStar) /
+            6;
 
-        return acc + star;
-      }, 0) / room.reviews.data.length
-    ).toFixed(1);
+          return acc + star;
+        }, 0) / room.reviews.data.length
+      ).toFixed(1)
+    : "0";
 
   return (
     <ThemeProvider theme={theme}>
@@ -92,6 +99,8 @@ function RoomDetailContent({
               room={room}
               roomDate={roomDate}
               changeRoomDates={changeRoomDates}
+              guestCount={guestCount}
+              guestCountHandler={guestCountHandler}
             />
           </Grid>
         </Grid>

@@ -106,10 +106,25 @@ function LoginForm({}: Props) {
 
   const loginWithFacebookHandler = () => {
     const newTab = window.open(LOGIN_FACEBOOK_API, "", "popup=true");
+    const timer = setInterval(function () {
+      if (newTab && newTab.closed) {
+        clearInterval(timer);
+        window.open("/");
+        toast.success("Đăng nhập thành công");
+      }
+    }, 500);
   };
 
   const loginWithGoogleHandler = () => {
-    window.open(LOGIN_GOOGLE_API, "", "popup=true");
+    const win = window.open(LOGIN_GOOGLE_API, "", "popup=true");
+
+    const timer = setInterval(function () {
+      if (win && win.closed) {
+        clearInterval(timer);
+        window.open("/");
+        toast.success("Đăng nhập thành công");
+      }
+    }, 500);
   };
 
   return (

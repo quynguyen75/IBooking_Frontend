@@ -13,8 +13,39 @@ import RootAdmin from "./pages/admin/root/RootAdmin";
 import AuthPage from "./pages/customerFacing/auth/AuthenticatePage";
 
 import "react-toastify/dist/ReactToastify.css";
+import PrivateRoute from "components/protect/PrivateRoute";
+import { USER_ME_API } from "constant/resource";
+import { useContext, useEffect } from "react";
+import { UserContext } from "context/UserContext";
+import HandlePayment from "pages/customerFacing/checkout/HandlePayment";
 
 function App() {
+  const userContext = useContext(UserContext);
+  const savedToken = localStorage.getItem("token");
+
+  const getUser = async () => {
+    if (savedToken && !userContext.user) {
+      try {
+        const response = await fetch(USER_ME_API, {
+          headers: {
+            Authorization: `Bearer ${savedToken}`,
+          },
+        });
+
+        if (response.ok) {
+          const user = await response.json();
+          userContext.setUser(user);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   return (
     <>
       <Switch>
@@ -24,15 +55,25 @@ function App() {
 
         <Route path="/room/:id" component={RoomDetail} />
 
-        <Route path="/checkout" component={Checkout} />
+        <PrivateRoute path="/checkout">
+          <Checkout />
+        </PrivateRoute>
 
-        <Route path="/host/create" component={CreateRoom} />
+        <Route path="/handlepayment">
+          <HandlePayment />
+        </Route>
 
-        <Route path="/host/manage" component={ManageRoom} />
+        <PrivateRoute path="/host/create">
+          <CreateRoom />
+        </PrivateRoute>
 
-        <Route path="/loginProvider/:type" component={LoginProvider} />
+        <PrivateRoute path="/host/manage">
+          <ManageRoom />
+        </PrivateRoute>
 
         <Route path="/admin" component={RootAdmin} />
+
+        <Route path="/loginProvider/:type" component={LoginProvider} />
 
         <Route path="/" component={Home} />
       </Switch>

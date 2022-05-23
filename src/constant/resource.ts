@@ -19,11 +19,15 @@ export const AUTH_API = root + "/auth/local";
 
 export const REGISTER_API = AUTH_API + "/register";
 
+export const EMAIL_API = "https://ibooking-backend.herokuapp.com/email";
+
 export const LOGIN_FACEBOOK_API = root + "/connect/facebook";
 
 export const LOGIN_GOOGLE_API = root + "/connect/google";
 
 export const USER_API = root + "/users";
+
+export const USER_ME_API = root + "/users/me";
 
 export const BOOKING_ANALYST_API = root + "/booking-analyst";
 

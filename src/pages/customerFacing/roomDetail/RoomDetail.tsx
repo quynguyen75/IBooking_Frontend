@@ -34,17 +34,31 @@ function RoomDetail({}: Props) {
     },
   ]);
 
+  const [guestCount, setGuestCount] = useState({
+    guest: 1,
+    pet: 0,
+  });
+
   const [fetchStatus, room] = useFetch(
     `${ROOM_API}/${params.id}?populate[0]=images&populate[1]=roomType&populate[2]=user&populate[3]=bookings&populate[4]=reviews&populate[5]=reviews.user`
   );
+
+  const guestCountHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGuestCount((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   const changeRoomDates = (range: any) => setRoomDate([range.selection]);
 
   const formatedRoom = formatDataStrapi(room);
 
   const bookings = formatedRoom
-    ? formatedRoom.bookings.data.filter((booking: any) =>
-        moment(booking.checkInDate).isSameOrAfter(moment())
+    ? formatedRoom.bookings.data.filter(
+        (booking: any) =>
+          moment(booking.checkInDate).isSameOrAfter(moment()) ||
+          moment(booking.checkOutDate).isSameOrAfter(moment())
       )
     : [];
 
@@ -75,22 +89,27 @@ function RoomDetail({}: Props) {
           </Stack>
         </Dialog>
       )}
-      {room && (
-        <Container
-          sx={{
-            paddingTop: min768px ? "var(--header-height)" : "12px",
-          }}
-        >
-          <RoomDetailImages images={formatedRoom.images.data} />
-          <RoomDetailContent
-            room={formatedRoom}
-            roomDate={roomDate}
-            changeRoomDates={changeRoomDates}
-            disableDateHandler={disableDateHandler}
-          />
-        </Container>
-      )}
-
+      (
+      <Container
+        sx={{
+          paddingTop: min768px ? "var(--header-height)" : "12px",
+          minHeight: "80vh",
+        }}
+      >
+        {room && (
+          <>
+            <RoomDetailImages images={formatedRoom.images.data} />
+            <RoomDetailContent
+              room={formatedRoom}
+              roomDate={roomDate}
+              changeRoomDates={changeRoomDates}
+              disableDateHandler={disableDateHandler}
+              guestCount={guestCount}
+              guestCountHandler={guestCountHandler}
+            />
+          </>
+        )}
+      </Container>
       {min768px ||
         (room && (
           <RoomDetailCheckStatusMobile
@@ -98,9 +117,9 @@ function RoomDetail({}: Props) {
             room={formatedRoom}
             changeRoomDates={changeRoomDates}
             disableDateHandler={disableDateHandler}
+            guestCount={guestCount}
           />
         ))}
-
       <Footer />
     </>
   );

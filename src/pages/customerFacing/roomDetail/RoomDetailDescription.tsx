@@ -16,7 +16,7 @@ function RoomDetailDescription({ desc }: Props) {
     >
       <p>{desc}</p>
 
-      <span
+      {/* <span
         style={{
           fontWeight: 600,
           color: "#000",
@@ -24,7 +24,7 @@ function RoomDetailDescription({ desc }: Props) {
         }}
       >
         Hiển thị thêm
-      </span>
+      </span> */}
     </Box>
   );
 }

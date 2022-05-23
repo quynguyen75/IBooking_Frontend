@@ -8,27 +8,34 @@ import {
   Typography,
 } from "@mui/material";
 import { AddPhotoAlternateOutlined, Close } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "store/store";
+import { disableNextButton, setImageFile } from "slice/createRoomSlice";
 
 type Props = {};
 
 function UploadImages({}: Props) {
-  const [files, setFiles] = useState<File[]>([]);
+  const files = useSelector((state: RootState) => state.createRoom.imageFiles);
 
-  const addFile = (file: File) => setFiles((files) => [...files, file]);
+  const dispatch = useDispatch();
 
   const removeFile = (deletedIndex: number) =>
-    setFiles(files.filter((item, index) => index !== deletedIndex));
+    dispatch(
+      setImageFile(files.filter((item, index) => index !== deletedIndex))
+    );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      for (let index = 0; index < e.target.files.length; index++) {
-        const file = e.target.files[index];
-
-        addFile(file);
-      }
+      dispatch(setImageFile([...files, ...Array.from(e.target.files)]));
     }
   };
+
+  useEffect(() => {
+    dispatch(disableNextButton(files.length < 5));
+  }, [files]);
+
+  console.log(files);
 
   return (
     <Box

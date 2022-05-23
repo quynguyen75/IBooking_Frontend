@@ -24,9 +24,7 @@ function RoomTypeDialog({ isOpen, onClose }: Props) {
 
   const [status, roomTypes] = useFetch(ROOM_TYPE_API);
 
-  const [roomTypeOptions, setRoomTypeOptions] = useState<any>(
-    filterContext.filter.roomType
-  );
+  const [roomTypeOptions, setRoomTypeOptions] = useState<any>({});
 
   const checkboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomTypeOptions((options: any) => ({
@@ -49,6 +47,10 @@ function RoomTypeDialog({ isOpen, onClose }: Props) {
       setRoomTypeOptions(filterContext.filter.roomType);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    setRoomTypeOptions(filterContext.filter.roomType);
+  }, [filterContext.filter]);
 
   return (
     <div>

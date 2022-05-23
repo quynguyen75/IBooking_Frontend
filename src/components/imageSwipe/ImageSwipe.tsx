@@ -16,7 +16,7 @@ function ImageSwipe({ images, isOpenDialog, openDialog, closeDialog }: Props) {
     setActiveStep(step);
   };
 
-  const maxSteps = images.length;
+  const maxSteps = images?.length;
 
   return (
     <>
@@ -26,7 +26,7 @@ function ImageSwipe({ images, isOpenDialog, openDialog, closeDialog }: Props) {
         index={activeStep}
         onClick={openDialog}
       >
-        {images.map((step, index) => (
+        {images?.map((step, index) => (
           <div key={step.label}>
             {Math.abs(activeStep - index) <= 2 ? (
               <Box

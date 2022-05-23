@@ -2,7 +2,9 @@ import { Box, Paper, Typography, useMediaQuery } from "@mui/material";
 import SwipeableView from "react-swipeable-views";
 import React from "react";
 
-type Props = {};
+type Props = {
+  images: any[];
+};
 
 const images = [
   {
@@ -27,7 +29,7 @@ const images = [
   },
 ];
 
-function RoomItemImage({}: Props) {
+function RoomItemImage({ images }: Props) {
   const min768px = useMediaQuery("(min-width: 768px)");
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -35,7 +37,7 @@ function RoomItemImage({}: Props) {
   return (
     <Box>
       <SwipeableView>
-        {images.map((step, index) => (
+        {images?.map((step, index) => (
           <div key={step.label}>
             {Math.abs(activeStep - index) <= 2 ? (
               <Box
@@ -48,8 +50,8 @@ function RoomItemImage({}: Props) {
                   objectFit: "cover",
                   borderRadius: 1,
                 }}
-                src={step.imgPath}
-                alt={step.label}
+                src={step.attributes.url}
+                alt={step.attributes.name}
               />
             ) : null}
           </div>

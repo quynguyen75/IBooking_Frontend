@@ -16,11 +16,64 @@ import {
 import { ChevronLeft } from "@mui/icons-material";
 import Footer from "components/layout/Footer";
 import Header from "components/layout/Header";
+import { Link, useLocation } from "react-router-dom";
+import { generatePaymnentLink } from "utils/link";
+import { ROOM_API } from "constant/resource";
+import useFetch from "hooks/useFetch";
+import { convertSearchToObject } from "utils/search";
+import { formatDataStrapi } from "utils/data";
+import { formatMoney } from "utils/money";
+import moment from "moment";
+import { useContext } from "react";
+import { UserContext } from "context/UserContext";
 
 type Props = {};
 
 function Checkout({}: Props) {
+  const userContext = useContext(UserContext);
+  const { search } = useLocation();
   const min768px = useMediaQuery("(min-width:768px)");
+
+  const searchObj = convertSearchToObject(search);
+
+  const [fetchStatus, room] = useFetch(
+    ROOM_API + `/${searchObj.room}?populate=*`
+  );
+
+  const formatedRoom = formatDataStrapi(room);
+
+  const roomImages = formatedRoom?.images.data;
+
+  const disabledDate = formatedRoom?.bookings.data.filter((booking: any) =>
+    moment(booking.checkOutDate).isSameOrAfter(moment())
+  );
+
+  const isInvalidDate = disabledDate?.some((booking: any) => {
+    return (
+      moment(searchObj.checkInDate).isBetween(
+        booking.checkInDate,
+        booking.checkOutDate,
+        undefined,
+        "[]"
+      ) ||
+      moment(searchObj.checkOutDate).isBetween(
+        booking.checkInDate,
+        booking.checkOutDate,
+        undefined,
+        "[]"
+      )
+    );
+  });
+
+  const nightCount = Math.floor(
+    (new Date(searchObj.checkOutDate).valueOf() -
+      new Date(searchObj.checkInDate).valueOf()) /
+      (1000 * 60 * 60 * 24)
+  );
+
+  const totalPrice =
+    formatedRoom &&
+    formatedRoom.nightPrice * nightCount + +formatedRoom.cleanlinessFee;
 
   return (
     <>
@@ -93,18 +146,18 @@ function Checkout({}: Props) {
                     }}
                     component="img"
                     alt="The house from the offer."
-                    src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
+                    src={roomImages && roomImages[0].url}
                   />
                 </Grid>
 
                 <Grid item xs={8}>
-                  <div>Phòng riêng tại nhà</div>
+                  <div>{formatedRoom?.roomType.label}</div>
                   <div
                     style={{
                       fontWeight: 500,
                     }}
                   >
-                    ♥Staycious Balcony* Near Ben Thanh Market* 1A♥
+                    {formatedRoom?.title}
                   </div>
                 </Grid>
               </Grid>
@@ -130,14 +183,22 @@ function Checkout({}: Props) {
                   >
                     <div>
                       <div className="colorBlack textBold mb-4">Ngày</div>
-                      <div>12/05/2022 - 13/05/2022</div>
+                      <div
+                        style={{
+                          color: isInvalidDate ? "#ed4337" : "",
+                        }}
+                      >
+                        {isInvalidDate
+                          ? `Ngày bạn chọn đã được chọn. Vui lòng chọn ngày khác`
+                          : `${searchObj.checkInDate} - ${searchObj.checkOutDate}`}
+                      </div>
                     </div>
 
-                    <div>
+                    {/* <div>
                       <span className="textBold textUnderline cursorPointer colorBlack">
                         Chỉnh sửa
                       </span>
-                    </div>
+                    </div> */}
                   </Stack>
                 </div>
 
@@ -152,14 +213,14 @@ function Checkout({}: Props) {
                   >
                     <div>
                       <div className="colorBlack textBold mb-4">Khách</div>
-                      <div>1 Khách</div>
+                      <div>{searchObj?.guestCount} Khách</div>
                     </div>
 
-                    <div>
+                    {/* <div>
                       <span className="textBold textUnderline cursorPointer colorBlack">
                         Chỉnh sửa
                       </span>
-                    </div>
+                    </div> */}
                   </Stack>
                 </div>
               </Stack>
@@ -169,59 +230,75 @@ function Checkout({}: Props) {
           <Grid item xs={12} md={6}>
             <Divider />
 
-            <Box
-              sx={{
-                padding: "16px 0",
-              }}
-            >
-              <span className="checkout__title">Chi tiết giá</span>
-              <Stack>
-                <div>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{
-                      padding: "8px 0",
-                    }}
-                  >
-                    <div>đ 300,000 x 1 đêm</div>
+            {!isInvalidDate && formatedRoom && (
+              <Box
+                sx={{
+                  padding: "16px 0",
+                }}
+              >
+                <span className="checkout__title">Chi tiết giá</span>
+                <Stack>
+                  <div>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{
+                        padding: "8px 0",
+                      }}
+                    >
+                      <div>
+                        {" "}
+                        {formatedRoom && formatMoney(formatedRoom.nightPrice)} x
+                        {nightCount} đêm
+                      </div>
 
-                    <div>đ 300,000</div>
-                  </Stack>
-                </div>
+                      <div>
+                        {formatMoney(formatedRoom.nightPrice * nightCount)}
+                      </div>
+                    </Stack>
+                  </div>
 
-                <div>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{
-                      padding: "8px 0",
-                    }}
-                  >
-                    <div>Phí dọn dẹp</div>
+                  <div>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{
+                        padding: "8px 0",
+                      }}
+                    >
+                      <div>Phí dọn dẹp</div>
 
-                    <div>đ 20,000</div>
-                  </Stack>
-                </div>
+                      <div>
+                        {formatedRoom &&
+                          formatMoney(formatedRoom.cleanlinessFee)}
+                      </div>
+                    </Stack>
+                  </div>
 
-                <div>
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    sx={{
-                      padding: "8px 0",
-                    }}
-                  >
-                    <div className="textBold">Tổng</div>
+                  <div>
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      sx={{
+                        padding: "8px 0",
+                      }}
+                    >
+                      <div className="textBold">Tổng</div>
 
-                    <div className="textBold">đ 320,000</div>
-                  </Stack>
-                </div>
-              </Stack>
-            </Box>
+                      <div className="textBold">
+                        {formatMoney(
+                          formatedRoom.nightPrice * nightCount +
+                            formatedRoom.cleanlinessFee
+                        )}
+                      </div>
+                    </Stack>
+                  </div>
+                </Stack>
+              </Box>
+            )}
 
             <Box
               sx={{
@@ -232,13 +309,7 @@ function Checkout({}: Props) {
               <List>
                 <ListItem>
                   <ListItemButton>
-                    <ListItemText>Paypal</ListItemText>
-                  </ListItemButton>
-                </ListItem>
-
-                <ListItem>
-                  <ListItemButton>
-                    <ListItemText>Google Pay</ListItemText>
+                    <ListItemText>Vnpay</ListItemText>
                   </ListItemButton>
                 </ListItem>
               </List>
@@ -249,15 +320,26 @@ function Checkout({}: Props) {
                 padding: "16px 0",
               }}
             >
-              <Button
-                fullWidth
-                variant="contained"
-                sx={{
-                  padding: "10px 0",
-                }}
+              <a
+                href={generatePaymnentLink({
+                  amount: totalPrice,
+                  room: formatedRoom?.id,
+                  user: userContext.user?.id,
+                  checkInDate: searchObj.checkInDate,
+                  checkOutDate: searchObj.checkOutDate,
+                  guestCount: +searchObj.guestCount,
+                })}
               >
-                Xác nhận và thanh toán
-              </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    padding: "10px 0",
+                  }}
+                >
+                  Xác nhận và thanh toán
+                </Button>
+              </a>
             </Box>
           </Grid>
         </Grid>

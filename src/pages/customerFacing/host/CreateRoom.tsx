@@ -7,6 +7,12 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+
+import { RootState } from "store/store";
+
 import CreateRoomType from "../../../components/createRoom/CreateRoomType";
 import ChooseAddress from "../../../components/createRoom/ChoseAddress";
 import ChooseGuestCount from "../../../components/createRoom/ChooseGuestCount";
@@ -15,6 +21,7 @@ import UploadImages from "../../../components/createRoom/UploadImages";
 import CreateTitle from "../../../components/createRoom/CreateTitle";
 import CreateDescription from "../../../components/createRoom/CreateDescription";
 import SetPrice from "../../../components/createRoom/SetPrice";
+import { ROOM_API } from "constant/resource";
 
 type Props = {};
 
@@ -56,15 +63,65 @@ const CREATE_ROOM_STEPS = [
 
 function CreateRoom({}: Props) {
   const [activeStep, setActiveStep] = useState(0);
+  const history = useHistory();
+
+  const createRoomState = useSelector((state: RootState) => state.createRoom);
+
+  const isDisableNextButton = useSelector(
+    (state: RootState) => state.createRoom.isDisableButton
+  );
+
   const maxSteps = CREATE_ROOM_STEPS.length;
 
   const handleNext = () => {
+    if (activeStep === maxSteps - 1) {
+      const finalRoomData = {
+        ...createRoomState.address,
+        ...createRoomState.amenities,
+        guestCount: createRoomState.count.guest,
+        bedCount: createRoomState.count.bed,
+        bedRoomCount: createRoomState.count.bedroom,
+        bathRoomCount: createRoomState.count.bathroom,
+        livingRoomCount: createRoomState.count.livingroom,
+        cleanlinessFee: createRoomState.cleanlinessFee,
+        desc: createRoomState.desc,
+        nightPrice: createRoomState.nightPrice,
+        roomType: createRoomState.roomType,
+        title: createRoomState.title,
+      };
+
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(finalRoomData));
+      createRoomState.imageFiles.forEach((file) =>
+        formData.append("files.images", file)
+      );
+
+      const postData = async () => {
+        const response = await fetch(ROOM_API, {
+          method: "POST",
+
+          body: formData,
+        });
+
+        if (response.ok) {
+          toast.success("Tạo phòng thành công");
+          history.push("/host/manage");
+        } else toast.error("Tạo phòng thất bại");
+      };
+
+      postData();
+
+      return;
+    }
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
+    if (activeStep === 0) return history.goBack();
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
   return (
     <>
       <Grid container>
@@ -144,7 +201,11 @@ function CreateRoom({}: Props) {
                 steps={maxSteps}
                 activeStep={activeStep}
                 nextButton={
-                  <Button variant="contained" onClick={handleNext}>
+                  <Button
+                    variant="contained"
+                    onClick={handleNext}
+                    disabled={isDisableNextButton}
+                  >
                     Tiếp theo
                   </Button>
                 }

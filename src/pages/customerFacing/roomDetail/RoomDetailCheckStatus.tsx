@@ -21,6 +21,10 @@ type Props = {
   room: any;
   disableDateHandler: (date: Date) => boolean;
   changeRoomDates: (range: any) => void;
+  guestCount: {
+    guest: number;
+    pet: number;
+  };
 };
 
 function RoomDetailCheckStatusMobile({
@@ -28,6 +32,7 @@ function RoomDetailCheckStatusMobile({
   room,
   disableDateHandler,
   changeRoomDates,
+  guestCount,
 }: Props) {
   const {
     isOpen: isOpenDateDialog,
@@ -39,7 +44,11 @@ function RoomDetailCheckStatusMobile({
 
   const checkOutClickHandler = () =>
     history.push(
-      `/checkout?room=${room.id}&checkInDate=${roomDate[0].checkInDate}&checkOutDate=${roomDate[0].checkOutDate}`
+      `/checkout?room=${room.id}&checkInDate=${moment(
+        roomDate[0].startDate
+      ).format("YYYY-MM-DD")}&checkOutDate=${moment(roomDate[0].endDate).format(
+        "YYYY-MM-DD"
+      )}&guestCount=${guestCount.guest}`
     );
 
   useEffect(() => {
@@ -123,17 +132,19 @@ function RoomDetailCheckStatusTablet({
   disableDateHandler,
   roomDate,
   changeRoomDates,
+  guestCount,
+  guestCountHandler,
 }: {
   room: any;
   roomDate: any;
   disableDateHandler: (date: Date) => boolean;
   changeRoomDates: (range: any) => void;
+  guestCount: {
+    guest: number;
+    pet: number;
+  };
+  guestCountHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
-  const [guestCount, setGuestCount] = useState({
-    guest: 1,
-    pet: 0,
-  });
-
   const {
     isOpen: isOpenDateDialog,
     open: openDateDialog,
@@ -144,7 +155,11 @@ function RoomDetailCheckStatusTablet({
 
   const checkOutClickHandler = () =>
     history.push(
-      `/checkout?room=${room.id}&checkInDate=${roomDate[0].checkInDate}&checkOutDate=${roomDate[0].checkOutDate}`
+      `/checkout?room=${room.id}&checkInDate=${moment(
+        roomDate[0].startDate
+      ).format("YYYY-MM-DD")}&checkOutDate=${moment(roomDate[0].endDate).format(
+        "YYYY-MM-DD"
+      )}&guestCount=${guestCount.guest}`
     );
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
@@ -160,13 +175,6 @@ function RoomDetailCheckStatusTablet({
   };
 
   const open = Boolean(anchorEl);
-
-  const guestCountHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGuestCount((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
 
   useEffect(() => {
     if (roomDate[0].startDate.toString() !== roomDate[0].endDate.toString()) {
@@ -362,32 +370,34 @@ function RoomDetailCheckStatusTablet({
             </FormControl>
           </div>
 
-          <div>
-            <FormControl
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexDirection: "row",
-                mt: 1,
-              }}
-            >
-              <label htmlFor="petCount">Thú cưng</label>
-              <TextField
-                type="number"
-                id="petCount"
-                name="pet"
-                InputProps={{
-                  inputProps: {
-                    max: 20,
-                    min: 0,
-                    defaultValue: 0,
-                  },
+          {room.acceptPet && (
+            <div>
+              <FormControl
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  mt: 1,
                 }}
-                onChange={guestCountHandler}
-              />
-            </FormControl>
-          </div>
+              >
+                <label htmlFor="petCount">Thú cưng</label>
+                <TextField
+                  type="number"
+                  id="petCount"
+                  name="pet"
+                  InputProps={{
+                    inputProps: {
+                      max: 20,
+                      min: 0,
+                      defaultValue: 0,
+                    },
+                  }}
+                  onChange={guestCountHandler}
+                />
+              </FormControl>
+            </div>
+          )}
         </div>
       </Popover>
     </Card>

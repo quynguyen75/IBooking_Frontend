@@ -1,24 +1,33 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import styles from "./AuthForm.module.css";
 import { Box, Button, Divider, Grid, TextField } from "@mui/material";
 import { Facebook, Google } from "@mui/icons-material";
 import { REGISTER_API } from "constant/resource";
+import { useHistory } from "react-router-dom";
 
 type Props = {};
 
 function RegisterForm({}: Props) {
+  const history = useHistory();
+
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState({
+    type: "",
+    message: "",
+  });
+
   const firstNameRef = useRef<HTMLInputElement>(null);
   const lastNameRef = useRef<HTMLInputElement>(null);
   const phoneNumberRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     const userData = {
       username: `${firstNameRef.current?.value} ${lastNameRef.current?.value}`,
       email: emailRef.current?.value,
       phoneNumber: phoneNumberRef.current?.value,
-      password: passwordRef.current?.value,
+      password,
     };
 
     e.preventDefault();
@@ -32,6 +41,21 @@ function RegisterForm({}: Props) {
           },
           body: JSON.stringify(userData),
         });
+
+        if (response.ok) {
+          toast.success(
+            "Đăng kí thành công. Vui lòng kiểm tra email để xác nhận tài khoản"
+          );
+
+          history.replace("/auth/signin");
+        } else {
+          const errData = await response.json();
+
+          setErr({
+            type: "email",
+            message: "Email đã tồn tại",
+          });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -39,6 +63,27 @@ function RegisterForm({}: Props) {
 
     register();
   };
+
+  const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setPassword(e.target.value);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (password && password.length < 6) {
+      timeoutId = setTimeout(() => {
+        setErr({
+          type: "password",
+          message: "Mật khẩu tối thiểu 6 kí tự",
+        });
+      }, 400);
+    } else {
+      setErr({
+        type: "",
+        message: "",
+      });
+    }
+    return () => clearTimeout(timeoutId);
+  }, [password]);
 
   return (
     <Box component="form" autoComplete="off" onSubmit={submitHandler}>
@@ -85,6 +130,8 @@ function RegisterForm({}: Props) {
             autoComplete="email"
             type="email"
             inputRef={emailRef}
+            error={err.type === "email"}
+            helperText={err.message}
           />
         </Grid>
         <Grid item xs={12}>
@@ -96,7 +143,10 @@ function RegisterForm({}: Props) {
             type="password"
             id="password"
             autoComplete="new-password"
-            inputRef={passwordRef}
+            value={password}
+            onChange={passwordChangeHandler}
+            error={err.type === "password"}
+            helperText={err.message}
           />
         </Grid>
       </Grid>

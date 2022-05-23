@@ -16,18 +16,29 @@ import { formatDate } from "utils/date";
 type Props = {
   open: boolean;
   onClose: () => void;
+  room: any;
 };
 
-const FAKE_DATA = [
-  {
-    user: "Quy",
-    content: "Nhà sạch, mát, bát sạch ngon cơm",
-    star: 4,
-    updatedAt: formatDate(Date()),
-  },
-];
+function ViewRoomDialog({ open, onClose, room }: Props) {
+  const dataSource = room
+    ? room.reviews.data.map((item: any) => {
+        const starKeys = Object.keys(item).filter((key) =>
+          key.includes("Star")
+        );
+        const avaverageStar = starKeys.reduce(
+          (acc, value) => acc + +(item[value] / starKeys.length).toFixed(1),
+          0
+        );
 
-function ViewRoomDialog({ open, onClose }: Props) {
+        return {
+          user: item.user.username,
+          content: item.content,
+          star: avaverageStar,
+          updatedAt: formatDate(item.updatedAt),
+        };
+      })
+    : [];
+
   return (
     <Dialog open={open} fullScreen onClose={onClose}>
       <AppBar sx={{ position: "relative", mb: 1 }}>
@@ -52,7 +63,7 @@ function ViewRoomDialog({ open, onClose }: Props) {
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <List>
-              <Table rowKey="id" dataSource={FAKE_DATA}>
+              <Table rowKey="id" dataSource={dataSource}>
                 <Table.Column dataIndex="user" title="User" />
 
                 <Table.Column dataIndex="content" title="Nội dung" />

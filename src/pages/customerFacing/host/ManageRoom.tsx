@@ -1,17 +1,21 @@
+import { useContext, useState } from "react";
 import { Container, Typography, IconButton } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import { List, Table, Space } from "@pankod/refine-antd";
 import useFetch from "hooks/useFetch";
+
 import Footer from "components/layout/Footer";
 import Header from "components/layout/Header";
 
-import { ROOM_API } from "constant/resource";
+import { BOOKING_API, ROOM_API } from "constant/resource";
 import { formatMoney } from "utils/money";
 import { formatDate } from "utils/date";
 import EditRoomDialog from "./EditRoomDialog";
 import ViewRoomDialog from "./ViewRoomDialog";
 
 import useDialog from "hooks/useDialog";
+import { formatDataStrapi } from "utils/data";
+import { UserContext } from "context/UserContext";
 
 type Props = {};
 
@@ -27,6 +31,8 @@ const FAKE_DATA = [
 ];
 
 function ManageRoom({}: Props) {
+  const userContext = useContext(UserContext);
+
   const {
     isOpen: isOpenEditDialog,
     open: openEditDialog,
@@ -39,15 +45,43 @@ function ManageRoom({}: Props) {
     close: closeViewDialog,
   } = useDialog();
 
-  const [roomFetchStatus, room] = useFetch(ROOM_API + "?populate=*");
+  const [dialogData, setDialogData] = useState<{ edit: any; reviews: any }>({
+    edit: null,
+    reviews: null,
+  });
 
-  const formatedData = room?.data.map((item: any) => ({
-    id: item.id,
-    ...item.attributes,
-    roomType: item.attributes.roomType.data.attributes.name,
-    nightPrice: formatMoney(item.attributes.nightPrice),
-    updatedAt: formatDate(item.attributes.updatedAt),
+  const [roomFetchStatus, room] = useFetch(
+    ROOM_API +
+      `?filters[user][id]=${userContext.user.id}&populate[0]=images&populate[1]=roomType&populate[2]=user&populate[3]=bookings&populate[4]=reviews&populate[5]=reviews.user`
+  );
+
+  const [bookingFetchStatus, bookings] = useFetch(
+    BOOKING_API +
+      `?filters[room][user][id][$eq]=${userContext.user.id}&populate=*`
+  );
+
+  const formatedData = formatDataStrapi(room);
+
+  const dataSource = formatedData
+    ? formatedData.data.map((item: any) => ({
+        ...item,
+        roomType: item.roomType.label,
+        nightPrice: formatMoney(item.nightPrice),
+        updatedAt: formatDate(item.updatedAt),
+      }))
+    : [];
+
+  const formatedBookings = formatDataStrapi(bookings);
+
+  const bookingDatasource = formatedBookings?.data.map((booking: any) => ({
+    ...booking,
+    room: booking.room.title,
+    user: booking.user.username,
+    totalPrice: formatMoney(booking.totalPrice),
+    bookedAt: formatDate(booking.bookedAt),
   }));
+
+  console.log(bookingDatasource);
 
   return (
     <>
@@ -70,10 +104,14 @@ function ManageRoom({}: Props) {
         <List>
           <Table
             rowKey="id"
-            dataSource={FAKE_DATA}
+            dataSource={dataSource}
             onRow={(record, rowIndex) => {
               return {
                 onClick: (event) => {
+                  setDialogData((data) => ({
+                    ...data,
+                    reviews: record,
+                  }));
                   openViewDialog();
                 }, // click row
               };
@@ -98,6 +136,10 @@ function ManageRoom({}: Props) {
                   <IconButton
                     onClick={(e) => {
                       e.stopPropagation();
+                      setDialogData((data) => ({
+                        ...data,
+                        edit: record,
+                      }));
                       openEditDialog();
                     }}
                   >
@@ -108,11 +150,44 @@ function ManageRoom({}: Props) {
             />
           </Table>
         </List>
+
+        <Typography
+          variant="h2"
+          sx={{
+            fontSize: "32px",
+            fontWeight: 500,
+          }}
+        >
+          Các đơn đặt phòng
+        </Typography>
+        <List>
+          <Table rowKey="id" dataSource={bookingDatasource}>
+            <Table.Column dataIndex="user" title="User" />
+
+            <Table.Column dataIndex="room" title="Phòng" />
+
+            <Table.Column dataIndex="checkInDate" title="Ngày nhận phòng" />
+
+            <Table.Column dataIndex="checkOutDate" title="Ngày trả phòng" />
+
+            <Table.Column dataIndex="totalPrice" title="Giá" />
+
+            <Table.Column dataIndex="bookedAt" title="Ngày đặt phòng" />
+          </Table>
+        </List>
       </Container>
 
-      <EditRoomDialog open={isOpenEditDialog} onClose={closeEditDialog} />
+      <EditRoomDialog
+        open={isOpenEditDialog}
+        onClose={closeEditDialog}
+        room={dialogData.edit}
+      />
 
-      <ViewRoomDialog open={isOpenViewDialog} onClose={closeViewDialog} />
+      <ViewRoomDialog
+        open={isOpenViewDialog}
+        onClose={closeViewDialog}
+        room={dialogData.reviews}
+      />
 
       <Footer />
     </>

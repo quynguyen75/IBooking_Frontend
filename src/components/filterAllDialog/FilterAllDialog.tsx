@@ -91,6 +91,10 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    setFilterOptions(filterContext.filter);
+  }, [filterContext.filter]);
+
   return (
     <div>
       <RoomFilterDialog

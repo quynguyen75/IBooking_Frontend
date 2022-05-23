@@ -56,15 +56,15 @@
 ## Checkout
 
 - Render
-- Payment with Momo
+- Payment with vnpay [done]
 
 ## Host create
 
-- Upload images
-- Create room
+- Upload images [done]
+- Create room [done]
 
 ## Host manage
 
-- Render room
-- Edit Room
-- Render reviews
+- Render room [done]
+- Edit Room [done]
+- Render reviews [done]

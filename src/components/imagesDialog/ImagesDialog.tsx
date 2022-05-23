@@ -31,7 +31,7 @@ function ImagesDialog({ open, onClose, images }: Props) {
 
       <DialogContent>
         <ImageList cols={2} rowHeight={min768px ? 300 : 200}>
-          {images.map((item) => (
+          {images?.map((item) => (
             <ImageListItem key={item.imgPath}>
               <img
                 src={`${item.url}`}

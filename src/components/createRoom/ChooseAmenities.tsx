@@ -15,11 +15,28 @@ import {
   Switch,
 } from "@mui/material";
 import { AMENITIES } from "constant/resource";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setAmenities } from "slice/createRoomSlice";
+import { RootState } from "store/store";
 
 type Props = {};
 
 function ChooseAmenities({}: Props) {
+  const amenities: any = useSelector(
+    (state: RootState) => state.createRoom.amenities
+  );
+
+  const dispatch = useDispatch();
+
+  const amenityChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    dispatch(
+      setAmenities({
+        ...amenities,
+        [e.target.name]: e.target.checked,
+      })
+    );
+
   return (
     <Box
       sx={{
@@ -33,7 +50,14 @@ function ChooseAmenities({}: Props) {
         <FormGroup>
           {AMENITIES.map((item) => (
             <FormControlLabel
-              control={<Checkbox name={item.name} />}
+              key={item.label}
+              control={
+                <Checkbox
+                  name={item.name}
+                  onChange={amenityChangeHandler}
+                  checked={amenities[item.name]}
+                />
+              }
               label={item.label}
             />
           ))}

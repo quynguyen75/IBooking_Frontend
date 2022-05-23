@@ -23,8 +23,6 @@ function RoomDetailImages({ images }: Props) {
     close: closeImagesDialog,
   } = useDialog();
 
-  console.log(images);
-
   return (
     <Box
       sx={{

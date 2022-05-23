@@ -111,6 +111,7 @@ function TourDateSearch({
             calendarFocus="backwards"
             showDateDisplay={false}
             className="checkStatus__dialog"
+            minDate={new Date()}
           />
         </div>
       )}

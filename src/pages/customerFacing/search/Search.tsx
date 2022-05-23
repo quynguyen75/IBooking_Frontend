@@ -13,9 +13,9 @@ import {
 } from "@mui/material";
 import RoomItem from "components/room/RoomItem";
 import { convertSearchToObject, objectToURLParamsStrapi } from "utils/search";
-import { useContext, useEffect, useMemo, useReducer, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { ROOM_API } from "constant/resource";
-import { FilterContext, FilterContextProvider } from "context/FilterContext";
+import { FilterContext } from "context/FilterContext";
 type Props = {};
 
 function formatObjectSearch(object: any) {
@@ -66,25 +66,26 @@ function checkCorrespondRoom(
 ): boolean {
   const bookings = room.attributes.bookings.data;
   if (checkOutDate) {
-    const existBooking = bookings.find((booking: any) => {
-      const bookingCheckIn = moment(
-        booking.attributes.checkInDate,
-        "DD/MM/YYYY"
-      );
-      const bookingCheckOut = moment(
-        booking.attributes.checkOutDate,
-        "DD/MM/YYYY"
-      );
-      const searchCheckIn = moment(checkInDate, "DD/MM/YYYY");
-      const searchCheckOut = moment(checkOutDate, "DD/MM/YYYY");
-
+    const existBooking = bookings.some((booking: any) => {
       return (
-        (bookingCheckIn >= searchCheckIn && bookingCheckIn <= searchCheckOut) ||
-        (bookingCheckOut >= searchCheckIn && bookingCheckOut <= searchCheckOut)
+        moment(checkInDate).isBetween(
+          booking.attributes.checkInDate,
+          booking.attributes.checkOutDate,
+          undefined,
+          "[]"
+        ) ||
+        moment(checkOutDate).isBetween(
+          booking.attributes.checkInDate,
+          booking.attributes.checkOutDate,
+          undefined,
+          "[]"
+        )
       );
     });
 
-    return !Boolean(existBooking);
+    console.log(existBooking);
+
+    return !existBooking;
   } else {
     const existBooking = bookings.find((booking: any) => {
       const bookingCheckIn = moment(
@@ -127,7 +128,7 @@ function Search({}: Props) {
           ROOM_API +
             `?${objectToURLParamsStrapi(
               formatSearch
-            )}&populate=bookings&populate=reviews&populate=roomType`
+            )}&populate=bookings&populate=reviews&populate=roomType&populate=images`
         );
 
         const rooms = await roomResponse.json();
@@ -160,6 +161,7 @@ function Search({}: Props) {
 
     (async () => {
       const correspondRooms = await getCorrespondRooms();
+
       setRooms({
         display: correspondRooms.data,
         initial: correspondRooms.data,
@@ -168,94 +170,60 @@ function Search({}: Props) {
   }, [searchObj]);
 
   useEffect(() => {
-    let correspondRooms: any = [];
-    switch (filterContext.filter.actionType) {
-      case "PRICE":
-        correspondRooms = rooms.display.filter(
-          (room: any) =>
-            room.attributes.nightPrice >= filterContext.filter.price.from &&
-            room.attributes.nightPrice <= filterContext.filter.price.to
-        );
+    let correspondRooms: any[] = Object.keys(filterContext.filter).reduce(
+      (result, key) => {
+        switch (key) {
+          case "price":
+            return result.filter(
+              (room: any) =>
+                room.attributes.nightPrice >= filterContext.filter.price.from &&
+                room.attributes.nightPrice <= filterContext.filter.price.to
+            );
 
-        break;
+          case "roomCount":
+            return result.filter(
+              (room: any) =>
+                room.attributes.livingRoomCount >=
+                  filterContext.filter.roomCount.livingRoom &&
+                room.attributes.bedRoomCount >=
+                  filterContext.filter.roomCount.bedroom
+            );
 
-      case "ROOM_TYPE": {
-        const roomTypeFilters = Object.keys(
-          filterContext.filter.roomType
-        ).filter((item) => filterContext.filter.roomType[item]);
+          default:
+            let filteredRoom = result;
+            const roomTypeFilters = Object.keys(
+              filterContext.filter.roomType
+            ).filter((item) => filterContext.filter.roomType[item]);
 
-        correspondRooms = rooms.display.filter((room: any) =>
-          roomTypeFilters.includes(
-            room.attributes.roomType.data.attributes.name
-          )
-        );
+            const amenityFilters = Object.keys(
+              filterContext.filter.amenities
+            ).filter((item) => filterContext.filter.amenities[item]);
 
-        break;
-      }
+            if (roomTypeFilters.length) {
+              filteredRoom = filteredRoom.filter((room: any) =>
+                roomTypeFilters.includes(
+                  room.attributes.roomType.data.attributes.name
+                )
+              );
+            }
 
-      case "AMENITIES": {
-        const amenityFilters = Object.keys(
-          filterContext.filter.amenities
-        ).filter((item) => filterContext.filter.amenities[item]);
+            if (amenityFilters.length) {
+              filteredRoom = filteredRoom.filter((room: any) =>
+                amenityFilters.every((item) => room.attributes[item])
+              );
+            }
 
-        correspondRooms = rooms.display.filter((room: any) =>
-          amenityFilters.every((item) => room.attributes[item])
-        );
-
-        break;
-      }
-
-      case "ALL":
-        const roomTypeFilters = Object.keys(
-          filterContext.filter.roomType
-        ).filter((item) => filterContext.filter.roomType[item]);
-
-        const amenityFilters = Object.keys(
-          filterContext.filter.amenities
-        ).filter((item) => filterContext.filter.amenities[item]);
-
-        correspondRooms = rooms.initial
-          .filter(
-            (room: any) =>
-              room.attributes.nightPrice >= filterContext.filter.price.from &&
-              room.attributes.nightPrice <= filterContext.filter.price.to
-          )
-          .filter(
-            (room: any) =>
-              room.attributes.livingRoomCount >=
-                filterContext.filter.roomCount.livingRoom &&
-              room.attributes.bedRoomCount >=
-                filterContext.filter.roomCount.bedroom
-          );
-
-        if (roomTypeFilters.length) {
-          correspondRooms.filter((room: any) =>
-            roomTypeFilters.includes(
-              room.attributes.roomType.data.attributes.name
-            )
-          );
+            return filteredRoom;
         }
-
-        if (amenityFilters.length) {
-          correspondRooms.filter((room: any) =>
-            amenityFilters.every((item) => room.attributes[item])
-          );
-        }
-
-        console.log(correspondRooms);
-        break;
-
-      default:
-        break;
-    }
+      },
+      rooms.initial
+    );
 
     setRooms((rooms: any) => ({
       ...rooms,
       display: correspondRooms,
     }));
-  }, [filterContext.filter]);
-
-  console.log(filterContext.filter);
+  }, [filterContext.filter, rooms.initial]);
 
   return (
     <>
@@ -264,6 +232,7 @@ function Search({}: Props) {
         sx={{
           paddingTop: isTablet ? "100px" : "80px",
           paddingBottom: "40px",
+          minHeight: "80vh",
         }}
       >
         <div>
@@ -282,17 +251,30 @@ function Search({}: Props) {
               <CircularProgress />
             </Grid>
           )}
-          {rooms.display.map((room: any) => (
-            <Grid item xs={12} sm={6} lg={4} key={room.id}>
-              <RoomItem
-                room={{
-                  id: room.id,
-                  ...room.attributes,
-                }}
-              />
-            </Grid>
-          ))}
+
+          {!isLoading &&
+            rooms.display.map((room: any) => (
+              <Grid item xs={12} sm={6} lg={4} key={room.id}>
+                <RoomItem
+                  room={{
+                    id: room.id,
+                    ...room.attributes,
+                  }}
+                />
+              </Grid>
+            ))}
         </Grid>
+
+        {!isLoading && rooms.display.length === 0 && (
+          <Typography
+            textAlign="center"
+            sx={{
+              p: 2,
+            }}
+          >
+            Không có phòng nào phù hợp
+          </Typography>
+        )}
       </Container>
       <Footer />
       <Navigation />

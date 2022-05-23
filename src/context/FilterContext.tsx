@@ -11,7 +11,6 @@ type filterState = {
     livingRoom: number;
     bedroom: number;
   };
-  actionType: string;
 };
 
 type filterAction = {
@@ -45,7 +44,6 @@ const initialState = {
     livingRoom: 1,
     bedroom: 1,
   },
-  actionType: "",
 };
 
 const FilterContext = createContext<{
@@ -69,35 +67,30 @@ function filterReducer(
       return {
         ...filterState,
         price: action.payload,
-        actionType: action.type,
       };
 
     case "ROOM_TYPE":
       return {
         ...filterState,
         roomType: action.payload,
-        actionType: action.type,
       };
 
     case "AMENITIES":
       return {
         ...filterState,
         amenities: action.payload,
-        actionType: action.type,
       };
 
     case "ROOM_COUNT":
       return {
         ...filterState,
         roomCount: action.payload,
-        actionType: action.type,
       };
 
     case "ALL":
       return {
         ...filterState,
         ...action.payload,
-        actionType: action.type,
       };
     default:
       break;

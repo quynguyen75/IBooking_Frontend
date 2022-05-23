@@ -47,7 +47,7 @@ function RoomItem({ room }: Props) {
       <Card>
         <Grid container>
           <Grid item xs={12}>
-            <RoomItemImage />
+            <RoomItemImage images={room.images.data} />
           </Grid>
 
           <Grid

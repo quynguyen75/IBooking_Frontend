@@ -3,6 +3,7 @@ import React from "react";
 import { Card, Typography, Button } from "@mui/material";
 
 import styles from "./BecomeHost.module.css";
+import { Link } from "react-router-dom";
 
 type Props = {};
 
@@ -17,9 +18,11 @@ function BecomeHostSection({}: Props) {
           Kiếm thêm thu nhập và mở khóa các cơ hội mới bằng cách chia sẻ không
           gian của bạn
         </Typography>
-        <Button variant="contained" color="warning">
-          Tìm hiểu thêm
-        </Button>
+        <Link to="/host/manage">
+          <Button variant="contained" color="warning">
+            Tìm hiểu thêm
+          </Button>
+        </Link>
       </Card>
     </section>
   );

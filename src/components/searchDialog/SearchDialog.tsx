@@ -12,8 +12,11 @@ import {
   ListItemAvatar,
   ListItemText,
 } from "@mui/material";
+import { HERE_APIKEY, HERE_QUERY_URL } from "constant/resource";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { objectToURLParams } from "utils/search";
 
 import styles from "./SearchDialog.module.css";
 
@@ -23,6 +26,40 @@ type Props = {
 };
 
 function SearchDialog({ isOpenSearchMobile, closeSearchMobile }: Props) {
+  const [inputValue, setInputValue] = useState("");
+  const [suggestion, setSuggestion] = useState<any[]>([]);
+
+  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+  };
+
+  // suggestion text
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${HERE_QUERY_URL}?q=${inputValue}&apikey=${HERE_APIKEY}&in=countryCode:VNM
+          `
+        );
+
+        const data = await response.json();
+        setSuggestion(data.items);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    let timeoutId: NodeJS.Timeout;
+
+    if (inputValue) {
+      timeoutId = setTimeout(() => {
+        fetchData();
+      }, 400);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [inputValue]);
+
   useEffect(() => {
     if (isOpenSearchMobile) {
       document.body.classList.add("disableScroll");
@@ -65,36 +102,26 @@ function SearchDialog({ isOpenSearchMobile, closeSearchMobile }: Props) {
               placeholder="Bạn sắp đi đâu?"
               autoFocus
               className={styles.dialogInput}
+              onChange={inputChangeHandler}
             />
           </Grid>
         </Grid>
         <List className={styles["dialog__list"]}>
-          <ListItem button>
-            <ListItemAvatar>
-              <Avatar>
-                <LocationOn />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Thành phố Đà Lạt" />
-          </ListItem>
-
-          <ListItem button>
-            <ListItemAvatar>
-              <Avatar>
-                <LocationOn />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Thành phố Hồ Chí Minh" />
-          </ListItem>
-
-          <ListItem button>
-            <ListItemAvatar>
-              <Avatar>
-                <LocationOn />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Thành phố Bến Tre" />
-          </ListItem>
+          {suggestion.slice(0, 5).map((item) => (
+            <Link
+              to={`/search?${objectToURLParams(item.address)}`}
+              style={{ color: "#222" }}
+            >
+              <ListItem button key={item.address.label}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <LocationOn />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={item.address.label} />
+              </ListItem>
+            </Link>
+          ))}
         </List>
       </div>
     </Dialog>

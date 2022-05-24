@@ -109,8 +109,7 @@ function LoginForm({}: Props) {
     const timer = setInterval(function () {
       if (newTab && newTab.closed) {
         clearInterval(timer);
-        window.open("/");
-        toast.success("Đăng nhập thành công");
+        window.location.href = "/";
       }
     }, 500);
   };
@@ -121,8 +120,7 @@ function LoginForm({}: Props) {
     const timer = setInterval(function () {
       if (win && win.closed) {
         clearInterval(timer);
-        window.open("/");
-        toast.success("Đăng nhập thành công");
+        window.location.href = "/";
       }
     }, 500);
   };

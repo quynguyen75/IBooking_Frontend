@@ -1,6 +1,7 @@
 import { UserContext } from "context/UserContext";
 import React, { useContext, useEffect } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 type Props = {};
 
@@ -17,14 +18,17 @@ function LoginProvider({}: Props) {
         );
         const user = await response.json();
 
-        console.log(user);
-
-        localStorage.setItem("token", user.jwt);
-        userContext.setUser(user.user);
+        if (response.ok) {
+          localStorage.setItem("token", user.jwt);
+          userContext.setUser(user.user);
+          toast.success("Đăng nhập thành công");
+        } else {
+          toast.error("Đăng nhập thất bại");
+        }
       } catch (error) {
         console.log(error);
       } finally {
-        // window.close();
+        window.close();
       }
     };
 

@@ -17,12 +17,14 @@ function LoginProvider({}: Props) {
         );
         const user = await response.json();
 
+        console.log(user);
+
         localStorage.setItem("token", user.jwt);
         userContext.setUser(user.user);
       } catch (error) {
         console.log(error);
       } finally {
-        window.close();
+        // window.close();
       }
     };
 

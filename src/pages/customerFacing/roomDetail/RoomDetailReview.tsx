@@ -17,6 +17,7 @@ import ReviewItem from "components/reviewItem/ReviewItem";
 import ReviewDialog from "components/riviewDialog/ReviewDialog";
 
 import { RATING } from "constant/resource";
+import CreateReviewDialog from "components/riviewDialog/CreateReviewDialog";
 
 type Props = {
   reviews: any[];
@@ -131,6 +132,8 @@ function RoomDetailReview({ reviews, averageStar }: Props) {
         stars={stars}
         reviews={reviews}
       />
+
+      {/* <CreateReviewDialog /> */}
     </Box>
   );
 }

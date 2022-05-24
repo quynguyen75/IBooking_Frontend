@@ -53,6 +53,8 @@
   - Render Image [ok]
 - Book room [ok]
 
+- Review
+
 ## Checkout
 
 - Render
@@ -68,3 +70,7 @@
 - Render room [done]
 - Edit Room [done]
 - Render reviews [done]
+
+## Bug
+
+- Autocomplete create room

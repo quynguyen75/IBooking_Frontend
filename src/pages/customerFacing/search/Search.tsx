@@ -153,7 +153,7 @@ function Search({}: Props) {
           return correspondRooms;
         }
 
-        return rooms;
+        return rooms.data;
       } catch (error) {
         console.log(error);
       }
@@ -163,8 +163,8 @@ function Search({}: Props) {
       const correspondRooms = await getCorrespondRooms();
 
       setRooms({
-        display: correspondRooms.data,
-        initial: correspondRooms.data,
+        display: correspondRooms,
+        initial: correspondRooms,
       });
     })();
   }, [searchObj]);

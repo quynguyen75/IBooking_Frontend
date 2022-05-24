@@ -92,28 +92,6 @@ function HandlePayment({}: Props) {
             `,
           }),
         });
-
-        console.log({
-          to: user.email,
-          from: "nguyentruongquy75@gmail.com",
-          replyTo: "nguyentruongquy75@gmail.com",
-          subject: "Đặt phòng thành công",
-          text: `
-          Thông tin chi tiết:
-          Tên phòng: ${formatedRoom.title}
-          Địa chỉ: ${
-            formatedRoom.houseNumber +
-            formatedRoom.street +
-            formatedRoom.district +
-            formatedRoom.city +
-            formatedRoom.county
-          }
-          Giá 1 đêm: ${formatedRoom.nightPrice}
-          Ngày nhận phòng: ${searchObj.checkInDate}
-          Ngày trả phòng: ${searchObj.checkOutDate}
-          Tổng tiền: ${searchObj.vnp_Amount}
-          `,
-        });
       };
 
       createBooking();

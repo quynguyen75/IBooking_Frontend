@@ -7,10 +7,7 @@ type filterState = {
   };
   roomType: any;
   amenities: any;
-  roomCount: {
-    livingRoom: number;
-    bedroom: number;
-  };
+  roomCount: any;
 };
 
 type filterAction = {
@@ -43,6 +40,7 @@ const initialState = {
   roomCount: {
     livingRoom: 1,
     bedroom: 1,
+    bathroom: 1,
   },
 };
 
@@ -87,11 +85,6 @@ function filterReducer(
         roomCount: action.payload,
       };
 
-    case "ALL":
-      return {
-        ...filterState,
-        ...action.payload,
-      };
     default:
       break;
   }

@@ -186,7 +186,9 @@ function Search({}: Props) {
                 room.attributes.livingRoomCount >=
                   filterContext.filter.roomCount.livingRoom &&
                 room.attributes.bedRoomCount >=
-                  filterContext.filter.roomCount.bedroom
+                  filterContext.filter.roomCount.bedroom &&
+                room.attributes.bathRoomCount >=
+                  filterContext.filter.roomCount.bathroom
             );
 
           default:

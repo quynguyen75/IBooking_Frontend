@@ -13,7 +13,7 @@ function RoomFilter({}: Props) {
       <RoomFilterItem label="Giá" RenderDialog={PriceDialog} />
       <RoomFilterItem label="Loại nơi ở" RenderDialog={RoomTypeDialog} />
       <RoomFilterItem label="Tiện nghi" RenderDialog={AmenitiesDialog} />
-      <RoomFilterItem label="Bộ lọc" RenderDialog={FilterAllDialog} />
+      <RoomFilterItem label="Số lượng phòng" RenderDialog={FilterAllDialog} />
     </Stack>
   );
 }

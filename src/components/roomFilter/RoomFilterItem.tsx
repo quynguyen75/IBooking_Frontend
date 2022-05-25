@@ -39,7 +39,7 @@ function RoomFilterItem({ label, RenderDialog }: Props) {
       case "Giá":
         if (
           filterContext.filter.price.from !== 100000 ||
-          filterContext.filter.price.to !== 10000000
+          filterContext.filter.price.to !== 100000000
         )
           setFilterCount(1);
         else setFilterCount(0);
@@ -63,7 +63,7 @@ function RoomFilterItem({ label, RenderDialog }: Props) {
 
       case "Số lượng phòng":
         const count = Object.keys(filterContext.filter.roomCount).filter(
-          (key) => filterContext.filter.roomCount[key] !== 1
+          (key) => filterContext.filter.roomCount[key] !== 0
         ).length;
 
         setFilterCount(count);

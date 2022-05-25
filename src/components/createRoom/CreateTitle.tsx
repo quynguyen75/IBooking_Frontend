@@ -15,7 +15,11 @@ function CreateTitle({}: Props) {
     dispatch(setTile(e.target.value));
 
   useEffect(() => {
-    dispatch(disableNextButton(title.length === 0));
+    dispatch(disableNextButton(title.trim().length === 0));
+
+    return () => {
+      dispatch(disableNextButton(false));
+    };
   }, [title]);
 
   return (

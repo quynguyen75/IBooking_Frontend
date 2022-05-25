@@ -33,6 +33,10 @@ function UploadImages({}: Props) {
 
   useEffect(() => {
     dispatch(disableNextButton(files.length < 5));
+
+    return () => {
+      dispatch(disableNextButton(false));
+    };
   }, [files]);
 
   console.log(files);

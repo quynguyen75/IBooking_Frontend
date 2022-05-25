@@ -18,7 +18,7 @@ type filterAction = {
 const initialState = {
   price: {
     from: 100000,
-    to: 10000000,
+    to: 100000000,
   },
   roomType: {
     "Rental Unit": false,
@@ -38,9 +38,9 @@ const initialState = {
     acceptPet: false,
   },
   roomCount: {
-    livingRoom: 1,
-    bedroom: 1,
-    bathroom: 1,
+    livingRoom: 0,
+    bedroom: 0,
+    bathroom: 0,
   },
 };
 

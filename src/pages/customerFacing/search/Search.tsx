@@ -161,7 +161,6 @@ function Search({}: Props) {
 
     (async () => {
       const correspondRooms = await getCorrespondRooms();
-
       setRooms({
         display: correspondRooms,
         initial: correspondRooms,
@@ -218,8 +217,10 @@ function Search({}: Props) {
             return filteredRoom;
         }
       },
-      rooms.initial
+      [...rooms.initial]
     );
+
+    console.log(correspondRooms);
 
     setRooms((rooms: any) => ({
       ...rooms,

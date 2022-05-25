@@ -73,4 +73,10 @@
 
 ## Bug
 
-- Autocomplete create room
+- Autocomplete create room [done]
+- Search home [done]
+- Search query [done]
+- Create room [done]
+- Next button [done]
+- Loading when create room [done]
+- Clear data when create room successfull [done]

@@ -41,7 +41,7 @@ function HandlePayment({}: Props) {
               guestCount: searchObj.guestCount,
               nightPrice: formatedRoom.nightPrice,
               cleanlinessFee: formatedRoom.cleanlinessFee,
-              totalPrice: searchObj.vnp_Amount,
+              totalPrice: +searchObj.vnp_Amount / 100,
               bookingStatus: [2],
               paymentStatus: [2],
               paymentType: [1],

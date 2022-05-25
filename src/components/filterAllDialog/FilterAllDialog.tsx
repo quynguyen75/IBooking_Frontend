@@ -66,7 +66,7 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
                 mb: 1,
               }}
             >
-              Phòng
+              Phòng khách
             </FormLabel>
 
             <TextField

@@ -6,9 +6,9 @@ import {
   MobileStepper,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 import { RootState } from "store/store";
@@ -22,6 +22,9 @@ import CreateTitle from "../../../components/createRoom/CreateTitle";
 import CreateDescription from "../../../components/createRoom/CreateDescription";
 import SetPrice from "../../../components/createRoom/SetPrice";
 import { ROOM_API } from "constant/resource";
+import { UserContext } from "context/UserContext";
+import Loading from "components/loading/Loading";
+import { reset } from "slice/createRoomSlice";
 
 type Props = {};
 
@@ -62,7 +65,10 @@ const CREATE_ROOM_STEPS = [
 ];
 
 function CreateRoom({}: Props) {
+  const dispatch = useDispatch();
+  const userContext = useContext(UserContext);
   const [activeStep, setActiveStep] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
   const createRoomState = useSelector((state: RootState) => state.createRoom);
@@ -88,6 +94,7 @@ function CreateRoom({}: Props) {
         nightPrice: createRoomState.nightPrice,
         roomType: createRoomState.roomType,
         title: createRoomState.title,
+        user: userContext.user.id,
       };
 
       const formData = new FormData();
@@ -97,16 +104,24 @@ function CreateRoom({}: Props) {
       );
 
       const postData = async () => {
-        const response = await fetch(ROOM_API, {
-          method: "POST",
+        setIsLoading(true);
+        try {
+          const response = await fetch(ROOM_API, {
+            method: "POST",
 
-          body: formData,
-        });
+            body: formData,
+          });
 
-        if (response.ok) {
-          toast.success("Tạo phòng thành công");
-          history.push("/host/manage");
-        } else toast.error("Tạo phòng thất bại");
+          if (response.ok) {
+            dispatch(reset());
+            toast.success("Tạo phòng thành công");
+            history.push("/host/manage");
+          } else toast.error("Tạo phòng thất bại");
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoading(false);
+        }
       };
 
       postData();
@@ -215,6 +230,8 @@ function CreateRoom({}: Props) {
           </Box>
         </Grid>
       </Grid>
+
+      {isLoading && <Loading />}
     </>
   );
 }

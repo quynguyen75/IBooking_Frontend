@@ -1,6 +1,25 @@
-import { Autocomplete, Box, Grid, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Card,
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Popover,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { HERE_APIKEY, HERE_QUERY_URL } from "constant/resource";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  FocusEventHandler,
+  MouseEventHandler,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { disableNextButton, setAddress } from "slice/createRoomSlice";
 import { RootState } from "store/store";
@@ -8,17 +27,21 @@ import { RootState } from "store/store";
 type Props = {};
 
 function ChoseAddress({}: Props) {
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const address: any = useSelector(
     (state: RootState) => state.createRoom.address
   );
+
   const dispatch = useDispatch();
+  const [isOpenAddressDetail, setIsOpenAddressDetail] = useState(false);
   const [options, setOptions] = useState<any[]>([]);
 
   const [searchValue, setSearchValue] = useState("");
 
-  const searchChangeHandler = (e: React.SyntheticEvent, value: string) =>
-    setSearchValue(value);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+
+  const searchChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setSearchValue(e.target.value);
 
   const chooseSuggestionItem = (option: any) => {
     dispatch(
@@ -32,6 +55,7 @@ function ChoseAddress({}: Props) {
     );
 
     setSearchValue(option.label);
+    setIsOpenAddressDetail(false);
   };
 
   const fieldChangeHandler = (e: ChangeEvent<HTMLInputElement>) =>
@@ -41,6 +65,8 @@ function ChoseAddress({}: Props) {
         [e.target.name]: e.target.value,
       })
     );
+
+  const focusInputHandler = () => setIsOpenAddressDetail(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,7 +98,30 @@ function ChoseAddress({}: Props) {
     dispatch(
       disableNextButton(!Object.keys(address).every((key) => address[key]))
     );
+
+    return () => {
+      dispatch(disableNextButton(false));
+    };
   }, [address]);
+
+  //handle click outside
+  useEffect(() => {
+    const clickOutsideSearchHandler = (e: any) => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(e.target) &&
+        cardRef.current &&
+        !cardRef.current.contains(e.target)
+      ) {
+        setIsOpenAddressDetail(false);
+      }
+    };
+
+    document.addEventListener("click", clickOutsideSearchHandler);
+
+    return () =>
+      document.removeEventListener("click", clickOutsideSearchHandler);
+  }, []);
 
   return (
     <Box
@@ -82,34 +131,53 @@ function ChoseAddress({}: Props) {
       }}
     >
       <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Autocomplete
-            inputValue={searchValue}
-            getOptionLabel={(option) => option.address?.label || ""}
-            options={options.slice(0, 5)}
-            renderInput={(params) => (
-              <TextField {...params} label="Địa điểm chính xác" />
-            )}
-            onInputChange={searchChangeHandler}
-            renderOption={(props, option) => (
-              <Box
-                component="li"
-                key={option.title}
-                sx={{ p: 2 }}
-                {...props}
-                onClick={() => chooseSuggestionItem(option.address)}
-              >
-                {option.address.label}
-              </Box>
-            )}
-            ref={searchInputRef}
-            clearOnBlur={false}
+        <Grid
+          item
+          xs={12}
+          sx={{
+            position: "relative",
+          }}
+        >
+          <TextField
+            value={searchValue}
+            label="Địa chỉ chính xác"
+            variant="outlined"
+            fullWidth
+            onChange={searchChangeHandler}
+            onFocus={focusInputHandler}
+            inputRef={inputRef}
           />
+
+          {isOpenAddressDetail && (
+            <Card
+              sx={{
+                position: "absolute",
+                left: 8,
+                right: 0,
+                backgroundColor: "white",
+                top: "100%",
+                zIndex: 2,
+              }}
+              ref={cardRef}
+            >
+              <List>
+                {options.slice(0, 6).map((option) => (
+                  <ListItem key={option.address.label}>
+                    <ListItemButton
+                      onClick={() => chooseSuggestionItem(option.address)}
+                    >
+                      <ListItemText>{option.address.label}</ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Card>
+          )}
         </Grid>
 
         <Grid item xs={12}>
           <TextField
-            label="Căn hộ / Phòng (Không bắt buộc)"
+            label="Số nhà/căn hộ"
             variant="outlined"
             fullWidth
             value={address.houseNumber}

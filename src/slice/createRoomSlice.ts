@@ -132,6 +132,8 @@ export const createRoomSlice = createSlice({
     disableNextButton: (state, action: PayloadAction<boolean>) => {
       state.isDisableButton = action.payload;
     },
+
+    reset: (state) => initialState,
   },
 });
 
@@ -146,6 +148,7 @@ export const {
   setImageFile,
   setTile,
   disableNextButton,
+  reset,
 } = createRoomSlice.actions;
 
 export default createRoomSlice.reducer;

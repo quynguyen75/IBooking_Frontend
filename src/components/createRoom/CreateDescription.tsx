@@ -15,7 +15,11 @@ function CreateDescription({}: Props) {
     dispatch(setDesc(e.target.value));
 
   useEffect(() => {
-    dispatch(disableNextButton(desc.length === 0));
+    dispatch(disableNextButton(desc.trim().length === 0));
+
+    return () => {
+      dispatch(disableNextButton(false));
+    };
   }, [desc]);
 
   return (

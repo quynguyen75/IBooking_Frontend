@@ -1,7 +1,7 @@
 import { List, ListItem, ListItemButton, Typography } from "@mui/material";
 import { ROOM_TYPE_API } from "constant/resource";
 import useFetch from "hooks/useFetch";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setRoomType } from "slice/createRoomSlice";
 import { RootState } from "store/store";
@@ -19,6 +19,8 @@ function CreateRoomType({}: Props) {
   const itemClickHandler = (id: number) => {
     dispatch(setRoomType(id));
   };
+
+  console.log(roomType);
 
   return (
     <List>

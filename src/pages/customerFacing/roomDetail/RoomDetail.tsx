@@ -1,21 +1,17 @@
-import {
-  CircularProgress,
-  Container,
-  Dialog,
-  Stack,
-  useMediaQuery,
-} from "@mui/material";
-import Footer from "components/layout/Footer";
-import Header from "components/layout/Header";
-import { ROOM_API } from "constant/resource";
-import useFetch from "hooks/useFetch";
 import moment from "moment";
 import { useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { formatDataStrapi } from "utils/data";
+import { Container, useMediaQuery } from "@mui/material";
+import useFetch from "hooks/useFetch";
+import Footer from "components/layout/Footer";
+import Header from "components/layout/Header";
 import { RoomDetailCheckStatusMobile } from "./RoomDetailCheckStatus";
 import RoomDetailContent from "./RoomDetailContent";
 import RoomDetailImages from "./RoomDetailImages";
+import Loading from "components/loading/Loading";
+
+import { ROOM_API } from "constant/resource";
+import { formatDataStrapi } from "utils/data";
 
 type Props = {};
 
@@ -76,20 +72,7 @@ function RoomDetail({}: Props) {
   return (
     <>
       {min768px && <Header />}
-      {!room && (
-        <Dialog
-          open={true}
-          fullScreen
-          sx={{
-            opacity: 0.8,
-          }}
-        >
-          <Stack alignItems="center" justifyContent="center" height="100vh">
-            <CircularProgress />
-          </Stack>
-        </Dialog>
-      )}
-      (
+      {!room && <Loading />}
       <Container
         sx={{
           paddingTop: min768px ? "var(--header-height)" : "12px",

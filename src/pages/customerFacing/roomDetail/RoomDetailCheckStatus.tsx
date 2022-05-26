@@ -7,14 +7,20 @@ import {
   Popover,
   Stack,
   TextField,
-  Typography,
 } from "@mui/material";
 import { DateRange } from "react-date-range";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import useDialog from "hooks/useDialog";
 import { formatMoney } from "utils/money";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
+import { BOOKING_API } from "constant/resource";
+import { Room } from "@mui/icons-material";
+import { UserContext } from "context/UserContext";
+import { toast } from "react-toastify";
+import Loading from "components/loading/Loading";
+import { useDispatch } from "react-redux";
+import { changeNotify } from "slice/NotifyBookingSlice";
 
 type Props = {
   roomDate: any;
@@ -40,16 +46,70 @@ function RoomDetailCheckStatusMobile({
     close: closeDateDialog,
   } = useDialog();
 
+  const dispatch = useDispatch();
+
+  const userContext = useContext(UserContext);
+
   const history = useHistory();
 
-  const checkOutClickHandler = () =>
+  const checkOutClickHandler = async () => {
+    const createBooking = async () => {
+      try {
+        const nightCount = Math.floor(
+          (new Date(roomDate[0].endDate).valueOf() -
+            new Date(roomDate[0].startDate).valueOf()) /
+            (1000 * 60 * 60 * 24)
+        );
+        // setIsLoading(true);
+        const bookingResponse = await fetch(BOOKING_API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            data: {
+              checkInDate: moment(roomDate[0].startDate).format("YYYY-MM-DD"),
+              checkOutDate: moment(roomDate[0].endDate).format("YYYY-MM-DD"),
+              guestCount: guestCount.guest,
+              nightPrice: room.nightPrice,
+              cleanlinessFee: room.cleanlinessFee,
+              totalPrice: room.nightPrice * nightCount + +room.cleanlinessFee,
+              bookingStatus: [1],
+              paymentStatus: [1],
+              paymentType: [1],
+              user: [+userContext.user.id],
+              room: [+room.id],
+              bookedAt: new Date(),
+            },
+          }),
+        });
+
+        if (bookingResponse.ok) {
+          toast.success("Đã thêm vào đang chờ thanh toán");
+          const data = await bookingResponse.json();
+          return data.data.id;
+        } else {
+          toast.error("Có lỗi xảy ra");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        // setIsLoading(false);
+      }
+    };
+
+    const bookingId = await createBooking();
+
+    dispatch(changeNotify());
+
     history.push(
       `/checkout?room=${room.id}&checkInDate=${moment(
         roomDate[0].startDate
       ).format("YYYY-MM-DD")}&checkOutDate=${moment(roomDate[0].endDate).format(
         "YYYY-MM-DD"
-      )}&guestCount=${guestCount.guest}`
+      )}&guestCount=${guestCount.guest}&booking=${bookingId}`
     );
+  };
 
   useEffect(() => {
     if (roomDate[0].startDate.toString() !== roomDate[0].endDate.toString()) {
@@ -151,20 +211,76 @@ function RoomDetailCheckStatusTablet({
     close: closeDateDialog,
   } = useDialog();
 
+  const dispatch = useDispatch();
+
+  const userContext = useContext(UserContext);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
+    null
+  );
+
   const history = useHistory();
 
-  const checkOutClickHandler = () =>
+  const checkOutClickHandler = async () => {
+    const createBooking = async () => {
+      try {
+        const nightCount = Math.floor(
+          (new Date(roomDate[0].endDate).valueOf() -
+            new Date(roomDate[0].startDate).valueOf()) /
+            (1000 * 60 * 60 * 24)
+        );
+        setIsLoading(true);
+        const bookingResponse = await fetch(BOOKING_API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            data: {
+              checkInDate: moment(roomDate[0].startDate).format("YYYY-MM-DD"),
+              checkOutDate: moment(roomDate[0].endDate).format("YYYY-MM-DD"),
+              guestCount: guestCount.guest,
+              nightPrice: room.nightPrice,
+              cleanlinessFee: room.cleanlinessFee,
+              totalPrice: room.nightPrice * nightCount + +room.cleanlinessFee,
+              bookingStatus: [1],
+              paymentStatus: [1],
+              paymentType: [1],
+              user: [+userContext.user.id],
+              room: [+room.id],
+              bookedAt: new Date(),
+            },
+          }),
+        });
+
+        if (bookingResponse.ok) {
+          toast.success("Đã thêm vào đang chờ thanh toán");
+          const data = await bookingResponse.json();
+          return data.data.id;
+        } else {
+          toast.error("Có lỗi xảy ra");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const bookingId = await createBooking();
+
+    dispatch(changeNotify());
+
     history.push(
       `/checkout?room=${room.id}&checkInDate=${moment(
         roomDate[0].startDate
       ).format("YYYY-MM-DD")}&checkOutDate=${moment(roomDate[0].endDate).format(
         "YYYY-MM-DD"
-      )}&guestCount=${guestCount.guest}`
+      )}&guestCount=${guestCount.guest}&booking=${bookingId}`
     );
-
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
-  );
+  };
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -400,6 +516,8 @@ function RoomDetailCheckStatusTablet({
           )}
         </div>
       </Popover>
+
+      {isLoading && <Loading />}
     </Card>
   );
 }

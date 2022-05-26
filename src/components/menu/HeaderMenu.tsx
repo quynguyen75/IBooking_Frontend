@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import {
   Avatar,
+  Badge,
   Divider,
   IconButton,
   ListItemIcon,
@@ -14,15 +15,23 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
+import { BOOKING_API } from "constant/resource";
 import { UserContext } from "context/UserContext";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { RootState } from "store/store";
 
 type Props = {};
 
 function HeaderMenu({}: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const userContext = useContext(UserContext);
+  const flagNotify = useSelector(
+    (state: RootState) => state.notifyBooking.flag
+  );
+
+  const [pendingBookingCount, setPendingBookingCount] = useState(0);
 
   const open = Boolean(anchorEl);
 
@@ -39,24 +48,45 @@ function HeaderMenu({}: Props) {
     userContext.setUser(null);
   };
 
+  useEffect(() => {
+    const getPendingBooking = async () => {
+      try {
+        const response = await fetch(
+          BOOKING_API +
+            `?filters[user][id][$eq]=${userContext.user.id}&filters[paymentStatus][id][$eq]=1`
+        );
+
+        const bookings = await response.json();
+
+        setPendingBookingCount(bookings.data.length);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getPendingBooking();
+  }, [flagNotify]);
+
   return (
     <>
       <Tooltip title="Account settings">
-        <IconButton
-          onClick={handleClick}
-          size="medium"
-          style={{
-            borderRadius: "21px",
-            boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-          }}
-          sx={{ ml: 2 }}
-          aria-controls={open ? "account-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-        >
-          <Dehaze />
-          <AccountCircle sx={{ width: 32, height: 32 }} />
-        </IconButton>
+        <Badge badgeContent={pendingBookingCount ? 1 : 0} color="primary">
+          <IconButton
+            onClick={handleClick}
+            size="medium"
+            style={{
+              borderRadius: "21px",
+              boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+            }}
+            sx={{ ml: 2 }}
+            aria-controls={open ? "account-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+          >
+            <Dehaze />
+            <AccountCircle sx={{ width: 32, height: 32 }} />
+          </IconButton>
+        </Badge>
       </Tooltip>
       <Menu
         anchorEl={anchorEl}
@@ -115,6 +145,20 @@ function HeaderMenu({}: Props) {
           </Link>,
         ]}
         {userContext.user && [
+          <Badge badgeContent={pendingBookingCount} color="primary">
+            <Link
+              to={`/pendingBookings?user=${userContext.user.id}`}
+              key="create"
+            >
+              <MenuItem
+                sx={{
+                  color: "#000",
+                }}
+              >
+                Đang chờ thanh toán
+              </MenuItem>
+            </Link>
+          </Badge>,
           <Link to="/host/create" key="create">
             <MenuItem
               sx={{

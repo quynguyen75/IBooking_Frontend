@@ -18,6 +18,7 @@ import { USER_ME_API } from "constant/resource";
 import { useContext, useEffect } from "react";
 import { UserContext } from "context/UserContext";
 import HandlePayment from "pages/customerFacing/checkout/HandlePayment";
+import PendingBooking from "pages/customerFacing/pendingBooking/PendingBooking";
 
 function App() {
   const userContext = useContext(UserContext);
@@ -61,6 +62,10 @@ function App() {
 
         <Route path="/handlepayment">
           <HandlePayment />
+        </Route>
+
+        <Route path="/pendingBookings">
+          <PendingBooking />
         </Route>
 
         <PrivateRoute path="/host/create">

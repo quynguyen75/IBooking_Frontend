@@ -24,35 +24,38 @@ function HandlePayment({}: Props) {
     if (isSuccessful) {
       let formatedRoom: any;
 
-      const createBooking = async () => {
+      const updateBooking = async () => {
         const roomResponse = await fetch(ROOM_API + `/${searchObj.room}`);
         const roomData = await roomResponse.json();
         formatedRoom = formatDataStrapi(roomData);
 
-        const bookingResponse = await fetch(BOOKING_API, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            data: {
-              checkInDate: searchObj.checkInDate,
-              checkOutDate: searchObj.checkOutDate,
-              guestCount: searchObj.guestCount,
-              nightPrice: formatedRoom.nightPrice,
-              cleanlinessFee: formatedRoom.cleanlinessFee,
-              totalPrice: +searchObj.vnp_Amount / 100,
-              bookingStatus: [2],
-              paymentStatus: [2],
-              paymentType: [1],
-              user: [+searchObj.user],
-              room: [+searchObj.room],
-              paymentReference: searchObj.vnp_TransactionNo,
-              bookedAt: new Date(),
-              paymentAt: new Date(),
+        const bookingResponse = await fetch(
+          BOOKING_API + `/${searchObj.booking}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
             },
-          }),
-        });
+            body: JSON.stringify({
+              data: {
+                checkInDate: searchObj.checkInDate,
+                checkOutDate: searchObj.checkOutDate,
+                guestCount: searchObj.guestCount,
+                nightPrice: formatedRoom.nightPrice,
+                cleanlinessFee: formatedRoom.cleanlinessFee,
+                totalPrice: +searchObj.vnp_Amount / 100,
+                bookingStatus: [2],
+                paymentStatus: [2],
+                paymentType: [1],
+                user: [+searchObj.user],
+                room: [+searchObj.room],
+                paymentReference: searchObj.vnp_TransactionNo,
+                bookedAt: new Date(),
+                paymentAt: new Date(),
+              },
+            }),
+          }
+        );
       };
 
       const sendEmailToCustomer = async () => {
@@ -94,7 +97,7 @@ function HandlePayment({}: Props) {
         });
       };
 
-      createBooking();
+      updateBooking();
 
       sendEmailToCustomer();
 

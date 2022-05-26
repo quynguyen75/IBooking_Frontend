@@ -80,3 +80,5 @@
 - Next button [done]
 - Loading when create room [done]
 - Clear data when create room successfull [done]
+- Email totalprice
+- Save checkout

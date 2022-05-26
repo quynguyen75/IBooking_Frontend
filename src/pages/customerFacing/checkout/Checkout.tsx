@@ -16,7 +16,7 @@ import {
 import { ChevronLeft } from "@mui/icons-material";
 import Footer from "components/layout/Footer";
 import Header from "components/layout/Header";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { generatePaymnentLink } from "utils/link";
 import { ROOM_API } from "constant/resource";
 import useFetch from "hooks/useFetch";
@@ -31,6 +31,7 @@ type Props = {};
 
 function Checkout({}: Props) {
   const userContext = useContext(UserContext);
+  const history = useHistory();
   const { search } = useLocation();
   const min768px = useMediaQuery("(min-width:768px)");
 
@@ -44,9 +45,15 @@ function Checkout({}: Props) {
 
   const roomImages = formatedRoom?.images.data;
 
-  const disabledDate = formatedRoom?.bookings.data.filter((booking: any) =>
-    moment(booking.checkOutDate).isSameOrAfter(moment())
+  const disabledDate = formatedRoom?.bookings.data.filter(
+    (booking: any) =>
+      moment(booking.checkOutDate).isSameOrAfter(moment()) &&
+      booking.paymentReference
   );
+
+  const goBackHandler = () => {
+    history.goBack();
+  };
 
   const isInvalidDate = disabledDate?.some((booking: any) => {
     return (
@@ -92,7 +99,7 @@ function Checkout({}: Props) {
           }}
         >
           <Stack direction="row" alignItems="center">
-            <IconButton>
+            <IconButton onClick={goBackHandler}>
               <ChevronLeft />
             </IconButton>
             <Typography
@@ -328,6 +335,7 @@ function Checkout({}: Props) {
                   checkInDate: searchObj.checkInDate,
                   checkOutDate: searchObj.checkOutDate,
                   guestCount: +searchObj.guestCount,
+                  booking: +searchObj.booking,
                 })}
               >
                 <Button

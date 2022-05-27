@@ -81,4 +81,5 @@
 - Loading when create room [done]
 - Clear data when create room successfull [done]
 - Email totalprice
-- Save checkout
+- Save checkout [done]
+- Search chekIn checkout

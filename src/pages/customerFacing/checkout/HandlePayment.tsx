@@ -8,6 +8,7 @@ import { formatDataStrapi } from "utils/data";
 import { convertSearchToObject } from "utils/search";
 
 import { EMAIL_API, USER_API } from "constant/resource";
+import { formatMoney } from "utils/money";
 
 type Props = {};
 
@@ -88,10 +89,10 @@ function HandlePayment({}: Props) {
               " " +
               formatedRoom.county
             }
-            Giá 1 đêm: ${formatedRoom.nightPrice}
+            Giá 1 đêm: ${formatMoney(formatedRoom.nightPrice)}
             Ngày nhận phòng: ${searchObj.checkInDate}
             Ngày trả phòng: ${searchObj.checkOutDate}
-            Tổng tiền: ${searchObj.vnp_Amount}
+            Tổng tiền: ${formatMoney(+searchObj.vnp_Amount / 100)}
             `,
           }),
         });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SwipeableView from "react-swipeable-views";
 import { Star } from "@mui/icons-material";
 import {
@@ -16,24 +16,48 @@ import RatingItem from "components/ratingItem/RatingItem";
 import ReviewItem from "components/reviewItem/ReviewItem";
 import ReviewDialog from "components/riviewDialog/ReviewDialog";
 
-import { RATING } from "constant/resource";
+import { BOOKING_API, RATING, REVIEWS_API } from "constant/resource";
+import { formatDataStrapi } from "utils/data";
 import CreateReviewDialog from "components/riviewDialog/CreateReviewDialog";
+import useDialog from "hooks/useDialog";
+import useFetch from "hooks/useFetch";
+import { UserContext } from "context/UserContext";
 
 type Props = {
   reviews: any[];
   averageStar: string;
+  roomId: number;
 };
 
 const RATING_PRECISION = 0.1;
 
-function RoomDetailReview({ reviews, averageStar }: Props) {
-  const [isOpenDialog, setIsOpenDialog] = useState(false);
+function RoomDetailReview({ averageStar, roomId }: Props) {
+  const userContext = useContext(UserContext);
+  const [reviews, setReviews] = useState<any[]>([]);
 
-  const openDialog = () => setIsOpenDialog(true);
+  const [reviewFlag, setReviewFlag] = useState(false);
 
-  const closeDialog = () => setIsOpenDialog(false);
+  const [bookedBooking, setBookedBooking] = useState<any>(null);
+
+  const {
+    isOpen: isOpenReviewDialog,
+    open: openReviewDialog,
+    close: closeReviewDialog,
+  } = useDialog();
+
+  const {
+    isOpen: isOpenCreateReviewDialog,
+    open: openCreateReviewDialog,
+    close: closeCreateReviewDialog,
+  } = useDialog();
 
   const min768px = useMediaQuery("(min-width: 768px)");
+
+  const isReviewed = reviews.some(
+    (review) => review.user.id === userContext.user.id
+  );
+
+  const changeReview = () => setReviewFlag((flag) => !flag);
 
   const stars =
     reviews &&
@@ -49,6 +73,46 @@ function RoomDetailReview({ reviews, averageStar }: Props) {
         value: averageStar,
       };
     });
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(
+          REVIEWS_API +
+            `?filters[room][id]=${roomId}&sort=createdAt:DESC&populate=user`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          const formatedData = formatDataStrapi(data);
+          setReviews(formatedData.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchReviews();
+  }, [reviewFlag]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          BOOKING_API +
+            `?filter[user][id][$eq]=${userContext.user.id}&filters[room][id][$eq]=${roomId}&filters[bookingStatus][id][$eq]=2&sort=createdAt:DESC`
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          setBookedBooking(data.data[0] ? data.data[0] : null);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Box
@@ -85,6 +149,7 @@ function RoomDetailReview({ reviews, averageStar }: Props) {
                   name={item.label}
                   value={item.value}
                   precision={RATING_PRECISION}
+                  readonly
                 />
               </Grid>
             ))}
@@ -119,21 +184,37 @@ function RoomDetailReview({ reviews, averageStar }: Props) {
               p: 1,
             }}
             variant="outlined"
-            onClick={openDialog}
+            onClick={openReviewDialog}
           >
             Hiển thị tất cả {reviews.length} đánh giá
           </Button>
         )}
       </Stack>
 
+      {userContext.user && bookedBooking && !isReviewed && (
+        <Stack alignItems="center">
+          <Button variant="outlined" onClick={openCreateReviewDialog}>
+            Tạo bình luận
+          </Button>
+        </Stack>
+      )}
+
       <ReviewDialog
-        open={isOpenDialog}
-        onClose={closeDialog}
+        open={isOpenReviewDialog}
+        onClose={closeReviewDialog}
         stars={stars}
         reviews={reviews}
       />
 
-      {/* <CreateReviewDialog /> */}
+      {bookedBooking && (
+        <CreateReviewDialog
+          roomId={roomId}
+          open={isOpenCreateReviewDialog}
+          onClose={closeCreateReviewDialog}
+          bookingId={bookedBooking.id}
+          changeReview={changeReview}
+        />
+      )}
     </Box>
   );
 }

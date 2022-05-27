@@ -67,6 +67,7 @@ function ReviewDialog({ open, onClose, stars, reviews }: Props) {
                 name={item.label}
                 value={item.value}
                 precision={0.1}
+                readonly
               />
             ))}
           </Stack>

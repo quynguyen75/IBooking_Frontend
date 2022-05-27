@@ -238,117 +238,120 @@ function Checkout({}: Props) {
             <Divider />
 
             {!isInvalidDate && formatedRoom && (
-              <Box
-                sx={{
-                  padding: "16px 0",
-                }}
-              >
-                <span className="checkout__title">Chi tiết giá</span>
-                <Stack>
-                  <div>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{
-                        padding: "8px 0",
-                      }}
-                    >
-                      <div>
-                        {" "}
-                        {formatedRoom && formatMoney(formatedRoom.nightPrice)} x
-                        {nightCount} đêm
-                      </div>
-
-                      <div>
-                        {formatMoney(formatedRoom.nightPrice * nightCount)}
-                      </div>
-                    </Stack>
-                  </div>
-
-                  <div>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{
-                        padding: "8px 0",
-                      }}
-                    >
-                      <div>Phí dọn dẹp</div>
-
-                      <div>
-                        {formatedRoom &&
-                          formatMoney(formatedRoom.cleanlinessFee)}
-                      </div>
-                    </Stack>
-                  </div>
-
-                  <div>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                      sx={{
-                        padding: "8px 0",
-                      }}
-                    >
-                      <div className="textBold">Tổng</div>
-
-                      <div className="textBold">
-                        {formatMoney(
-                          formatedRoom.nightPrice * nightCount +
-                            formatedRoom.cleanlinessFee
-                        )}
-                      </div>
-                    </Stack>
-                  </div>
-                </Stack>
-              </Box>
-            )}
-
-            <Box
-              sx={{
-                padding: "16px 0",
-              }}
-            >
-              <span className="checkout__title">Thanh toán bằng</span>
-              <List>
-                <ListItem>
-                  <ListItemButton>
-                    <ListItemText>Vnpay</ListItemText>
-                  </ListItemButton>
-                </ListItem>
-              </List>
-            </Box>
-
-            <Box
-              sx={{
-                padding: "16px 0",
-              }}
-            >
-              <a
-                href={generatePaymnentLink({
-                  amount: totalPrice,
-                  room: formatedRoom?.id,
-                  user: userContext.user?.id,
-                  checkInDate: searchObj.checkInDate,
-                  checkOutDate: searchObj.checkOutDate,
-                  guestCount: +searchObj.guestCount,
-                  booking: +searchObj.booking,
-                })}
-              >
-                <Button
-                  fullWidth
-                  variant="contained"
+              <>
+                <Box
                   sx={{
-                    padding: "10px 0",
+                    padding: "16px 0",
                   }}
                 >
-                  Xác nhận và thanh toán
-                </Button>
-              </a>
-            </Box>
+                  <span className="checkout__title">Chi tiết giá</span>
+                  <Stack>
+                    <div>
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{
+                          padding: "8px 0",
+                        }}
+                      >
+                        <div>
+                          {" "}
+                          {formatedRoom &&
+                            formatMoney(formatedRoom.nightPrice)}{" "}
+                          x{nightCount} đêm
+                        </div>
+
+                        <div>
+                          {formatMoney(formatedRoom.nightPrice * nightCount)}
+                        </div>
+                      </Stack>
+                    </div>
+
+                    <div>
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{
+                          padding: "8px 0",
+                        }}
+                      >
+                        <div>Phí dọn dẹp</div>
+
+                        <div>
+                          {formatedRoom &&
+                            formatMoney(formatedRoom.cleanlinessFee)}
+                        </div>
+                      </Stack>
+                    </div>
+
+                    <div>
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{
+                          padding: "8px 0",
+                        }}
+                      >
+                        <div className="textBold">Tổng</div>
+
+                        <div className="textBold">
+                          {formatMoney(
+                            formatedRoom.nightPrice * nightCount +
+                              formatedRoom.cleanlinessFee
+                          )}
+                        </div>
+                      </Stack>
+                    </div>
+                  </Stack>
+                </Box>
+
+                <Box
+                  sx={{
+                    padding: "16px 0",
+                  }}
+                >
+                  <span className="checkout__title">Thanh toán bằng</span>
+                  <List>
+                    <ListItem>
+                      <ListItemButton>
+                        <ListItemText>Vnpay</ListItemText>
+                      </ListItemButton>
+                    </ListItem>
+                  </List>
+                </Box>
+
+                <Box
+                  sx={{
+                    padding: "16px 0",
+                  }}
+                >
+                  <a
+                    href={generatePaymnentLink({
+                      amount: totalPrice,
+                      room: formatedRoom?.id,
+                      user: userContext.user?.id,
+                      checkInDate: searchObj.checkInDate,
+                      checkOutDate: searchObj.checkOutDate,
+                      guestCount: +searchObj.guestCount,
+                      booking: +searchObj.booking,
+                    })}
+                  >
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      sx={{
+                        padding: "10px 0",
+                      }}
+                    >
+                      Xác nhận và thanh toán
+                    </Button>
+                  </a>
+                </Box>
+              </>
+            )}
           </Grid>
         </Grid>
       </Container>

@@ -59,13 +59,14 @@ function RoomDetail({}: Props) {
     : [];
 
   const disableDateHandler = (date: Date): boolean => {
-    return bookings.some((booking: any) =>
-      moment(date).isBetween(
-        booking.checkInDate,
-        booking.checkOutDate,
-        undefined,
-        "[]"
-      )
+    return bookings.some(
+      (booking: any) =>
+        moment(date).isBetween(
+          booking.checkInDate,
+          booking.checkOutDate,
+          undefined,
+          "[]"
+        ) && booking.paymentReference
     );
   };
 

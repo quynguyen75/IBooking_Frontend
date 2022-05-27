@@ -35,6 +35,8 @@ export const ROOM_ANALYST_API = root + "/room-analyst";
 
 export const ROOM_API = root + "/rooms";
 
+export const REVIEWS_API = root + "/reviews";
+
 export const BOOKING_API = root + "/bookings";
 
 export const BOOKING_STATUS_API = root + "/booking-statuses";

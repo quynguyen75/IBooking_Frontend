@@ -108,6 +108,7 @@ function RoomDetailContent({
         <RoomDetailReview
           reviews={room?.reviews.data}
           averageStar={averageStar}
+          roomId={room.id}
         />
         <Divider />
         <RoomDetailHost host={room.user} />

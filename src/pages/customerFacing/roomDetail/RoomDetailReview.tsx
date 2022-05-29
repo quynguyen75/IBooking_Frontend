@@ -53,9 +53,9 @@ function RoomDetailReview({ averageStar, roomId }: Props) {
 
   const min768px = useMediaQuery("(min-width: 768px)");
 
-  const isReviewed = reviews.some(
-    (review) => review.user.id === userContext.user.id
-  );
+  const isReviewed =
+    userContext.user &&
+    reviews.some((review) => review.user.id === userContext.user.id);
 
   const changeReview = () => setReviewFlag((flag) => !flag);
 

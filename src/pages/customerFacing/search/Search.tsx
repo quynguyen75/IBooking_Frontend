@@ -68,7 +68,7 @@ function checkCorrespondRoom(
   if (checkOutDate) {
     const existBooking = bookings.some((booking: any) => {
       return (
-        moment(checkInDate).isBetween(
+        moment(checkOutDate, "DD/MM/YYYY").isBetween(
           booking.attributes.checkInDate,
           booking.attributes.checkOutDate,
           undefined,

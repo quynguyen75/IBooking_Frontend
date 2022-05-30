@@ -14,6 +14,7 @@ import { AMENITIES, ROOM_API } from "constant/resource";
 import { Close } from "@mui/icons-material";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { moneyStringToNumber } from "utils/money";
 
 type Props = {
   open: boolean;
@@ -22,10 +23,20 @@ type Props = {
 };
 
 function EditRoomDialog({ open, onClose, room }: Props) {
-  const [roomState, setRoomState] = useState(room);
+  const [roomState, setRoomState] = useState(
+    room && {
+      ...room,
+      nightPrice: moneyStringToNumber(room.nightPrice),
+    }
+  );
 
   useEffect(() => {
-    setRoomState(room);
+    setRoomState(
+      room && {
+        ...room,
+        nightPrice: moneyStringToNumber(room.nightPrice),
+      }
+    );
   }, [room]);
 
   const dataChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -86,6 +97,7 @@ function EditRoomDialog({ open, onClose, room }: Props) {
       console.log(error);
     }
   };
+
   return (
     <Dialog open={open} maxWidth="md" onClose={onClose}>
       <Box

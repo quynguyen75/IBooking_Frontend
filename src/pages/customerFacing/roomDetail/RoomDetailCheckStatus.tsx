@@ -478,9 +478,9 @@ function RoomDetailCheckStatusTablet({
                   inputProps: {
                     max: 20,
                     min: 0,
-                    defaultValue: 1,
                   },
                 }}
+                value={guestCount.guest}
                 onChange={guestCountHandler}
               />
             </FormControl>
@@ -506,9 +506,9 @@ function RoomDetailCheckStatusTablet({
                     inputProps: {
                       max: 20,
                       min: 0,
-                      defaultValue: 0,
                     },
                   }}
+                  value={guestCount.pet}
                   onChange={guestCountHandler}
                 />
               </FormControl>

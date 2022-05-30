@@ -80,6 +80,10 @@
 - Next button [done]
 - Loading when create room [done]
 - Clear data when create room successfull [done]
-- Email totalprice
+- Email totalprice [done]
 - Save checkout [done]
-- Search chekIn checkout
+- Search chekIn checkout [done]
+- Booking in manage host [ok]
+- Edit room (host) [done]
+- Check status room (count) [done]
+- Choose disabled date

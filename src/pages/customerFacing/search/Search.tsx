@@ -68,12 +68,13 @@ function checkCorrespondRoom(
   if (checkOutDate) {
     const existBooking = bookings.some((booking: any) => {
       return (
-        moment(checkOutDate, "DD/MM/YYYY").isBetween(
-          booking.attributes.checkInDate,
-          booking.attributes.checkOutDate,
-          undefined,
-          "[]"
-        ) ||
+        (booking.attributes.paymentReference &&
+          moment(checkOutDate, "DD/MM/YYYY").isBetween(
+            booking.attributes.checkInDate,
+            booking.attributes.checkOutDate,
+            undefined,
+            "[]"
+          )) ||
         moment(checkOutDate).isBetween(
           booking.attributes.checkInDate,
           booking.attributes.checkOutDate,
@@ -82,8 +83,6 @@ function checkCorrespondRoom(
         )
       );
     });
-
-    console.log(existBooking);
 
     return !existBooking;
   } else {
@@ -219,8 +218,6 @@ function Search({}: Props) {
       },
       [...rooms.initial]
     );
-
-    console.log(correspondRooms);
 
     setRooms((rooms: any) => ({
       ...rooms,

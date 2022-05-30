@@ -19,17 +19,6 @@ import { UserContext } from "context/UserContext";
 
 type Props = {};
 
-const FAKE_DATA = [
-  {
-    title: "Nhà có Khách",
-    status: "Active",
-    city: "Ho Chi Minh",
-    roomType: "Chung cư",
-    nightPrice: "300,000đ",
-    updatedAt: formatDate(Date()),
-  },
-];
-
 function ManageRoom({}: Props) {
   const userContext = useContext(UserContext);
 
@@ -57,7 +46,7 @@ function ManageRoom({}: Props) {
 
   const [bookingFetchStatus, bookings] = useFetch(
     BOOKING_API +
-      `?filters[room][user][id][$eq]=${userContext.user.id}&populate=*`
+      `?filters[room][user][id][$eq]=${userContext.user.id}&filters[bookingStatus][id][$eq]=2&populate=*`
   );
 
   const formatedData = formatDataStrapi(room);
@@ -80,8 +69,6 @@ function ManageRoom({}: Props) {
     totalPrice: formatMoney(booking.totalPrice),
     bookedAt: formatDate(booking.bookedAt),
   }));
-
-  console.log(bookingDatasource);
 
   return (
     <>

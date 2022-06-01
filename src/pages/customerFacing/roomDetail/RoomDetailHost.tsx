@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import {
   Box,
@@ -11,8 +11,8 @@ import {
   Link,
   Grid,
 } from "@mui/material";
-import { Star } from "@mui/icons-material";
-import { yellow } from "@mui/material/colors";
+
+import AvatarImage from "assets/img/user.png";
 
 type Props = {
   host: any;
@@ -67,7 +67,7 @@ function RoomDetailHost({ host }: Props) {
             height: "48px",
           }}
           alt="Host"
-          src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fGF2YXRhcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
+          src={AvatarImage}
         />
       </Stack>
 

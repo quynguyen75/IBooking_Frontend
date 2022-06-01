@@ -1,16 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import SwipeableView from "react-swipeable-views";
 import { Star } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Dialog,
-  Grid,
-  Rating,
-  Stack,
-  Typography,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Button, Grid, Stack, useMediaQuery } from "@mui/material";
 import { yellow } from "@mui/material/colors";
 import RatingItem from "components/ratingItem/RatingItem";
 import ReviewItem from "components/reviewItem/ReviewItem";
@@ -20,7 +11,6 @@ import { BOOKING_API, RATING, REVIEWS_API } from "constant/resource";
 import { formatDataStrapi } from "utils/data";
 import CreateReviewDialog from "components/riviewDialog/CreateReviewDialog";
 import useDialog from "hooks/useDialog";
-import useFetch from "hooks/useFetch";
 import { UserContext } from "context/UserContext";
 
 type Props = {

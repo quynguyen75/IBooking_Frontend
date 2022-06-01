@@ -1,7 +1,6 @@
-import React from "react";
 import { Card, Avatar, Stack } from "@mui/material";
-import { BrightnessMediumTwoTone } from "@mui/icons-material";
-import moment from "moment";
+
+import AvatarImage from "../../assets/img/user.png";
 
 type Props = {
   review: any;
@@ -16,10 +15,7 @@ function ReviewItem({ review }: Props) {
       }}
     >
       <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-        <Avatar
-          alt="Avatar"
-          src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Nnx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60"
-        />
+        <Avatar alt="Avatar" src={AvatarImage} />
         <div>
           <div
             style={{

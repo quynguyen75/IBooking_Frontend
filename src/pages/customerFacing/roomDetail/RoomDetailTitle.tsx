@@ -1,7 +1,6 @@
 import { Star } from "@mui/icons-material";
 import { Box, Stack, Typography } from "@mui/material";
 import { yellow } from "@mui/material/colors";
-import React from "react";
 
 type Props = {
   room: any;
@@ -9,6 +8,8 @@ type Props = {
 };
 
 function RoomDetailTitle({ room, averageStar }: Props) {
+  const address = `${room.houseNumber} ${room.street}, ${room.district}, ${room.city}, ${room.county}`;
+
   return (
     <Box
       sx={{
@@ -49,8 +50,15 @@ function RoomDetailTitle({ room, averageStar }: Props) {
         </div>
 
         <div>{room && room.reviews.data.length} đánh giá</div>
-        <div>{room?.county}</div>
       </Stack>
+
+      <span
+        style={{
+          fontSize: "16px",
+        }}
+      >
+        {address}
+      </span>
     </Box>
   );
 }

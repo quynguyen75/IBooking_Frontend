@@ -87,3 +87,5 @@
 - Edit room (host) [done]
 - Check status room (count) [done]
 - Choose disabled date
+- Avatar User [done]
+- Address Room Detail [done]

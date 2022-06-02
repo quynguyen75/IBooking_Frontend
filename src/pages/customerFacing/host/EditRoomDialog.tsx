@@ -20,9 +20,10 @@ type Props = {
   open: boolean;
   onClose: () => void;
   room: any;
+  changeRooms: () => void;
 };
 
-function EditRoomDialog({ open, onClose, room }: Props) {
+function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
   const [roomState, setRoomState] = useState(
     room && {
       ...room,
@@ -91,6 +92,7 @@ function EditRoomDialog({ open, onClose, room }: Props) {
 
       if (response.ok) {
         toast.success("Thay đổi thành công");
+        changeRooms();
         onClose();
       }
     } catch (error) {

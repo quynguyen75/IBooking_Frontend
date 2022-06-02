@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Container, Typography, IconButton } from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import { List, Table, Space } from "@pankod/refine-antd";
@@ -22,6 +22,10 @@ type Props = {};
 function ManageRoom({}: Props) {
   const userContext = useContext(UserContext);
 
+  const [rooms, setRooms] = useState(null);
+
+  const [roomChangeFlag, setRoomChangeFlag] = useState(false);
+
   const {
     isOpen: isOpenEditDialog,
     open: openEditDialog,
@@ -39,17 +43,19 @@ function ManageRoom({}: Props) {
     reviews: null,
   });
 
-  const [roomFetchStatus, room] = useFetch(
-    ROOM_API +
-      `?filters[user][id]=${userContext.user.id}&populate[0]=images&populate[1]=roomType&populate[2]=user&populate[3]=bookings&populate[4]=reviews&populate[5]=reviews.user`
-  );
+  // const [roomFetchStatus, room] = useFetch(
+  //   ROOM_API +
+  //     `?filters[user][id]=${userContext.user.id}&populate[0]=images&populate[1]=roomType&populate[2]=user&populate[3]=bookings&populate[4]=reviews&populate[5]=reviews.user`
+  // );
 
   const [bookingFetchStatus, bookings] = useFetch(
     BOOKING_API +
       `?filters[room][user][id][$eq]=${userContext.user.id}&filters[bookingStatus][id][$eq]=2&populate=*`
   );
 
-  const formatedData = formatDataStrapi(room);
+  const changeRooms = () => setRoomChangeFlag((flag) => !flag);
+
+  const formatedData = formatDataStrapi(rooms);
 
   const dataSource = formatedData
     ? formatedData.data.map((item: any) => ({
@@ -69,6 +75,27 @@ function ManageRoom({}: Props) {
     totalPrice: formatMoney(booking.totalPrice),
     bookedAt: formatDate(booking.bookedAt),
   }));
+
+  useEffect(() => {
+    const fetchData = async function () {
+      try {
+        const response = await fetch(
+          ROOM_API +
+            `?filters[user][id]=${userContext.user.id}&populate[0]=images&populate[1]=roomType&populate[2]=user&populate[3]=bookings&populate[4]=reviews&populate[5]=reviews.user`
+        );
+
+        const data = await response.json();
+
+        setRooms(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+
+    console.log("first");
+  }, [roomChangeFlag]);
 
   return (
     <>
@@ -168,6 +195,7 @@ function ManageRoom({}: Props) {
         open={isOpenEditDialog}
         onClose={closeEditDialog}
         room={dialogData.edit}
+        changeRooms={changeRooms}
       />
 
       <ViewRoomDialog

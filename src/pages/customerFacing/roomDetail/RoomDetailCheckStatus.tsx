@@ -2,11 +2,15 @@ import {
   Button,
   Card,
   Dialog,
+  Divider,
   FormControl,
   Grid,
+  List,
+  ListItem,
   Popover,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import { DateRange } from "react-date-range";
 import React, { useContext, useEffect, useState } from "react";
@@ -292,6 +296,12 @@ function RoomDetailCheckStatusTablet({
 
   const open = Boolean(anchorEl);
 
+  const nightCount = Math.floor(
+    (roomDate[0].endDate - roomDate[0].startDate) / (1000 * 60 * 60 * 24)
+  );
+
+  console.log(room);
+
   useEffect(() => {
     if (roomDate[0].startDate.toString() !== roomDate[0].endDate.toString()) {
       closeDateDialog();
@@ -429,6 +439,47 @@ function RoomDetailCheckStatusTablet({
         </Stack>
       </div>
 
+      {Boolean(nightCount) && (
+        <div>
+          <Stack direction="row" justifyContent="space-between" paddingY={1}>
+            <span>
+              {formatMoney(room.nightPrice)} X {nightCount} đêm
+            </span>
+            <span>{formatMoney(room.nightPrice * nightCount)} </span>
+          </Stack>
+
+          <Stack direction="row" justifyContent="space-between" paddingY={1}>
+            <span>Phí dọn dẹp</span>
+            <span>{room.cleanlinessFee} </span>
+          </Stack>
+
+          <Divider
+            sx={{
+              margin: "12px 0",
+            }}
+          />
+
+          <Stack direction="row" justifyContent="space-between" paddingY={1}>
+            <Typography
+              variant="h6"
+              sx={{
+                fontSize: "16px",
+              }}
+            >
+              Tổng
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                fontSize: "16px",
+              }}
+            >
+              {formatMoney(room.nightPrice * nightCount + room.cleanlinessFee)}
+            </Typography>
+          </Stack>
+        </div>
+      )}
+
       <Dialog open={isOpenDateDialog} onClose={closeDateDialog}>
         <DateRange
           onChange={changeRoomDates}
@@ -476,8 +527,8 @@ function RoomDetailCheckStatusTablet({
                 id="guestCount"
                 InputProps={{
                   inputProps: {
-                    max: 20,
-                    min: 0,
+                    max: room.guestCount,
+                    min: 1,
                   },
                 }}
                 value={guestCount.guest}

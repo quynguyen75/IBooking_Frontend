@@ -89,3 +89,4 @@
 - Choose disabled date
 - Avatar User [done]
 - Address Room Detail [done]
+- Add booking information room detail [done]

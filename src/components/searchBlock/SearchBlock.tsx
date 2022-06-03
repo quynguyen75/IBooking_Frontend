@@ -1,6 +1,12 @@
 import { Box, Button, Grid, Paper, useMediaQuery } from "@mui/material";
 import { Search } from "@mui/icons-material";
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 
 import CustomerAmount from "./CustomerAmount";
 import TourDateSearch from "./TourDateSearch";
@@ -8,6 +14,7 @@ import TourSearch from "./TourSearch";
 import SearchBlockItem from "./SearchBlockItem";
 import { objectToURLParams } from "utils/search";
 import { useHistory } from "react-router-dom";
+import { FilterContext } from "context/FilterContext";
 
 type Props = {};
 
@@ -61,6 +68,8 @@ function searchReducer(state: reducerState, action: Action): reducerState {
 }
 
 function SearchBlock({}: Props) {
+  const filterContext = useContext(FilterContext);
+
   const [tabActive, setTabActive] = useState(0);
   const [searchData, dispatch] = useReducer(searchReducer, {
     tourSearch: null,
@@ -127,6 +136,10 @@ function SearchBlock({}: Props) {
           `&petCount=${searchData.petCount}`
         );
       }
+
+      filterContext.filterDispatch({
+        type: "CLEAR",
+      });
 
       history.push(`/search?${tourSearchParams}`);
     }

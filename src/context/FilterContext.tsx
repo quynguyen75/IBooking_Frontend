@@ -85,6 +85,9 @@ function filterReducer(
         roomCount: action.payload,
       };
 
+    case "CLEAR":
+      return initialState;
+
     default:
       break;
   }

@@ -76,7 +76,9 @@ function CreateReviewDialog({
     };
 
     createReview();
-    changeReview();
+    setTimeout(() => {
+      changeReview();
+    }, 0);
     onClose();
   };
 

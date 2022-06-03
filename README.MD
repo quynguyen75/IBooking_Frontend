@@ -90,4 +90,5 @@
 - Avatar User [done]
 - Address Room Detail [done]
 - Add booking information room detail [done]
-- State saved when execute other search
+- State saved when execute other search [done]
+- Update reviews of room after create review room [done]

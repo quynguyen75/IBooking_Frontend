@@ -105,11 +105,7 @@ function RoomDetailContent({
           </Grid>
         </Grid>
         <Divider />
-        <RoomDetailReview
-          reviews={room?.reviews.data}
-          averageStar={averageStar}
-          roomId={room.id}
-        />
+        <RoomDetailReview roomId={room.id} />
         <Divider />
         <RoomDetailHost host={room.user} />
       </div>

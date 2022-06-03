@@ -14,14 +14,12 @@ import useDialog from "hooks/useDialog";
 import { UserContext } from "context/UserContext";
 
 type Props = {
-  reviews: any[];
-  averageStar: string;
   roomId: number;
 };
 
 const RATING_PRECISION = 0.1;
 
-function RoomDetailReview({ averageStar, roomId }: Props) {
+function RoomDetailReview({ roomId }: Props) {
   const userContext = useContext(UserContext);
   const [reviews, setReviews] = useState<any[]>([]);
 
@@ -63,6 +61,21 @@ function RoomDetailReview({ averageStar, roomId }: Props) {
         value: averageStar,
       };
     });
+
+  const averageStar = (
+    reviews.reduce((acc: number, review: any) => {
+      const star =
+        (review.cleanlinessStar +
+          review.accuracyStar +
+          review.communicationStar +
+          review.locationStar +
+          review.checkInStar +
+          review.valueStar) /
+        6;
+
+      return acc + star;
+    }, 0) / reviews.length
+  ).toFixed(1);
 
   useEffect(() => {
     const fetchReviews = async () => {

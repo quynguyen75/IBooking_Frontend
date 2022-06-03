@@ -5,8 +5,6 @@ import {
   Divider,
   FormControl,
   Grid,
-  List,
-  ListItem,
   Popover,
   Stack,
   TextField,
@@ -19,7 +17,6 @@ import { formatMoney } from "utils/money";
 import moment from "moment";
 import { useHistory } from "react-router-dom";
 import { BOOKING_API } from "constant/resource";
-import { Room } from "@mui/icons-material";
 import { UserContext } from "context/UserContext";
 import { toast } from "react-toastify";
 import Loading from "components/loading/Loading";
@@ -450,7 +447,7 @@ function RoomDetailCheckStatusTablet({
 
           <Stack direction="row" justifyContent="space-between" paddingY={1}>
             <span>Phí dọn dẹp</span>
-            <span>{room.cleanlinessFee} </span>
+            <span>{formatMoney(room.cleanlinessFee)} </span>
           </Stack>
 
           <Divider

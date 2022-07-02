@@ -62,20 +62,22 @@ function RoomDetailReview({ roomId }: Props) {
       };
     });
 
-  const averageStar = (
-    reviews.reduce((acc: number, review: any) => {
-      const star =
-        (review.cleanlinessStar +
-          review.accuracyStar +
-          review.communicationStar +
-          review.locationStar +
-          review.checkInStar +
-          review.valueStar) /
-        6;
+  const averageStar = reviews.length
+    ? (
+        reviews.reduce((acc: number, review: any) => {
+          const star =
+            (review.cleanlinessStar +
+              review.accuracyStar +
+              review.communicationStar +
+              review.locationStar +
+              review.checkInStar +
+              review.valueStar) /
+            6;
 
-      return acc + star;
-    }, 0) / reviews.length
-  ).toFixed(1);
+          return acc + star;
+        }, 0) / reviews.length
+      ).toFixed(1)
+    : 0;
 
   useEffect(() => {
     const fetchReviews = async () => {

@@ -67,8 +67,7 @@ function HandlePayment({}: Props) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjUzMjY4NTM4LCJleHAiOjE2NTU4NjA1Mzh9.zHHrsJKL4K1F2FeQymYIbsSLt1PuQTQZtDUVHAPmduw",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             to: user.email,
@@ -96,17 +95,19 @@ function HandlePayment({}: Props) {
             `,
           }),
         });
+
+        console.log(user);
       };
 
       updateBooking();
 
       sendEmailToCustomer();
 
-      const timeoutId = setTimeout(() => {
-        history.replace("/");
-      }, 3000);
+      // const timeoutId = setTimeout(() => {
+      //   history.replace("/");
+      // }, 3000);
 
-      return () => clearTimeout(timeoutId);
+      // return () => clearTimeout(timeoutId);
     }
   }, []);
 

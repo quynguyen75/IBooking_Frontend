@@ -17,6 +17,7 @@ function LoginProvider({}: Props) {
           `https://ibooking-backend.herokuapp.com/api/auth/${param.type}/callback${search}`
         );
         const user = await response.json();
+        console.log(user);
 
         if (response.ok) {
           localStorage.setItem("token", user.jwt);
@@ -28,7 +29,7 @@ function LoginProvider({}: Props) {
       } catch (error) {
         console.log(error);
       } finally {
-        window.close();
+        // window.close();
       }
     };
 

@@ -22,10 +22,10 @@ function LoginProvider({}: Props) {
         if (response.ok) {
           localStorage.setItem("token", user.jwt);
           userContext.setUser(user.user);
-          window.close();
+          await window.close();
           toast.success("Đăng nhập thành công");
         } else {
-          window.close();
+          await window.close();
           toast.error("Đăng nhập thất bại");
         }
       } catch (error) {

@@ -1,5 +1,5 @@
 import { UserContext } from "context/UserContext";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -10,6 +10,9 @@ function LoginProvider({}: Props) {
   const param: { type: string } = useParams();
   const { search } = useLocation();
 
+  const [user, setUser] = useState<any>(null);
+
+  // get User
   useEffect(() => {
     const getUser = async function () {
       try {
@@ -17,24 +20,38 @@ function LoginProvider({}: Props) {
           `https://ibooking-backend.herokuapp.com/api/auth/${param.type}/callback${search}`
         );
         const user = await response.json();
-        console.log(user);
+
+        setUser(user);
 
         if (response.ok) {
           localStorage.setItem("token", user.jwt);
           userContext.setUser(user.user);
-          await window.close();
-          toast.success("Đăng nhập thành công");
-        } else {
-          await window.close();
-          toast.error("Đăng nhập thất bại");
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        window.close();
       }
     };
 
     getUser();
   }, [param, search]);
+
+  // detect window close
+  useEffect(() => {
+    const pushNotification = () => {
+      if (window.closed && user) {
+        if (user.message) {
+          toast.error("Đăng nhập thất bại");
+        } else {
+          toast.success("Đăng nhập thành công");
+        }
+      }
+    };
+    const intervalId = setInterval(pushNotification, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return <></>;
 }

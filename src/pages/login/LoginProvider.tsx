@@ -10,8 +10,6 @@ function LoginProvider({}: Props) {
   const param: { type: string } = useParams();
   const { search } = useLocation();
 
-  const [user, setUser] = useState<any>(null);
-
   // get User
   useEffect(() => {
     const getUser = async function () {
@@ -21,11 +19,17 @@ function LoginProvider({}: Props) {
         );
         const user = await response.json();
 
-        setUser(user);
-
         if (response.ok) {
           localStorage.setItem("token", user.jwt);
           userContext.setUser(user.user);
+
+          setTimeout(() => {
+            toast.success("Đăng nhập thành công");
+          }, 2000);
+        } else {
+          setTimeout(() => {
+            toast.error("Đăng nhập thất bại");
+          }, 2000);
         }
       } catch (error) {
         console.log(error);
@@ -36,22 +40,6 @@ function LoginProvider({}: Props) {
 
     getUser();
   }, [param, search]);
-
-  // detect window close
-  useEffect(() => {
-    const pushNotification = () => {
-      if (window.closed && user) {
-        if (user.message) {
-          toast.error("Đăng nhập thất bại");
-        } else {
-          toast.success("Đăng nhập thành công");
-        }
-      }
-    };
-    const intervalId = setInterval(pushNotification, 1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
 
   return <></>;
 }

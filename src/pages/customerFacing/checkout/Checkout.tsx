@@ -26,10 +26,13 @@ import { formatMoney } from "utils/money";
 import moment from "moment";
 import { useContext } from "react";
 import { UserContext } from "context/UserContext";
+import useUser from "hooks/useUser";
 
 type Props = {};
 
 function Checkout({}: Props) {
+  useUser();
+
   const userContext = useContext(UserContext);
   const history = useHistory();
   const { search } = useLocation();

@@ -25,6 +25,7 @@ import { ROOM_API } from "constant/resource";
 import { UserContext } from "context/UserContext";
 import Loading from "components/loading/Loading";
 import { reset } from "slice/createRoomSlice";
+import useUser from "hooks/useUser";
 
 type Props = {};
 
@@ -65,6 +66,8 @@ const CREATE_ROOM_STEPS = [
 ];
 
 function CreateRoom({}: Props) {
+  useUser();
+
   const dispatch = useDispatch();
   const userContext = useContext(UserContext);
   const [activeStep, setActiveStep] = useState(0);

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   Box,
@@ -29,6 +29,7 @@ import { IUser } from "interfaces";
 import { UserContext } from "../../context/UserContext";
 
 import styles from "./AuthForm.module.css";
+import { convertSearchToObject, objectToURLParams } from "utils/search";
 
 type Props = {};
 
@@ -41,6 +42,21 @@ function LoginForm({}: Props) {
   });
   const history = useHistory();
   const userContext = useContext(UserContext);
+  const location = useLocation();
+
+  const goBackToPreviousPage = () => {
+    const searchObject = convertSearchToObject(location.search);
+
+    const redirectTo = location.search.slice(
+      location.search.indexOf("redirectTo=") + "redirectTo=".length
+    );
+
+    if (searchObject.redirectTo) {
+      history.push(redirectTo);
+    } else {
+      history.push("/");
+    }
+  };
 
   const setEmail = (email: string) =>
     setFormData((data) => ({
@@ -70,7 +86,7 @@ function LoginForm({}: Props) {
     toast.success("Đăng nhập thành công");
     localStorage.setItem("token", token);
     userContext.setUser(user);
-    history.goBack();
+    goBackToPreviousPage();
   };
 
   const fomrSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
@@ -105,13 +121,14 @@ function LoginForm({}: Props) {
   };
 
   const loginWithFacebookHandler = () => {
-    const newTab = window.open(LOGIN_FACEBOOK_API, "", "popup=true");
+    window.open(LOGIN_FACEBOOK_API, "", "popup=true");
   };
 
   const loginWithGoogleHandler = () => {
-    const win = window.open(LOGIN_GOOGLE_API, "", "popup=true");
+    window.open(LOGIN_GOOGLE_API, "", "popup=true");
   };
 
+  // listen message from login with Provider
   useEffect(() => {
     const listenMessage = (event: MessageEvent) => {
       if (typeof event.data === "string") {
@@ -120,7 +137,11 @@ function LoginForm({}: Props) {
 
         toast[messageType](data.message);
 
-        console.log(event.data);
+        if (messageType === "success") {
+          goBackToPreviousPage();
+        } else {
+          history.push("/auth/signin");
+        }
       }
     };
 

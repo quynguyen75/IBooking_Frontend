@@ -3,13 +3,19 @@ import { toast } from "react-toastify";
 import styles from "./AuthForm.module.css";
 import { Box, Button, Divider, Grid, TextField } from "@mui/material";
 import { Facebook, Google } from "@mui/icons-material";
-import { REGISTER_API } from "constant/resource";
-import { useHistory } from "react-router-dom";
+import {
+  LOGIN_FACEBOOK_API,
+  LOGIN_GOOGLE_API,
+  REGISTER_API,
+} from "constant/resource";
+import { useHistory, useLocation } from "react-router-dom";
+import { convertSearchToObject } from "utils/search";
 
 type Props = {};
 
 function RegisterForm({}: Props) {
   const history = useHistory();
+  const location = useLocation();
 
   const [password, setPassword] = useState("");
   const [err, setErr] = useState({
@@ -67,6 +73,28 @@ function RegisterForm({}: Props) {
   const passwordChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
     setPassword(e.target.value);
 
+  const loginWithFacebookHandler = () => {
+    window.open(LOGIN_FACEBOOK_API, "", "popup=true");
+  };
+
+  const loginWithGoogleHandler = () => {
+    window.open(LOGIN_GOOGLE_API, "", "popup=true");
+  };
+
+  const goBackToPreviousPage = () => {
+    const searchObject = convertSearchToObject(location.search);
+
+    const redirectTo = location.search.slice(
+      location.search.indexOf("redirectTo=") + "redirectTo=".length
+    );
+
+    if (searchObject.redirectTo) {
+      history.push(redirectTo);
+    } else {
+      history.push("/");
+    }
+  };
+
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     if (password && password.length < 6) {
@@ -84,6 +112,27 @@ function RegisterForm({}: Props) {
     }
     return () => clearTimeout(timeoutId);
   }, [password]);
+
+  useEffect(() => {
+    const listenMessage = (event: MessageEvent) => {
+      if (typeof event.data === "string") {
+        const data = JSON.parse(event.data);
+        const messageType: "success" | "error" = data.type;
+
+        toast[messageType](data.message);
+
+        if (messageType === "success") {
+          goBackToPreviousPage();
+        } else {
+          history.push("/auth/signin");
+        }
+      }
+    };
+
+    window.addEventListener("message", listenMessage, false);
+
+    return () => window.removeEventListener("message", listenMessage, false);
+  }, []);
 
   return (
     <Box component="form" autoComplete="off" onSubmit={submitHandler}>
@@ -146,7 +195,6 @@ function RegisterForm({}: Props) {
             value={password}
             onChange={passwordChangeHandler}
             error={err.type === "password"}
-            helperText={err.message}
           />
         </Grid>
       </Grid>
@@ -170,6 +218,7 @@ function RegisterForm({}: Props) {
         fullWidth
         variant="outlined"
         className={`${styles.button} ${styles["button--social"]}`}
+        onClick={loginWithFacebookHandler}
       >
         <Facebook />
         <span>Tiếp tục với Facebook</span>
@@ -179,6 +228,7 @@ function RegisterForm({}: Props) {
         fullWidth
         variant="outlined"
         className={`${styles.button} ${styles["button--social"]}`}
+        onClick={loginWithGoogleHandler}
       >
         <Google />
         <span>Tiếp tục với Google</span>

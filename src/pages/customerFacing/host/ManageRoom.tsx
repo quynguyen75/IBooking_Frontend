@@ -16,10 +16,13 @@ import ViewRoomDialog from "./ViewRoomDialog";
 import useDialog from "hooks/useDialog";
 import { formatDataStrapi } from "utils/data";
 import { UserContext } from "context/UserContext";
+import useUser from "hooks/useUser";
 
 type Props = {};
 
 function ManageRoom({}: Props) {
+  useUser();
+
   const userContext = useContext(UserContext);
 
   const [rooms, setRooms] = useState(null);

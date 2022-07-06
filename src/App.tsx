@@ -13,7 +13,6 @@ import RootAdmin from "./pages/admin/root/RootAdmin";
 import AuthPage from "./pages/customerFacing/auth/AuthenticatePage";
 
 import "react-toastify/dist/ReactToastify.css";
-import PrivateRoute from "components/protect/PrivateRoute";
 import { USER_ME_API } from "constant/resource";
 import { useContext, useEffect } from "react";
 import { UserContext } from "context/UserContext";
@@ -56,9 +55,9 @@ function App() {
 
         <Route path="/room/:id" component={RoomDetail} />
 
-        <PrivateRoute path="/checkout">
+        <Route path="/checkout">
           <Checkout />
-        </PrivateRoute>
+        </Route>
 
         <Route path="/handlepayment">
           <HandlePayment />
@@ -68,13 +67,13 @@ function App() {
           <PendingBooking />
         </Route>
 
-        <PrivateRoute path="/host/create">
+        <Route path="/host/create">
           <CreateRoom />
-        </PrivateRoute>
+        </Route>
 
-        <PrivateRoute path="/host/manage">
+        <Route path="/host/manage">
           <ManageRoom />
-        </PrivateRoute>
+        </Route>
 
         <Route path="/admin" component={RootAdmin} />
 

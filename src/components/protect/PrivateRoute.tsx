@@ -5,8 +5,6 @@ import { Redirect, Route } from "react-router-dom";
 function PrivateRoute({ children, ...rest }: any) {
   const user = useContext(UserContext);
 
-  console.log(user);
-
   return (
     <Route
       {...rest}

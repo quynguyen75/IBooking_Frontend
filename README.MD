@@ -1,6 +1,6 @@
 # Bug
 
-- Notify when login failed
+- Notify when login failed [done]
 
 - NaN Star in Review Part of Room Detail [done]
 

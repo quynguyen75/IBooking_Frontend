@@ -114,7 +114,14 @@ function LoginForm({}: Props) {
 
   useEffect(() => {
     const listenMessage = (event: MessageEvent) => {
-      console.log(event);
+      if (typeof event.data === "string") {
+        const data = JSON.parse(event.data);
+        const messageType: "success" | "error" = data.type;
+
+        toast[messageType](data.message);
+
+        console.log(event.data);
+      }
     };
 
     window.addEventListener("message", listenMessage, false);

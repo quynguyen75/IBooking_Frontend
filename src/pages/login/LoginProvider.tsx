@@ -23,9 +23,21 @@ function LoginProvider({}: Props) {
           localStorage.setItem("token", user.jwt);
           userContext.setUser(user.user);
 
-          window.opener.postMessage("Đăng nhập thành công", "*");
+          window.opener.postMessage(
+            JSON.stringify({
+              type: "success",
+              message: "Đăng nhập thành công",
+            }),
+            "*"
+          );
         } else {
-          window.opener.postMessage("Đăng nhập thất bại", "*");
+          window.opener.postMessage(
+            JSON.stringify({
+              type: "error",
+              message: "Đăng nhập thất bại",
+            }),
+            "*"
+          );
         }
       } catch (error) {
         console.log(error);

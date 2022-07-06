@@ -23,9 +23,9 @@ function LoginProvider({}: Props) {
           localStorage.setItem("token", user.jwt);
           userContext.setUser(user.user);
 
-          toast.success("Đăng nhập thành công");
+          window.opener.postMessage("Đăng nhập thành công", "*");
         } else {
-          toast.error("Đăng nhập thất bại");
+          window.opener.postMessage("Đăng nhập thất bại", "*");
         }
       } catch (error) {
         console.log(error);

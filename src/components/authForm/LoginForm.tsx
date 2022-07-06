@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -124,6 +124,16 @@ function LoginForm({}: Props) {
       }
     }, 500);
   };
+
+  useEffect(() => {
+    const listenMessage = (event: MessageEvent) => {
+      console.log(event);
+    };
+
+    window.addEventListener("message", listenMessage);
+
+    return () => window.removeEventListener("message", listenMessage);
+  }, []);
 
   return (
     <Box component="form" autoComplete="off" onSubmit={fomrSubmitHandler}>

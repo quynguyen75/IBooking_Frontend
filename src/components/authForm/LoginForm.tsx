@@ -106,23 +106,10 @@ function LoginForm({}: Props) {
 
   const loginWithFacebookHandler = () => {
     const newTab = window.open(LOGIN_FACEBOOK_API, "", "popup=true");
-    const timer = setInterval(function () {
-      if (newTab && newTab.closed) {
-        clearInterval(timer);
-        window.location.href = "/";
-      }
-    }, 500);
   };
 
   const loginWithGoogleHandler = () => {
     const win = window.open(LOGIN_GOOGLE_API, "", "popup=true");
-
-    const timer = setInterval(function () {
-      if (win && win.closed) {
-        clearInterval(timer);
-        window.location.href = "/";
-      }
-    }, 500);
   };
 
   useEffect(() => {
@@ -130,9 +117,9 @@ function LoginForm({}: Props) {
       console.log(event);
     };
 
-    window.addEventListener("message", listenMessage);
+    window.addEventListener("message", listenMessage, false);
 
-    return () => window.removeEventListener("message", listenMessage);
+    return () => window.removeEventListener("message", listenMessage, false);
   }, []);
 
   return (

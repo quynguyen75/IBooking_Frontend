@@ -23,13 +23,9 @@ function LoginProvider({}: Props) {
           localStorage.setItem("token", user.jwt);
           userContext.setUser(user.user);
 
-          setTimeout(() => {
-            toast.success("Đăng nhập thành công");
-          }, 2000);
+          toast.success("Đăng nhập thành công");
         } else {
-          setTimeout(() => {
-            toast.error("Đăng nhập thất bại");
-          }, 2000);
+          toast.error("Đăng nhập thất bại");
         }
       } catch (error) {
         console.log(error);

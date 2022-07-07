@@ -67,8 +67,6 @@ function HeaderMenu({}: Props) {
     getPendingBooking();
   }, [flagNotify]);
 
-  console.log(userContext);
-
   return (
     <>
       <Tooltip title="Account settings">

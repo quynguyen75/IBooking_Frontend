@@ -19,30 +19,32 @@ function LoginProvider({}: Props) {
         );
         const user = await response.json();
 
-        if (response.ok) {
-          localStorage.setItem("token", user.jwt);
-          userContext.setUser(user.user);
+        console.log(user);
 
-          window.opener.postMessage(
-            JSON.stringify({
-              type: "success",
-              message: "Đăng nhập thành công",
-            }),
-            "*"
-          );
-        } else {
-          window.opener.postMessage(
-            JSON.stringify({
-              type: "error",
-              message: "Đăng nhập thất bại",
-            }),
-            "*"
-          );
-        }
+        //   if (response.ok) {
+        //     localStorage.setItem("token", user.jwt);
+        //     userContext.setUser(user.user);
+
+        //     window.opener.postMessage(
+        //       JSON.stringify({
+        //         type: "success",
+        //         message: "Đăng nhập thành công",
+        //       }),
+        //       "*"
+        //     );
+        //   } else {
+        //     window.opener.postMessage(
+        //       JSON.stringify({
+        //         type: "error",
+        //         message: "Đăng nhập thất bại",
+        //       }),
+        //       "*"
+        //     );
+        //   }
       } catch (error) {
         console.log(error);
       } finally {
-        window.close();
+        // window.close();
       }
     };
 

@@ -30,6 +30,8 @@ import { UserContext } from "../../context/UserContext";
 
 import styles from "./AuthForm.module.css";
 import { convertSearchToObject, objectToURLParams } from "utils/search";
+import { useDispatch } from "react-redux";
+import { updateUser } from "slice/getUserSlice";
 
 type Props = {};
 
@@ -43,6 +45,7 @@ function LoginForm({}: Props) {
   const history = useHistory();
   const userContext = useContext(UserContext);
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const goBackToPreviousPage = () => {
     const searchObject = convertSearchToObject(location.search);
@@ -138,6 +141,7 @@ function LoginForm({}: Props) {
         toast[messageType](data.message);
 
         if (messageType === "success") {
+          dispatch(updateUser());
           goBackToPreviousPage();
         } else {
           history.push("/auth/signin");

@@ -18,8 +18,11 @@ import { useContext, useEffect } from "react";
 import { UserContext } from "context/UserContext";
 import HandlePayment from "pages/customerFacing/checkout/HandlePayment";
 import PendingBooking from "pages/customerFacing/pendingBooking/PendingBooking";
+import { useSelector } from "react-redux";
+import { RootState } from "store/store";
 
 function App() {
+  const updateUserFlag = useSelector((state: RootState) => state.getUser.flag);
   const userContext = useContext(UserContext);
   const savedToken = localStorage.getItem("token");
 
@@ -44,7 +47,7 @@ function App() {
 
   useEffect(() => {
     getUser();
-  }, [savedToken]);
+  }, [updateUserFlag]);
 
   return (
     <>

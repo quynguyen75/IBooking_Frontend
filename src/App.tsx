@@ -44,7 +44,7 @@ function App() {
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [savedToken]);
 
   return (
     <>

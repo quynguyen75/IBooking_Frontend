@@ -6,4 +6,6 @@
 
 - Send email
 
-- Comment Room Detail
+- Comment Room Detail [1s]
+
+- Login with Google

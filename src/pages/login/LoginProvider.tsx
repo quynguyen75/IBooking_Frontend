@@ -22,7 +22,6 @@ function LoginProvider({}: Props) {
         if (response.ok) {
           localStorage.setItem("token", user.jwt);
           console.log(user);
-          userContext.setUser(user.user);
 
           window.opener.postMessage(
             JSON.stringify({

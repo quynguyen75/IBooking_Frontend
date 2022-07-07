@@ -10,12 +10,15 @@ import {
 } from "constant/resource";
 import { useHistory, useLocation } from "react-router-dom";
 import { convertSearchToObject } from "utils/search";
+import { useDispatch } from "react-redux";
+import { updateUser } from "slice/getUserSlice";
 
 type Props = {};
 
 function RegisterForm({}: Props) {
   const history = useHistory();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const [password, setPassword] = useState("");
   const [err, setErr] = useState({
@@ -122,6 +125,7 @@ function RegisterForm({}: Props) {
         toast[messageType](data.message);
 
         if (messageType === "success") {
+          dispatch(updateUser());
           goBackToPreviousPage();
         } else {
           history.push("/auth/signin");

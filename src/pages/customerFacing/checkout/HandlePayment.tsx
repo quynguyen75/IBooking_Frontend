@@ -67,7 +67,7 @@ function HandlePayment({}: Props) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU3MTc1MDg0LCJleHAiOjE2NTk3NjcwODR9._0taSbdEChGZp4oHS4_c6Fc9ka3tu077plN8_y3Oqsk`,
           },
           body: JSON.stringify({
             to: user.email,
@@ -95,8 +95,6 @@ function HandlePayment({}: Props) {
             `,
           }),
         });
-
-        console.log(user);
       };
 
       updateBooking();

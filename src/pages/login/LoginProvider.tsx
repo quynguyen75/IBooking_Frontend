@@ -43,7 +43,7 @@ function LoginProvider({}: Props) {
       } catch (error) {
         console.log(error);
       } finally {
-        // window.close();
+        window.close();
       }
     };
 

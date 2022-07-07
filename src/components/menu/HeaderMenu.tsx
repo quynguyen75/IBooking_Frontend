@@ -63,8 +63,9 @@ function HeaderMenu({}: Props) {
         console.log(error);
       }
     };
-
-    getPendingBooking();
+    if (userContext.user.id) {
+      getPendingBooking();
+    }
   }, [flagNotify]);
 
   return (

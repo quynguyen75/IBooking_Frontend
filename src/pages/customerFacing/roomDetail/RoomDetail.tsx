@@ -13,6 +13,7 @@ import Loading from "components/loading/Loading";
 import { ROOM_API } from "constant/resource";
 import { formatDataStrapi } from "utils/data";
 import { convertSearchToObject } from "utils/search";
+import useScrollToTop from "hooks/useScrollToTop";
 
 type Props = {};
 
@@ -41,6 +42,8 @@ function RoomDetail({}: Props) {
   const [fetchStatus, room] = useFetch(
     `${ROOM_API}/${params.id}?populate[0]=images&populate[1]=roomType&populate[2]=user&populate[3]=bookings&populate[4]=reviews&populate[5]=reviews.user`
   );
+
+  useScrollToTop();
 
   const guestCountHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setGuestCount((prev) => ({

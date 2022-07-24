@@ -35,6 +35,7 @@ function ImageSwipe({ images, isOpenDialog, openDialog, closeDialog }: Props) {
                   display: "block",
                   overflow: "hidden",
                   width: "100%",
+                  maxHeight: "250px",
                   objectFit: "cover",
                   borderRadius: 1,
                 }}

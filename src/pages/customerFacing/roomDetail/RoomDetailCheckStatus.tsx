@@ -9,6 +9,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { DateRange } from "react-date-range";
 import React, { useContext, useEffect, useState } from "react";
@@ -46,6 +47,8 @@ function RoomDetailCheckStatusMobile({
     open: openDateDialog,
     close: closeDateDialog,
   } = useDialog();
+
+  const isTablet = useMediaQuery("(min-width: 600px)");
 
   const dispatch = useDispatch();
 
@@ -173,7 +176,7 @@ function RoomDetailCheckStatusMobile({
         <DateRange
           onChange={changeRoomDates}
           moveRangeOnFirstSelection={false}
-          months={2}
+          months={isTablet ? 2 : 1}
           ranges={roomDate}
           direction="horizontal"
           preventSnapRefocus={true}
@@ -211,6 +214,8 @@ function RoomDetailCheckStatusTablet({
     open: openDateDialog,
     close: closeDateDialog,
   } = useDialog();
+
+  const isTablet = useMediaQuery("(min-width: 600px)");
 
   const dispatch = useDispatch();
 
@@ -296,8 +301,6 @@ function RoomDetailCheckStatusTablet({
   const nightCount = Math.floor(
     (roomDate[0].endDate - roomDate[0].startDate) / (1000 * 60 * 60 * 24)
   );
-
-  console.log(room);
 
   useEffect(() => {
     if (roomDate[0].startDate.toString() !== roomDate[0].endDate.toString()) {
@@ -481,7 +484,7 @@ function RoomDetailCheckStatusTablet({
         <DateRange
           onChange={changeRoomDates}
           moveRangeOnFirstSelection={false}
-          months={2}
+          months={isTablet ? 2 : 1}
           ranges={roomDate}
           direction="horizontal"
           preventSnapRefocus={true}

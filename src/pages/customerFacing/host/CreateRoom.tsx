@@ -26,6 +26,7 @@ import { UserContext } from "context/UserContext";
 import Loading from "components/loading/Loading";
 import { reset } from "slice/createRoomSlice";
 import useUser from "hooks/useUser";
+import useScrollToTop from "hooks/useScrollToTop";
 
 type Props = {};
 
@@ -79,6 +80,8 @@ function CreateRoom({}: Props) {
   const isDisableNextButton = useSelector(
     (state: RootState) => state.createRoom.isDisableButton
   );
+
+  useScrollToTop();
 
   const maxSteps = CREATE_ROOM_STEPS.length;
 

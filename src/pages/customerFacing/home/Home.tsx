@@ -6,10 +6,13 @@ import BecomeHostSection from "components/becomeHost/BecomeHostSection";
 import Footer from "components/layout/Footer";
 import Navigation from "components/layout/Navigation";
 import SearchBlock from "components/searchBlock/SearchBlock";
+import useScrollToTop from "hooks/useScrollToTop";
 
 type Props = {};
 
 function Home({}: Props) {
+  useScrollToTop();
+
   return (
     <>
       <Header />

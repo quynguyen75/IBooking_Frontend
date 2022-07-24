@@ -31,6 +31,9 @@ import { BookingCreate } from "pages/admin/booking/create";
 
 import { root } from "constant/resource";
 import { useHistory } from "react-router-dom";
+import { Container, Typography, useMediaQuery } from "@mui/material";
+import Header from "components/layout/Header";
+import Footer from "components/layout/Footer";
 
 const { Link } = routerProvider;
 
@@ -38,6 +41,26 @@ const RootAdmin = () => {
   const { authProvider, axiosInstance } = strapiAuthProvider(root);
   const dataProvider = DataProvider(root, axiosInstance);
   const history = useHistory();
+  const isMin900px = useMediaQuery("(min-width: 900px)");
+
+  if (!isMin900px) {
+    return (
+      <>
+        <Header />
+        <Container
+          sx={{
+            padding: "100px 0",
+          }}
+        >
+          <Typography sx={{ textAlign: "center" }}>
+            Xin lỗi, giao diện chưa hỗ trợ điện thoại
+          </Typography>
+        </Container>
+
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>

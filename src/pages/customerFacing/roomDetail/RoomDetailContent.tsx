@@ -93,7 +93,7 @@ function RoomDetailContent({
             />
           </Grid>
 
-          <Grid item xs={0} sm={4}>
+          <Grid item xs={12} sm={4}>
             <RoomDetailCheckStatusTablet
               disableDateHandler={disableDateHandler}
               room={room}

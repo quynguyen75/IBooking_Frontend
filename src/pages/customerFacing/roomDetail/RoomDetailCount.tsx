@@ -29,7 +29,7 @@ function RoomDetailCount({ roomCount }: Props) {
       <Grid container spacing={2}>
         {displayRoomCount &&
           displayRoomCount.map((item: string) => (
-            <Grid item xs={4}>
+            <Grid item xs={6} md={4}>
               <Card
                 sx={{
                   padding: "24px 16px",

@@ -1,5 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { Container, Typography, IconButton } from "@mui/material";
+import {
+  Container,
+  Typography,
+  IconButton,
+  useMediaQuery,
+} from "@mui/material";
 import { Edit } from "@mui/icons-material";
 import { List, Table, Space } from "@pankod/refine-antd";
 import useFetch from "hooks/useFetch";
@@ -17,11 +22,15 @@ import useDialog from "hooks/useDialog";
 import { formatDataStrapi } from "utils/data";
 import { UserContext } from "context/UserContext";
 import useUser from "hooks/useUser";
+import useScrollToTop from "hooks/useScrollToTop";
 
 type Props = {};
 
 function ManageRoom({}: Props) {
   useUser();
+  useScrollToTop();
+
+  const isMin900px = useMediaQuery("(min-width: 900px)");
 
   const userContext = useContext(UserContext);
 
@@ -99,6 +108,28 @@ function ManageRoom({}: Props) {
 
     console.log("first");
   }, [roomChangeFlag]);
+
+  if (!isMin900px) {
+    return (
+      <>
+        <Header />
+        <Container
+          sx={{
+            p: "100px 0",
+          }}
+        >
+          <Typography
+            sx={{
+              textAlign: "center",
+            }}
+          >
+            Xin lỗi, giao diện chưa hỗ trợ điện thoại
+          </Typography>
+        </Container>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>

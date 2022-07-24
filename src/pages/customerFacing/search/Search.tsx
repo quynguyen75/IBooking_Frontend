@@ -16,6 +16,7 @@ import { convertSearchToObject, objectToURLParamsStrapi } from "utils/search";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { ROOM_API } from "constant/resource";
 import { FilterContext } from "context/FilterContext";
+import useScrollToTop from "hooks/useScrollToTop";
 type Props = {};
 
 function formatObjectSearch(object: any) {
@@ -131,6 +132,8 @@ function Search({}: Props) {
 
   const formatSearch = formatObjectSearch(searchObj);
 
+  useScrollToTop();
+
   useEffect(() => {
     const getCorrespondRooms = async () => {
       try {
@@ -138,7 +141,7 @@ function Search({}: Props) {
           ROOM_API +
             `?${objectToURLParamsStrapi(
               formatSearch
-            )}&populate=bookings&populate=reviews&populate=roomType&populate=images`
+            )}&populate=bookings&populate=reviews&populate=roomType&populate=images&filters[status][$eq]=Active`
         );
 
         const rooms = await roomResponse.json();

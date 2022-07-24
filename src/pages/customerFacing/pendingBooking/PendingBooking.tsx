@@ -17,6 +17,7 @@ import Header from "components/layout/Header";
 import Loading from "components/loading/Loading";
 import { BOOKING_API, USER_API } from "constant/resource";
 import useFetch from "hooks/useFetch";
+import useScrollToTop from "hooks/useScrollToTop";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { formatDataStrapi } from "utils/data";
@@ -36,6 +37,8 @@ function PendingBooking({}: Props) {
     BOOKING_API +
       `?filters[user][id][$eq]=${userID}&filters[paymentStatus][id][$eq]=1&populate[0]=*&populate[1]=room.images`
   );
+
+  useScrollToTop();
 
   const deletePendingBooking = (id: number) => {
     fetch(BOOKING_API + `/${id}`, {

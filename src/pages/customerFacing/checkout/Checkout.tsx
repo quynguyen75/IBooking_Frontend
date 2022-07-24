@@ -27,6 +27,7 @@ import moment from "moment";
 import { useContext } from "react";
 import { UserContext } from "context/UserContext";
 import useUser from "hooks/useUser";
+import useScrollToTop from "hooks/useScrollToTop";
 
 type Props = {};
 
@@ -43,6 +44,8 @@ function Checkout({}: Props) {
   const [fetchStatus, room] = useFetch(
     ROOM_API + `/${searchObj.room}?populate=*`
   );
+
+  useScrollToTop();
 
   const formatedRoom = formatDataStrapi(room);
 

@@ -85,7 +85,13 @@ function HeaderMenu({}: Props) {
             aria-expanded={open ? "true" : undefined}
           >
             <Dehaze />
-            <AccountCircle sx={{ width: 32, height: 32 }} />
+            {userContext.user ? (
+              <Avatar sx={{ width: 32, height: 32, bgcolor: "#c9ccd1" }}>
+                {userContext.user.username?.slice(0, 1).toUpperCase()}
+              </Avatar>
+            ) : (
+              <AccountCircle sx={{ width: 32, height: 32 }} />
+            )}
           </IconButton>
         </Badge>
       </Tooltip>

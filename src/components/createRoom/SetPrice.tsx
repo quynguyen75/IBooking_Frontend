@@ -44,7 +44,7 @@ function SetPrice({}: Props) {
           thousandSeparator
           label="Giá tối thiểu / đêm"
           onValueChange={nightPriceChangeHandler}
-          prefix="đ"
+          suffix="đ"
           variant="outlined"
           value={nightPrice}
         />
@@ -56,7 +56,7 @@ function SetPrice({}: Props) {
           thousandSeparator
           label="Phí dọn dẹp"
           onValueChange={cleanlinessFeeChangeHandler}
-          prefix="đ"
+          suffix="đ"
           variant="outlined"
           value={cleanlinessFee}
         />

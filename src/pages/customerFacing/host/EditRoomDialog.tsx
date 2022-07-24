@@ -150,7 +150,7 @@ function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
               thousandSeparator
               label="Giá tối thiểu / đêm"
               //   onValueChange={(values) => setNumberFormatState(values.value)}
-              prefix="đ"
+              suffix="đ"
               fullWidth
               defaultValue={0}
               variant="outlined"
@@ -164,7 +164,7 @@ function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
               thousandSeparator
               label="Phí dọn dẹp"
               //   onValueChange={(values) => setNumberFormatState(values.value)}
-              prefix="đ"
+              suffix="đ"
               defaultValue={0}
               fullWidth
               variant="outlined"

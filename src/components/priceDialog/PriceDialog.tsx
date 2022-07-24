@@ -75,7 +75,7 @@ function PriceDialog({ isOpen, onClose }: Props) {
             label="Giá tối thiểu"
             //   onValueChange={(values) => setNumberFormatState(values.value)}
             value={value[0]}
-            prefix="đ"
+            suffix="đ"
             variant="outlined"
           />
 
@@ -85,7 +85,7 @@ function PriceDialog({ isOpen, onClose }: Props) {
             label="Giá tối đa"
             //   onValueChange={(values) => setNumberFormatState(values.value)}
             value={value[1]}
-            prefix="đ"
+            suffix="đ"
             variant="outlined"
           />
         </Stack>

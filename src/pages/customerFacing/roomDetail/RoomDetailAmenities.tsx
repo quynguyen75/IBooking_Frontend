@@ -16,7 +16,7 @@ function RoomDetailAmenities({ room }: Props) {
         textAlign: "justify",
       }}
     >
-      <h2 className="roomDetail__title">Nơi này có những gì cho bạn</h2>
+      <h2 className="roomDetail__title">Tiện Nghi</h2>
       <List>
         {displayAmenities &&
           displayAmenities.map((item: any) => (

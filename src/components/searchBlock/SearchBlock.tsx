@@ -13,7 +13,7 @@ import TourDateSearch from "./TourDateSearch";
 import TourSearch from "./TourSearch";
 import SearchBlockItem from "./SearchBlockItem";
 import { objectToURLParams } from "utils/search";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { FilterContext } from "context/FilterContext";
 
 type Props = {};
@@ -29,6 +29,14 @@ type reducerState = {
   checkOutDate: string;
   guestCount: number;
   petCount: number;
+};
+
+const initialSearchData = {
+  tourSearch: null,
+  checkInDate: "",
+  checkOutDate: "",
+  guestCount: 1,
+  petCount: 0,
 };
 
 function searchReducer(state: reducerState, action: Action): reducerState {
@@ -62,6 +70,9 @@ function searchReducer(state: reducerState, action: Action): reducerState {
         ...state,
         petCount: action.payload,
       };
+
+    case "CLEAR":
+      return initialSearchData;
   }
 
   return state;
@@ -71,13 +82,8 @@ function SearchBlock({}: Props) {
   const filterContext = useContext(FilterContext);
 
   const [tabActive, setTabActive] = useState(0);
-  const [searchData, dispatch] = useReducer(searchReducer, {
-    tourSearch: null,
-    checkInDate: "",
-    checkOutDate: "",
-    guestCount: 1,
-    petCount: 0,
-  });
+  const [searchData, dispatch] = useReducer(searchReducer, initialSearchData);
+  const { pathname } = useLocation();
   const history = useHistory();
 
   const min768px = useMediaQuery("(min-width: 768px)");
@@ -167,6 +173,14 @@ function SearchBlock({}: Props) {
   useEffect(() => {
     autoChangeTabHandler();
   }, [searchData]);
+
+  // clear search data
+  useEffect(() => {
+    dispatch({
+      type: "CLEAR",
+      payload: "",
+    });
+  }, [pathname]);
 
   return (
     <div

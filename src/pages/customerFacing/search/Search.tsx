@@ -67,17 +67,33 @@ function checkCorrespondRoom(
   const bookings = room.attributes.bookings.data;
   if (checkOutDate) {
     const existBooking = bookings.some((booking: any) => {
+      if (!booking.attributes.paymentReference) {
+        return false;
+      }
+      const searchCheckInDate = moment(checkInDate, "DD/MM/YYYY");
+      const searchCheckOutDate = moment(checkOutDate, "DD/MM/YYYY");
       return (
-        (booking.attributes.paymentReference &&
-          moment(checkOutDate, "DD/MM/YYYY").isBetween(
-            booking.attributes.checkInDate,
-            booking.attributes.checkOutDate,
-            undefined,
-            "[]"
-          )) ||
-        moment(checkOutDate).isBetween(
+        searchCheckOutDate.isBetween(
           booking.attributes.checkInDate,
           booking.attributes.checkOutDate,
+          undefined,
+          "[]"
+        ) ||
+        searchCheckInDate.isBetween(
+          booking.attributes.checkInDate,
+          booking.attributes.checkOutDate,
+          undefined,
+          "[]"
+        ) ||
+        moment(booking.attributes.checkInDate).isBetween(
+          searchCheckInDate,
+          searchCheckOutDate,
+          undefined,
+          "[]"
+        ) ||
+        moment(booking.attributes.checkOutDate).isBetween(
+          searchCheckInDate,
+          searchCheckOutDate,
           undefined,
           "[]"
         )
@@ -87,18 +103,13 @@ function checkCorrespondRoom(
     return !existBooking;
   } else {
     const existBooking = bookings.find((booking: any) => {
-      const bookingCheckIn = moment(
-        booking.attributes.checkInDate,
-        "DD/MM/YYYY"
-      );
-      const bookingCheckOut = moment(
-        booking.attributes.checkOutDate,
-        "DD/MM/YYYY"
-      );
       const searchCheckIn = moment(checkInDate, "DD/MM/YYYY");
 
-      return (
-        bookingCheckIn <= searchCheckIn && bookingCheckOut >= searchCheckIn
+      return searchCheckIn.isBetween(
+        booking.attributes.checkInDate,
+        booking.attributes.checkOutDate,
+        undefined,
+        "[]"
       );
     });
     return !Boolean(existBooking);
@@ -260,6 +271,7 @@ function Search({}: Props) {
                     id: room.id,
                     ...room.attributes,
                   }}
+                  search={searchObj}
                 />
               </Grid>
             ))}

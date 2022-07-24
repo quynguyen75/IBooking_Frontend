@@ -209,6 +209,7 @@ function RoomDetailReview({ roomId }: Props) {
         onClose={closeReviewDialog}
         stars={stars}
         reviews={reviews}
+        averageStar={averageStar}
       />
 
       {bookedBooking && (

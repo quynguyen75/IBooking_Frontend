@@ -20,9 +20,10 @@ type Props = {
   onClose: () => void;
   stars: { name: string; label: string; value: number }[];
   reviews: any[];
+  averageStar: string | number;
 };
 
-function ReviewDialog({ open, onClose, stars, reviews }: Props) {
+function ReviewDialog({ open, onClose, stars, reviews, averageStar }: Props) {
   useDisableScroll(open);
   const min768px = useMediaQuery("(min-width: 768px)");
 
@@ -49,7 +50,7 @@ function ReviewDialog({ open, onClose, stars, reviews }: Props) {
               color: yellow["A700"],
             }}
           />
-          4,67 - 67 đánh giá
+          {averageStar} - {reviews.length} đánh giá
         </Typography>
       </DialogTitle>
 

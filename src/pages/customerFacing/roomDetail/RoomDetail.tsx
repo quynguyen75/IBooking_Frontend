@@ -1,6 +1,6 @@
 import moment from "moment";
-import { useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { Container, useMediaQuery } from "@mui/material";
 import useFetch from "hooks/useFetch";
 import Footer from "components/layout/Footer";
@@ -12,6 +12,7 @@ import Loading from "components/loading/Loading";
 
 import { ROOM_API } from "constant/resource";
 import { formatDataStrapi } from "utils/data";
+import { convertSearchToObject } from "utils/search";
 
 type Props = {};
 
@@ -19,6 +20,8 @@ function RoomDetail({}: Props) {
   const params: {
     id: string;
   } = useParams();
+
+  const { search } = useLocation();
 
   const min768px = useMediaQuery("(min-width: 768px)");
 
@@ -69,6 +72,29 @@ function RoomDetail({}: Props) {
         ) && booking.paymentReference
     );
   };
+
+  const searchParams = convertSearchToObject(search);
+
+  // set Date if user search with date
+  useEffect(() => {
+    if (searchParams.checkOutDate) {
+      setRoomDate([
+        {
+          startDate: moment(searchParams.checkInDate, "DD/MM/YYYY").toDate(),
+          endDate: moment(searchParams.checkOutDate, "DD/MM/YYYY").toDate(),
+          key: "selection",
+        },
+      ]);
+    } else if (searchParams.checkInDate) {
+      setRoomDate([
+        {
+          startDate: moment(searchParams.checkInDate, "DD/MM/YYYY").toDate(),
+          endDate: moment(searchParams.checkInDate, "DD/MM/YYYY").toDate(),
+          key: "selection",
+        },
+      ]);
+    }
+  }, []);
 
   return (
     <>

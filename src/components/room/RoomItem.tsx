@@ -13,15 +13,30 @@ import { yellow } from "@mui/material/colors";
 
 import styles from "./RoomItem.module.css";
 import { formatMoney } from "utils/money";
+import { objectToURLParams } from "utils/search";
 
 type Props = {
   room: any;
+  search: any;
 };
 
-function RoomItem({ room }: Props) {
+function RoomItem({ room, search }: Props) {
   const min600px = useMediaQuery("(min-width:600px)");
 
   const reviewCount = room.reviews.data.length;
+  const searchParamsObject: {
+    checkInDate?: any;
+    checkOutDate?: any;
+  } = search.checkInDate
+    ? {
+        checkInDate: search.checkInDate,
+      }
+    : {};
+
+  search.checkOutDate &&
+    (searchParamsObject.checkOutDate = search.checkOutDate);
+
+  const searchParams = objectToURLParams(searchParamsObject);
 
   const averageStar =
     reviewCount &&
@@ -43,7 +58,7 @@ function RoomItem({ room }: Props) {
     ).toFixed(1);
 
   return (
-    <Link to={`/room/${room.id}`}>
+    <Link to={`/room/${room.id}?${searchParams}`}>
       <Card>
         <Grid container>
           <Grid item xs={12}>

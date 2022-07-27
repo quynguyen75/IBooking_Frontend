@@ -1,25 +1,13 @@
 import {
   Autocomplete,
   Box,
-  Card,
+  CircularProgress,
   Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
-  Popover,
   TextField,
-  Typography,
 } from "@mui/material";
-import { HERE_APIKEY, HERE_QUERY_URL } from "constant/resource";
-import React, {
-  ChangeEvent,
-  FocusEventHandler,
-  MouseEventHandler,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { GET_DISTRICTS_API, GET_PROVINCES_API } from "constant/resource";
+import useFetch from "hooks/useFetch";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { disableNextButton, setAddress } from "slice/createRoomSlice";
 import { RootState } from "store/store";
@@ -32,33 +20,79 @@ function ChoseAddress({}: Props) {
   );
 
   const dispatch = useDispatch();
-  const [isOpenAddressDetail, setIsOpenAddressDetail] = useState(false);
-  const [options, setOptions] = useState<any[]>([]);
+  const [addressData, setAddressData] = useState({
+    p: 0,
+    d: 0,
+  });
 
-  const [searchValue, setSearchValue] = useState("");
+  const [status, provinces] = useFetch(GET_PROVINCES_API);
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const cardRef = useRef<HTMLDivElement | null>(null);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
 
-  const searchChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setSearchValue(e.target.value);
+  // remove keyword
+  const trimAddressData = (data: string) => {
+    const REMOVE_KEYWORDS = [
+      "Tỉnh",
+      "Thành phố",
+      "Quận",
+      "Huyện",
+      "Phường",
+      "Xã",
+      "Thị trấn",
+    ];
 
-  const chooseSuggestionItem = (option: any) => {
-    dispatch(
-      setAddress({
-        street: option.street ?? "",
-        city: option.city,
-        county: option.county,
-        district: option.district ?? "",
-        houseNumber: option.houseNumber ?? "",
-      })
-    );
+    const KEYWORD = REMOVE_KEYWORDS.find((k) => data.includes(k));
 
-    setSearchValue(option.label);
-    setIsOpenAddressDetail(false);
+    return data.split(KEYWORD + " ")[1];
   };
 
-  const fieldChangeHandler = (e: ChangeEvent<HTMLInputElement>) =>
+  const provinceChangeHandler = (_: any, value: any) => {
+    if (value) {
+      setAddressData({
+        ...addressData,
+        p: value.code,
+      });
+
+      dispatch(
+        setAddress({
+          ...address,
+          county: trimAddressData(value.name),
+        })
+      );
+    }
+  };
+
+  const districtChangeHandler = (_: any, value: any) => {
+    if (value) {
+      setAddressData({
+        ...addressData,
+        d: value.code,
+      });
+
+      dispatch(
+        setAddress({
+          ...address,
+          city: trimAddressData(value.name),
+        })
+      );
+    }
+  };
+
+  const wardChangeHandler = (_: any, value: any) => {
+    if (value) {
+      dispatch(
+        setAddress({
+          ...address,
+          district: trimAddressData(value.name),
+        })
+      );
+    }
+  };
+
+  const streetAndHouseNumberChangeHandler = (
+    e: ChangeEvent<HTMLInputElement>
+  ) =>
     dispatch(
       setAddress({
         ...address,
@@ -66,33 +100,34 @@ function ChoseAddress({}: Props) {
       })
     );
 
-  const focusInputHandler = () => setIsOpenAddressDetail(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${HERE_QUERY_URL}?q=${searchValue}&apikey=${HERE_APIKEY}&in=countryCode:VNM
-          `
-        );
-
-        const data = await response.json();
-        setOptions(data.items);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    let timeoutId: NodeJS.Timeout;
-
-    if (searchValue) {
-      timeoutId = setTimeout(() => {
-        fetchData();
-      }, 400);
+  // get data from api
+  const getData = async (url: string, success: (data: any) => any) => {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      success(data);
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    return () => clearTimeout(timeoutId);
-  }, [searchValue]);
+  // get Districts
+  useEffect(() => {
+    if (addressData.p) {
+      getData(GET_PROVINCES_API + `/${addressData.p}?depth=2`, (data) =>
+        setDistricts(data.districts)
+      );
+    }
+  }, [addressData.p]);
+
+  // get Wards
+  useEffect(() => {
+    if (addressData.d) {
+      getData(GET_DISTRICTS_API + `/${addressData.d}?depth=2`, (data) =>
+        setWards(data.wards)
+      );
+    }
+  }, [addressData.d]);
 
   useEffect(() => {
     dispatch(
@@ -104,25 +139,6 @@ function ChoseAddress({}: Props) {
     };
   }, [address]);
 
-  //handle click outside
-  useEffect(() => {
-    const clickOutsideSearchHandler = (e: any) => {
-      if (
-        inputRef.current &&
-        !inputRef.current.contains(e.target) &&
-        cardRef.current &&
-        !cardRef.current.contains(e.target)
-      ) {
-        setIsOpenAddressDetail(false);
-      }
-    };
-
-    document.addEventListener("click", clickOutsideSearchHandler);
-
-    return () =>
-      document.removeEventListener("click", clickOutsideSearchHandler);
-  }, []);
-
   return (
     <Box
       component="form"
@@ -131,114 +147,72 @@ function ChoseAddress({}: Props) {
       }}
     >
       <Grid container spacing={1}>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            position: "relative",
-          }}
-        >
-          <TextField
-            value={searchValue}
-            label="Địa chỉ chính xác"
-            variant="outlined"
-            fullWidth
-            onChange={searchChangeHandler}
-            onFocus={focusInputHandler}
-            inputRef={inputRef}
-          />
-
-          {isOpenAddressDetail && (
-            <Card
-              sx={{
-                position: "absolute",
-                left: 8,
-                right: 0,
-                backgroundColor: "white",
-                top: "100%",
-                zIndex: 2,
-              }}
-              ref={cardRef}
-            >
-              <List>
-                {options.slice(0, 6).map((option) => (
-                  <ListItem key={option.address.label}>
-                    <ListItemButton
-                      onClick={() => chooseSuggestionItem(option.address)}
-                    >
-                      <ListItemText>{option.address.label}</ListItemText>
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Card>
-          )}
-        </Grid>
-
         <Grid item xs={12}>
-          <TextField
-            label="Số nhà/căn hộ"
-            variant="outlined"
-            fullWidth
-            value={address.houseNumber}
-            name="houseNumber"
-            onChange={fieldChangeHandler}
+          <Autocomplete
+            options={provinces as any[]}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Tỉnh / Thành phố"
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <React.Fragment>
+                      {status === "loading" ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
+                      {params.InputProps.endAdornment}
+                    </React.Fragment>
+                  ),
+                }}
+              />
+            )}
+            onChange={provinceChangeHandler}
           />
         </Grid>
 
         <Grid item xs={12}>
+          <Autocomplete
+            options={districts as any[]}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => (
+              <TextField {...params} label="Quận / Huyện" />
+            )}
+            onChange={districtChangeHandler}
+          />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Autocomplete
+            options={wards as any[]}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => (
+              <TextField {...params} label="Phường / Xã" />
+            )}
+            onChange={wardChangeHandler}
+          />
+        </Grid>
+
+        <Grid item xs={6}>
           <TextField
-            label="Đường/phố"
-            variant="outlined"
             fullWidth
-            value={address.street}
+            label="Đường"
             name="street"
-            onChange={fieldChangeHandler}
+            onChange={streetAndHouseNumberChangeHandler}
           />
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <TextField
-            label="Phường/Xã"
-            variant="outlined"
             fullWidth
-            value={address.district}
-            name="district"
-            onChange={fieldChangeHandler}
+            label="Số nhà"
+            name="houseNumber"
+            onChange={streetAndHouseNumberChangeHandler}
           />
         </Grid>
 
-        <Grid item xs={12}>
-          <TextField
-            label="Thành phố"
-            variant="outlined"
-            fullWidth
-            value={address.city}
-            name="city"
-            onChange={fieldChangeHandler}
-          />
-        </Grid>
-
-        <Grid item xs={12}>
-          <TextField
-            label="Tỉnh "
-            variant="outlined"
-            fullWidth
-            value={address.county}
-            name="county"
-            onChange={fieldChangeHandler}
-          />
-        </Grid>
-
-        <Grid item xs={12}>
-          <TextField
-            label="Quốc gia"
-            defaultValue="Việt Nam"
-            variant="outlined"
-            fullWidth
-            aria-readonly
-          />
-        </Grid>
+        <Grid item xs={12}></Grid>
       </Grid>
     </Box>
   );

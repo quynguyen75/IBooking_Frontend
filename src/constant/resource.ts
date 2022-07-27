@@ -49,6 +49,12 @@ export const ROOM_TYPE_API = root + "/room-types";
 
 export const ROLE_API = root + "/users-permissions/roles";
 
+export const GET_ADDRESS_API = "https://provinces.open-api.vn/api/";
+
+export const GET_PROVINCES_API = GET_ADDRESS_API + "p";
+
+export const GET_DISTRICTS_API = GET_ADDRESS_API + "d";
+
 export const GENDER_OPTIONS = ["Male", "Female", "Other"];
 
 export const STATUS_OPTIONS = ["Active", "Deleted"];

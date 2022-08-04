@@ -108,9 +108,7 @@ function HandlePayment({}: Props) {
             },
           },
         });
-        const userRespone = await fetch(
-          USER_API + `/${searchObj.user}?${query}`
-        );
+        const userRespone = await fetch(USER_API + `?${query}`);
         const user = await userRespone.json();
 
         const reponse = await fetch(EMAIL_API, {

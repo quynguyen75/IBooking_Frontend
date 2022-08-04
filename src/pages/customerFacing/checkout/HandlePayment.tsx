@@ -1,3 +1,4 @@
+import qs from "qs";
 import { Alert, AlertTitle, Container } from "@mui/material";
 import Footer from "components/layout/Footer";
 import Header from "components/layout/Header";
@@ -71,9 +72,58 @@ function HandlePayment({}: Props) {
           },
           body: JSON.stringify({
             to: user.email,
-            from: "ibooking@reply.com",
-            replyTo: "ibooking@reply.com",
+            from: "nguyentruongquy75@gmail.com",
+            replyTo: "nguyentruongquy75@gmail.com",
             subject: "Đặt phòng thành công",
+            text: `
+            Thông tin chi tiết:
+            Tên phòng: ${formatedRoom.title}
+            Địa chỉ: ${
+              formatedRoom.houseNumber +
+              " " +
+              formatedRoom.street +
+              ", " +
+              formatedRoom.district +
+              ", " +
+              formatedRoom.city +
+              ", " +
+              formatedRoom.county
+            }
+            Giá 1 đêm: ${formatMoney(formatedRoom.nightPrice)}
+            Ngày nhận phòng: ${searchObj.checkInDate}
+            Ngày trả phòng: ${searchObj.checkOutDate}
+            Tổng tiền: ${formatMoney(+searchObj.vnp_Amount / 100)}
+            `,
+          }),
+        });
+      };
+
+      const sendEmailToHost = async () => {
+        const query = qs.stringify({
+          filters: {
+            rooms: {
+              id: {
+                $eq: searchObj.room,
+              },
+            },
+          },
+        });
+        const userRespone = await fetch(
+          USER_API + `/${searchObj.user}?${query}`
+        );
+        const user = await userRespone.json();
+
+        const reponse = await fetch(EMAIL_API, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU3MTc1MDg0LCJleHAiOjE2NTk3NjcwODR9._0taSbdEChGZp4oHS4_c6Fc9ka3tu077plN8_y3Oqsk`,
+          },
+          body: JSON.stringify({
+            to: user.email,
+            from: "nguyentruongquy75@gmail.com",
+            replyTo: "nguyentruongquy75@gmail.com",
+            subject: "Thông báo đặt phòng",
             text: `
             Thông tin chi tiết:
             Tên phòng: ${formatedRoom.title}
@@ -100,6 +150,8 @@ function HandlePayment({}: Props) {
       updateBooking();
 
       sendEmailToCustomer();
+
+      sendEmailToHost();
 
       // const timeoutId = setTimeout(() => {
       //   history.replace("/");

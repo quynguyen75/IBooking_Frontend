@@ -104,7 +104,7 @@ function RoomDetailReview({ roomId }: Props) {
       try {
         const response = await fetch(
           BOOKING_API +
-            `?filter[user][id][$eq]=${userContext.user.id}&filters[room][id][$eq]=${roomId}&filters[bookingStatus][id][$eq]=2&sort=createdAt:DESC`
+            `?filters[user][id][$eq]=${userContext.user.id}&filters[room][id][$eq]=${roomId}&filters[bookingStatus][id][$eq]=2&sort=createdAt:DESC`
         );
 
         if (response.ok) {

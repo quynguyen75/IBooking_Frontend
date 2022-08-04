@@ -2,4 +2,6 @@
 
 - Add Booked Pages
 
-- Stop open room
+- Stop open room [Done]
+
+- Create room county, district, ward

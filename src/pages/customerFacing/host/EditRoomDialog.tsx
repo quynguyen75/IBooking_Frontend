@@ -86,6 +86,7 @@ function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
             hasPool: roomState.hasPool,
             hasWashingMachine: roomState.hasWashingMachine,
             hasWifi: roomState.hasWifi,
+            status: roomState.status,
           },
         }),
       });
@@ -98,6 +99,13 @@ function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const statusChangeHandler = (checked: boolean) => {
+    setRoomState((data: any) => ({
+      ...data,
+      status: checked ? "Deactive" : "Active",
+    }));
   };
 
   return (
@@ -175,7 +183,7 @@ function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
           <Grid item xs={3}>
             <TextField
               fullWidth
-              defaultValue={0}
+              defaultValue={roomState?.guestCount}
               name="guestCount"
               label="Khách"
               type="number"
@@ -187,8 +195,8 @@ function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
           <Grid item xs={3}>
             <TextField
               fullWidth
-              defaultValue={0}
-              name="guestCount"
+              defaultValue={roomState?.livingRoomCount}
+              name="livingRoomCount"
               label="Phòng Khách"
               type="number"
               value={roomState?.livingRoomCount}
@@ -199,11 +207,11 @@ function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
           <Grid item xs={3}>
             <TextField
               fullWidth
-              defaultValue={0}
-              name="guestCount"
+              defaultValue={roomState?.bedroomCount}
+              name="bedRoomCount"
               label="Phòng Ngủ"
               type="number"
-              value={roomState?.bedroomCount}
+              value={roomState?.bedRoomCount}
               onChange={dataChangeHandler}
             />
           </Grid>
@@ -211,11 +219,11 @@ function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
           <Grid item xs={3}>
             <TextField
               fullWidth
-              defaultValue={0}
-              name="guestCount"
+              defaultValue={roomState?.bathRoomCount}
+              name="bathRoomCount"
               label="Phòng tắm"
               type="number"
-              value={roomState?.bathroomCount}
+              value={roomState?.bathRoomCount}
               onChange={dataChangeHandler}
             />
           </Grid>
@@ -242,6 +250,22 @@ function EditRoomDialog({ open, onClose, room, changeRooms }: Props) {
               />
             </Grid>
           ))}
+
+          <Grid item xs={6}>
+            <FormControlLabel
+              control={
+                <Switch
+                  style={{
+                    marginRight: "4px",
+                  }}
+                  checked={roomState?.status === "Deactive"}
+                  onChange={statusChangeHandler}
+                />
+              }
+              label="Đóng cửa"
+              name="status"
+            />
+          </Grid>
 
           <Grid item xs={12}>
             <Stack alignItems="flex-end">

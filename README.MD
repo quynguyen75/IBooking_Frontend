@@ -5,3 +5,5 @@
 - Stop open room [Done]
 
 - Create room county, district, ward
+
+- prefix currency

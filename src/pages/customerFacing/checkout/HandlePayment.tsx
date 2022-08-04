@@ -71,8 +71,8 @@ function HandlePayment({}: Props) {
           },
           body: JSON.stringify({
             to: user.email,
-            from: "nguyentruongquy75@gmail.com",
-            replyTo: "nguyentruongquy75@gmail.com",
+            from: "ibooking@reply.com",
+            replyTo: "ibooking@reply.com",
             subject: "Đặt phòng thành công",
             text: `
             Thông tin chi tiết:
@@ -81,11 +81,11 @@ function HandlePayment({}: Props) {
               formatedRoom.houseNumber +
               " " +
               formatedRoom.street +
-              " " +
+              ", " +
               formatedRoom.district +
-              " " +
+              ", " +
               formatedRoom.city +
-              " " +
+              ", " +
               formatedRoom.county
             }
             Giá 1 đêm: ${formatMoney(formatedRoom.nightPrice)}

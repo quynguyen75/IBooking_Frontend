@@ -142,8 +142,6 @@ function ChoseAddress({}: Props) {
     };
   }, [address]);
 
-  console.log(address);
-
   return (
     <Box
       component="form"

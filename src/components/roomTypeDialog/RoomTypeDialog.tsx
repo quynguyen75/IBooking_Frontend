@@ -12,7 +12,10 @@ import useFetch from "hooks/useFetch";
 import RoomFilterDialog from "components/roomFilter/RoomFilterDialog";
 import { ROOM_TYPE_API } from "constant/resource";
 import { useContext, useEffect, useState } from "react";
-import { FilterContext } from "context/FilterContext";
+import {
+  FilterContext,
+  initialState as initialFilter,
+} from "context/FilterContext";
 
 type Props = {
   isOpen: boolean;
@@ -25,6 +28,10 @@ function RoomTypeDialog({ isOpen, onClose }: Props) {
   const [status, roomTypes] = useFetch(ROOM_TYPE_API);
 
   const [roomTypeOptions, setRoomTypeOptions] = useState<any>({});
+
+  const isDisplayCancelFilterButton =
+    JSON.stringify(initialFilter.roomType) !==
+    JSON.stringify(filterContext.filter.roomType);
 
   const checkboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRoomTypeOptions((options: any) => ({
@@ -39,6 +46,15 @@ function RoomTypeDialog({ isOpen, onClose }: Props) {
     filterContext.filterDispatch({
       type: "ROOM_TYPE",
       payload: roomTypeOptions,
+    });
+  };
+
+  const cancelFilterHandler = () => {
+    onClose();
+
+    filterContext.filterDispatch({
+      type: "ROOM_TYPE",
+      payload: initialFilter.roomType,
     });
   };
 
@@ -63,6 +79,8 @@ function RoomTypeDialog({ isOpen, onClose }: Props) {
             Lọc
           </Button>
         }
+        isDisplayCancelFilterButton={isDisplayCancelFilterButton}
+        cancelFilterHandler={cancelFilterHandler}
       >
         {status === "loading" && <CircularProgress />}
         <FormControl component="fieldset">

@@ -17,10 +17,16 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { ROOM_API } from "constant/resource";
 import { FilterContext } from "context/FilterContext";
 import useScrollToTop from "hooks/useScrollToTop";
+import qs from "qs";
+
 type Props = {};
 
-function formatObjectSearch(object: any) {
-  const result: any = {};
+function convertToQueryString(object: any) {
+  let result: any = {};
+  const additionalData: {
+    checkInDate?: string;
+    checkOutDate?: string;
+  } = {};
 
   for (const key in object) {
     if (Object.prototype.hasOwnProperty.call(object, key)) {
@@ -32,22 +38,25 @@ function formatObjectSearch(object: any) {
         case "district":
         case "street":
           result[key] = {
-            value: data,
-            operator: "$contains",
+            // value: data,
+            // operator: "$contains",
+            $contains: data,
           };
           break;
 
         case "guestCount":
           result[key] = {
-            value: data,
-            operator: "$gte",
+            // value: data,
+            // operator: "$gte",
+            $gte: data,
           };
           break;
 
         case "petCount":
           result["acceptPet"] = {
-            value: true,
-            operator: "$eq",
+            // value: true,
+            // operator: "$eq",
+            $eq: true,
           };
           break;
 
@@ -57,64 +66,24 @@ function formatObjectSearch(object: any) {
     }
   }
 
-  return result;
-}
+  const convertStringToYYYYMMDD = (date: string) =>
+    moment(date, "DD/MM/YYYY").format("YYYY-MM-DD");
 
-function checkCorrespondRoom(
-  room: any,
-  checkInDate: string,
-  checkOutDate?: string
-): boolean {
-  const bookings = room.attributes.bookings.data;
-  if (checkOutDate) {
-    const existBooking = bookings.some((booking: any) => {
-      if (!booking.attributes.paymentReference) {
-        return false;
-      }
-      const searchCheckInDate = moment(checkInDate, "DD/MM/YYYY");
-      const searchCheckOutDate = moment(checkOutDate, "DD/MM/YYYY");
-      return (
-        searchCheckOutDate.isBetween(
-          booking.attributes.checkInDate,
-          booking.attributes.checkOutDate,
-          undefined,
-          "[]"
-        ) ||
-        searchCheckInDate.isBetween(
-          booking.attributes.checkInDate,
-          booking.attributes.checkOutDate,
-          undefined,
-          "[]"
-        ) ||
-        moment(booking.attributes.checkInDate).isBetween(
-          searchCheckInDate,
-          searchCheckOutDate,
-          undefined,
-          "[]"
-        ) ||
-        moment(booking.attributes.checkOutDate).isBetween(
-          searchCheckInDate,
-          searchCheckOutDate,
-          undefined,
-          "[]"
-        )
-      );
-    });
+  const searchCheckIn = convertStringToYYYYMMDD(object.checkInDate);
+  const searchCheckOut = convertStringToYYYYMMDD(object.checkOutDate);
+  object.checkInDate && (additionalData["checkInDate"] = searchCheckIn);
+  object.checkOutDate && (additionalData["checkOutDate"] = searchCheckOut);
 
-    return !existBooking;
-  } else {
-    const existBooking = bookings.find((booking: any) => {
-      const searchCheckIn = moment(checkInDate, "DD/MM/YYYY");
-
-      return searchCheckIn.isBetween(
-        booking.attributes.checkInDate,
-        booking.attributes.checkOutDate,
-        undefined,
-        "[]"
-      );
-    });
-    return !Boolean(existBooking);
-  }
+  return qs.stringify({
+    filters: {
+      ...result,
+      status: {
+        $eq: "Active",
+      },
+    },
+    populate: ["bookings", "reviews", "roomType", "images"],
+    ...additionalData,
+  });
 }
 
 function Search({}: Props) {
@@ -130,7 +99,7 @@ function Search({}: Props) {
 
   const searchObj = useMemo(() => convertSearchToObject(search), []);
 
-  const formatSearch = formatObjectSearch(searchObj);
+  const queryString = convertToQueryString(searchObj);
 
   useScrollToTop();
 
@@ -138,33 +107,12 @@ function Search({}: Props) {
     const getCorrespondRooms = async () => {
       try {
         const roomResponse = await fetch(
-          ROOM_API +
-            `?${objectToURLParamsStrapi(
-              formatSearch
-            )}&populate=bookings&populate=reviews&populate=roomType&populate=images&filters[status][$eq]=Active`
+          ROOM_API + "/search" + `?${queryString}`
         );
 
         const rooms = await roomResponse.json();
 
         setIsLoading(false);
-
-        if (searchObj.checkInDate && searchObj.checkOutDate) {
-          const correspondRooms = rooms.data.filter((room: any) => {
-            return checkCorrespondRoom(
-              room,
-              searchObj.checkInDate,
-              searchObj.checkOutDate
-            );
-          });
-
-          return correspondRooms;
-        } else if (searchObj.checkInDate) {
-          const correspondRooms = rooms.data.filter((room: any) => {
-            return checkCorrespondRoom(room, searchObj.checkInDate);
-          });
-
-          return correspondRooms;
-        }
 
         return rooms.data;
       } catch (error) {

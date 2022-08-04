@@ -12,7 +12,10 @@ import NumberFormat from "react-number-format";
 
 import { useContext, useState } from "react";
 import RoomFilterDialog from "components/roomFilter/RoomFilterDialog";
-import { FilterContext } from "context/FilterContext";
+import {
+  FilterContext,
+  initialState as initialFilter,
+} from "context/FilterContext";
 
 type Props = {
   isOpen: boolean;
@@ -20,11 +23,31 @@ type Props = {
 };
 
 function PriceDialog({ isOpen, onClose }: Props) {
-  const [value, setValue] = useState<number[]>([100000, 10000000]);
+  const [value, setValue] = useState<number[]>([
+    initialFilter.price.from,
+    initialFilter.price.to,
+  ]);
   const filterContext = useContext(FilterContext);
+
+  const isDisplayCancelFilterButton =
+    JSON.stringify(filterContext.filter.price) !==
+    JSON.stringify(initialFilter.price);
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     setValue(newValue as number[]);
+  };
+
+  const cancelFilterHandler = () => {
+    filterContext.filterDispatch({
+      type: "PRICE",
+      payload: {
+        from: initialFilter.price.from,
+        to: initialFilter.price.to,
+      },
+    });
+
+    onClose();
+    setValue([initialFilter.price.from, initialFilter.price.to]);
   };
 
   const filterHandler = () => {
@@ -50,6 +73,8 @@ function PriceDialog({ isOpen, onClose }: Props) {
             Lọc
           </Button>
         }
+        isDisplayCancelFilterButton={isDisplayCancelFilterButton}
+        cancelFilterHandler={cancelFilterHandler}
       >
         <Box>
           <Slider

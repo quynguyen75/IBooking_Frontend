@@ -2,7 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 
 import { Button, FormControl, FormLabel, TextField } from "@mui/material";
 
-import { FilterContext } from "context/FilterContext";
+import {
+  FilterContext,
+  initialState as initialFilter,
+} from "context/FilterContext";
 
 import RoomFilterDialog from "components/roomFilter/RoomFilterDialog";
 import { AMENITIES, ROOM_TYPE_API } from "constant/resource";
@@ -18,6 +21,10 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
   const [roomCountFilter, setRoomCountFilter] = useState(
     filterContext.filter.roomCount
   );
+
+  const isDisplayCancelFilterButton =
+    JSON.stringify(initialFilter.roomCount) !==
+    JSON.stringify(filterContext.filter.roomCount);
 
   const handleRoomCountChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -36,6 +43,14 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
     });
   };
 
+  const cancelFilterHandler = () => {
+    onClose();
+    filterContext.filterDispatch({
+      type: "ROOM_COUNT",
+      payload: initialFilter.roomCount,
+    });
+  };
+
   useEffect(() => {
     setRoomCountFilter(filterContext.filter.roomCount);
   }, [filterContext.filter.roomCount]);
@@ -51,6 +66,8 @@ function FilterAllDialog({ isOpen, onClose }: Props) {
             Lọc
           </Button>
         }
+        isDisplayCancelFilterButton={isDisplayCancelFilterButton}
+        cancelFilterHandler={cancelFilterHandler}
       >
         <div
           style={{

@@ -110,4 +110,4 @@ function FilterContextProvider({ children }: Props) {
   );
 }
 
-export { FilterContext, FilterContextProvider };
+export { FilterContext, FilterContextProvider, initialState };

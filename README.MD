@@ -1,9 +1,5 @@
-# Bug
+# Task List
 
-- Notify when login failed [done]
+- Add Booked Pages
 
-- NaN Star in Review Part of Room Detail [done]
-
-- Send email
-
-- Comment Room Detail [1s]
+- Stop open room

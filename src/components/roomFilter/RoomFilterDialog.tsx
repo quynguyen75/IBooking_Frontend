@@ -16,6 +16,8 @@ type Props = {
   children: any;
   title: string;
   buttonAction: JSX.Element;
+  isDisplayCancelFilterButton?: boolean;
+  cancelFilterHandler?: () => void;
 };
 
 function RoomFilterDialog({
@@ -24,6 +26,8 @@ function RoomFilterDialog({
   children,
   title,
   buttonAction,
+  isDisplayCancelFilterButton,
+  cancelFilterHandler,
 }: Props) {
   return (
     <div>
@@ -63,7 +67,18 @@ function RoomFilterDialog({
 
         <DialogContent>{children}</DialogContent>
         <Divider />
-        <DialogActions>{buttonAction}</DialogActions>
+        <DialogActions>
+          {isDisplayCancelFilterButton && (
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={cancelFilterHandler}
+            >
+              Huỷ lọc
+            </Button>
+          )}
+          {buttonAction}
+        </DialogActions>
       </Dialog>
     </div>
   );

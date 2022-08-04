@@ -8,7 +8,10 @@ import {
 import { AMENITIES } from "../../constant/resource";
 import RoomFilterDialog from "components/roomFilter/RoomFilterDialog";
 import React, { useContext, useEffect, useState } from "react";
-import { FilterContext } from "context/FilterContext";
+import {
+  FilterContext,
+  initialState as initialFilter,
+} from "context/FilterContext";
 
 type Props = {
   isOpen: boolean;
@@ -19,6 +22,10 @@ function AmenitiesDialog({ isOpen, onClose }: Props) {
   const filterContext = useContext(FilterContext);
 
   const [amenityOptions, setAmenityOptions] = useState<any>({});
+
+  const isDisplayCancelFilterButton =
+    JSON.stringify(initialFilter.amenities) !==
+    JSON.stringify(filterContext.filter.amenities);
 
   const checkboxChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmenityOptions((options: any) => ({
@@ -33,6 +40,15 @@ function AmenitiesDialog({ isOpen, onClose }: Props) {
     filterContext.filterDispatch({
       type: "AMENITIES",
       payload: amenityOptions,
+    });
+  };
+
+  const cancelFilterHandler = () => {
+    onClose();
+
+    filterContext.filterDispatch({
+      type: "AMENITIES",
+      payload: initialFilter.amenities,
     });
   };
 
@@ -57,6 +73,8 @@ function AmenitiesDialog({ isOpen, onClose }: Props) {
             Lọc
           </Button>
         }
+        isDisplayCancelFilterButton={isDisplayCancelFilterButton}
+        cancelFilterHandler={cancelFilterHandler}
       >
         <FormControl component="fieldset">
           <FormGroup>

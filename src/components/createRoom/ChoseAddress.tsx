@@ -35,16 +35,19 @@ function ChoseAddress({}: Props) {
     const REMOVE_KEYWORDS = [
       "Tỉnh",
       "Thành phố",
-      "Quận",
-      "Huyện",
-      "Phường",
-      "Xã",
-      "Thị trấn",
+      // "Quận",
+      // "Huyện",
+      // "Phường",
+      // "Xã",
+      // "Thị trấn",
     ];
 
     const KEYWORD = REMOVE_KEYWORDS.find((k) => data.includes(k));
 
-    return data.split(KEYWORD + " ")[1];
+    if (KEYWORD) {
+      return data.split(KEYWORD + " ")[1];
+    }
+    return data;
   };
 
   const provinceChangeHandler = (_: any, value: any) => {
@@ -138,6 +141,8 @@ function ChoseAddress({}: Props) {
       dispatch(disableNextButton(false));
     };
   }, [address]);
+
+  console.log(address);
 
   return (
     <Box

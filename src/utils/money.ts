@@ -1,5 +1,8 @@
 export const formatMoney = (money: number) => {
-  return money.toLocaleString() + "đ";
+  return money.toLocaleString("en-US", {
+    style: "currency",
+    currency: "VND",
+  });
 };
 
 export const moneyStringToNumber = (money: string) => {

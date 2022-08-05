@@ -7,6 +7,7 @@ import Header from "components/layout/Header";
 import React from "react";
 
 import styles from "./AuthenticatePage.module.css";
+import Navigation from "components/layout/Navigation";
 
 type Props = {};
 
@@ -21,6 +22,7 @@ function AuthenticatePage({}: Props) {
       <Container maxWidth="xs" className={styles.container}>
         <AuthForm type={params.type} />
       </Container>
+      <Navigation />
       {isNotMobile && <Footer />}
     </>
   );

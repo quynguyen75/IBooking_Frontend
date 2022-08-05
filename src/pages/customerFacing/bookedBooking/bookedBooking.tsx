@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowRightAlt, Delete } from "@mui/icons-material";
+import { ArrowRightAlt } from "@mui/icons-material";
 import {
   Button,
   Container,
@@ -8,7 +8,6 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemButton,
-  ListItemText,
   Stack,
   Typography,
 } from "@mui/material";
@@ -16,50 +15,55 @@ import Footer from "components/layout/Footer";
 import Header from "components/layout/Header";
 import Navigation from "components/layout/Navigation";
 import Loading from "components/loading/Loading";
-import { BOOKING_API, USER_API } from "constant/resource";
+import { BOOKING_API } from "constant/resource";
 import useFetch from "hooks/useFetch";
 import useScrollToTop from "hooks/useScrollToTop";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { formatDataStrapi } from "utils/data";
-import { generatePaymnentLink } from "utils/link";
 import { formatMoney } from "utils/money";
 import { convertSearchToObject } from "utils/search";
+import qs from "qs";
 
 type Props = {};
 
-function PendingBooking({}: Props) {
+export default function BookedBooking({}: Props) {
   const history = useHistory();
   const { search } = useLocation();
   const userID = convertSearchToObject(search).user;
-
-  const [pendingBookings, setPendingBookings] = useState([]);
-  const [bookingFetchStatus, bookings] = useFetch(
-    BOOKING_API +
-      `?filters[user][id][$eq]=${userID}&filters[paymentStatus][id][$eq]=1&populate[0]=*&populate[1]=room.images`
-  );
-
   useScrollToTop();
 
-  const deletePendingBooking = (id: number) => {
-    fetch(BOOKING_API + `/${id}`, {
-      method: "DELETE",
-    });
+  const query = qs.stringify({
+    filters: {
+      $and: [
+        {
+          user: {
+            id: {
+              $eq: userID,
+            },
+          },
+        },
+        {
+          paymentStatus: {
+            id: {
+              $eq: 2,
+            },
+          },
+        },
+      ],
+    },
+    populate: ["review", "room.images"],
+  });
 
-    setPendingBookings(
-      pendingBookings.filter((booking: any) => booking.id !== id)
-    );
-  };
+  const [bookedBookings, setBookedBookings] = useState([]);
+  const [bookingFetchStatus, bookings] = useFetch(BOOKING_API + `?${query}`);
 
-  const checkOutClickHandler = (booking: any) => {
-    history.push(
-      `/checkout?room=${booking.room.id}&checkInDate=${booking.checkInDate}&checkOutDate=${booking.checkOutDate}&guestCount=${booking.guestCount}&booking=${booking.id}`
-    );
-  };
+  const reviewHandler = (roomId: number) =>
+    history.push(`/room/${roomId}?scrollTo=reviews`);
 
   useEffect(() => {
     if (bookings) {
-      setPendingBookings(formatDataStrapi(bookings)?.data);
+      setBookedBookings(formatDataStrapi(bookings)?.data);
     }
   }, [bookings]);
 
@@ -81,18 +85,28 @@ function PendingBooking({}: Props) {
         >
           Đang chờ thanh toán
         </Typography>
-        {pendingBookings && (
+        {bookedBookings && (
           <List>
-            {pendingBookings.length === 0 && (
+            {bookedBookings.length === 0 && (
               <Typography textAlign="center" sx={{ p: 2 }}>
                 Chưa có đơn đặt phòng nào
               </Typography>
             )}
-            {pendingBookings.map((booking: any) => (
+            {bookedBookings.map((booking: any) => (
               <ListItem key={booking.id}>
-                <ListItemButton>
+                <ListItemButton
+                  style={{
+                    padding: "16px 0",
+                  }}
+                >
                   <Grid container>
-                    <Grid item xs={3} md={2.4} alignItems="center">
+                    <Grid
+                      item
+                      xs={0}
+                      md={2.4}
+                      alignItems="center"
+                      display={{ xs: "none", md: "block" }}
+                    >
                       <ListItemAvatar
                         sx={{
                           height: "100%",
@@ -109,12 +123,14 @@ function PendingBooking({}: Props) {
                       </ListItemAvatar>
                     </Grid>
 
-                    <Grid item xs={3} md={2.4}>
+                    <Grid item xs={4} md={2.4}>
                       <Stack
                         justifyContent="center"
                         sx={{ height: "100%", textAlign: "center" }}
                       >
-                        <Typography>{booking.room.title}</Typography>
+                        <Typography fontWeight={500}>
+                          {booking.room.title}
+                        </Typography>
                       </Stack>
                     </Grid>
 
@@ -135,7 +151,7 @@ function PendingBooking({}: Props) {
                       </Stack>
                     </Grid>
 
-                    <Grid item xs={3} md={2.4}>
+                    <Grid item xs={4} md={2.4}>
                       <Stack
                         sx={{ height: "100%", textAlign: "center" }}
                         justifyContent="center"
@@ -146,26 +162,23 @@ function PendingBooking({}: Props) {
                       </Stack>
                     </Grid>
 
-                    <Grid item xs={3} md={2.4}>
-                      <Stack
-                        alignItems="center"
-                        direction="row"
-                        sx={{ height: "100%" }}
-                        justifyContent="space-between"
-                      >
-                        <Button
-                          variant="contained"
-                          onClick={() => checkOutClickHandler(booking)}
+                    {!booking.review?.id && (
+                      <Grid item xs={4} md={2.4}>
+                        <Stack
+                          alignItems="center"
+                          direction="row"
+                          sx={{ height: "100%" }}
+                          justifyContent="space-between"
                         >
-                          Thanh toán
-                        </Button>
-                        <IconButton
-                          onClick={() => deletePendingBooking(booking.id)}
-                        >
-                          <Delete />
-                        </IconButton>
-                      </Stack>
-                    </Grid>
+                          <Button
+                            variant="contained"
+                            onClick={() => reviewHandler(booking.room.id)}
+                          >
+                            Đánh giá
+                          </Button>
+                        </Stack>
+                      </Grid>
+                    )}
                   </Grid>
                 </ListItemButton>
               </ListItem>
@@ -180,5 +193,3 @@ function PendingBooking({}: Props) {
     </>
   );
 }
-
-export default PendingBooking;

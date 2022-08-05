@@ -166,6 +166,15 @@ function HeaderMenu({}: Props) {
               </MenuItem>
             </Link>
           </Badge>,
+          <Link to={`/bookedBookings?user=${userContext.user.id}`} key="create">
+            <MenuItem
+              sx={{
+                color: "#000",
+              }}
+            >
+              Đơn đã đặt
+            </MenuItem>
+          </Link>,
           <Link to="/host/create" key="create">
             <MenuItem
               sx={{

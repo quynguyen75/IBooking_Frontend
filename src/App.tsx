@@ -20,6 +20,7 @@ import HandlePayment from "pages/customerFacing/checkout/HandlePayment";
 import PendingBooking from "pages/customerFacing/pendingBooking/PendingBooking";
 import { useSelector } from "react-redux";
 import { RootState } from "store/store";
+import BookedBooking from "pages/customerFacing/bookedBooking/bookedBooking";
 
 function App() {
   const updateUserFlag = useSelector((state: RootState) => state.getUser.flag);
@@ -68,6 +69,10 @@ function App() {
 
         <Route path="/pendingBookings">
           <PendingBooking />
+        </Route>
+
+        <Route path="/bookedBookings">
+          <BookedBooking />
         </Route>
 
         <Route path="/host/create">

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import SwipeableView from "react-swipeable-views";
 import { Star } from "@mui/icons-material";
 import { Box, Button, Grid, Stack, useMediaQuery } from "@mui/material";
@@ -12,6 +12,8 @@ import { formatDataStrapi } from "utils/data";
 import CreateReviewDialog from "components/riviewDialog/CreateReviewDialog";
 import useDialog from "hooks/useDialog";
 import { UserContext } from "context/UserContext";
+import { useLocation } from "react-router-dom";
+import { convertSearchToObject } from "utils/search";
 
 type Props = {
   roomId: number;
@@ -20,6 +22,9 @@ type Props = {
 const RATING_PRECISION = 0.1;
 
 function RoomDetailReview({ roomId }: Props) {
+  const { search } = useLocation();
+  const createReviewRef = useRef<HTMLButtonElement | null>(null);
+  const searchObject = convertSearchToObject(search);
   const userContext = useContext(UserContext);
   const [reviews, setReviews] = useState<any[]>([]);
 
@@ -119,12 +124,19 @@ function RoomDetailReview({ roomId }: Props) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (searchObject.scrollTo && createReviewRef.current) {
+      createReviewRef.current.scrollIntoView();
+    }
+  }, [searchObject]);
+
   return (
     <Box
       sx={{
         padding: "16px 0",
         fontSize: "16px",
       }}
+      id="reviews"
     >
       <h2
         className="roomDetail__title"
@@ -198,7 +210,11 @@ function RoomDetailReview({ roomId }: Props) {
 
       {userContext.user && bookedBooking && !isReviewed && (
         <Stack alignItems="center">
-          <Button variant="outlined" onClick={openCreateReviewDialog}>
+          <Button
+            variant="outlined"
+            onClick={openCreateReviewDialog}
+            ref={createReviewRef}
+          >
             Tạo bình luận
           </Button>
         </Stack>

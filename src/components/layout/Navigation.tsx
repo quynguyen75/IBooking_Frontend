@@ -65,8 +65,8 @@ function Navigation({}: Props) {
               <BottomNavigationAction label="Cho thuê nhà" icon={<Money />} />
             </Link>
 
-            <Link to={`/host/manage`}>
-              <BottomNavigationAction label="Quản lí phòng" icon={<House />} />
+            <Link to={`/bookedBookings?user=${userContext.user.id}`}>
+              <BottomNavigationAction label="Đơn đã đặt" icon={<House />} />
             </Link>
           </>
         )}

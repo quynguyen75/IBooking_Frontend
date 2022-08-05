@@ -2,6 +2,7 @@ div.container {
     min-height: 100vh;
     display: flex;
     align-items: center;
+    padding-bottom: 80px;
 }
 
 @media(min-width: 768px) {

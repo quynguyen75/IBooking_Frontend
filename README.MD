@@ -4,6 +4,6 @@
 
 - Stop open room [Done]
 
-- Create room county, district, ward
+- Create room county, district, ward [done]
 
-- prefix currency
+- prefix currency [done]

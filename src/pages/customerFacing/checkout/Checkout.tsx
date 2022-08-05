@@ -18,28 +18,31 @@ import Footer from "components/layout/Footer";
 import Header from "components/layout/Header";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { generatePaymnentLink } from "utils/link";
-import { ROOM_API } from "constant/resource";
+import { BOOKING_API, ROOM_API } from "constant/resource";
 import useFetch from "hooks/useFetch";
 import { convertSearchToObject } from "utils/search";
 import { formatDataStrapi } from "utils/data";
 import { formatMoney } from "utils/money";
 import moment from "moment";
-import { useContext } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { UserContext } from "context/UserContext";
 import useUser from "hooks/useUser";
 import useScrollToTop from "hooks/useScrollToTop";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { changeNotify } from "slice/NotifyBookingSlice";
 
 type Props = {};
 
 function Checkout({}: Props) {
   useUser();
-
+  const dispatch = useDispatch();
   const userContext = useContext(UserContext);
   const history = useHistory();
   const { search } = useLocation();
   const min768px = useMediaQuery("(min-width:768px)");
 
-  const searchObj = convertSearchToObject(search);
+  const searchObj = useMemo(() => convertSearchToObject(search), [search]);
 
   const [fetchStatus, room] = useFetch(
     ROOM_API + `/${searchObj.room}?populate=*`
@@ -47,7 +50,7 @@ function Checkout({}: Props) {
 
   useScrollToTop();
 
-  const formatedRoom = formatDataStrapi(room);
+  const formatedRoom = useMemo(() => formatDataStrapi(room), [room]);
 
   const roomImages = formatedRoom?.images.data;
 
@@ -87,6 +90,69 @@ function Checkout({}: Props) {
   const totalPrice =
     formatedRoom &&
     formatedRoom.nightPrice * nightCount + +formatedRoom.cleanlinessFee;
+
+  useEffect(() => {
+    if (searchObj.booking === "undefined" && formatedRoom) {
+      const getBooking = async () => {
+        const room = formatedRoom;
+        const createBooking = async () => {
+          try {
+            const nightCount = Math.floor(
+              (new Date(searchObj.checkOutDate).valueOf() -
+                new Date(searchObj.checkInDate).valueOf()) /
+                (1000 * 60 * 60 * 24)
+            );
+            // setIsLoading(true);
+            const bookingResponse = await fetch(BOOKING_API, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                data: {
+                  checkInDate: searchObj.checkInDate,
+                  checkOutDate: searchObj.checkOutDate,
+                  guestCount: searchObj.guestCount,
+                  nightPrice: room.nightPrice,
+                  cleanlinessFee: room.cleanlinessFee,
+                  totalPrice:
+                    room.nightPrice * nightCount + +room.cleanlinessFee,
+                  bookingStatus: [1],
+                  paymentStatus: [1],
+                  paymentType: [1],
+                  user: [+userContext.user.id],
+                  room: [+room.id],
+                  bookedAt: new Date(),
+                },
+              }),
+            });
+
+            if (bookingResponse.ok) {
+              toast.success("Đã thêm vào đang chờ thanh toán");
+              const data = await bookingResponse.json();
+              return data.data.id;
+            } else {
+              toast.error("Có lỗi xảy ra");
+            }
+          } catch (error) {
+            console.log(error);
+          } finally {
+            // setIsLoading(false);
+          }
+        };
+
+        const bookingId = await createBooking();
+
+        dispatch(changeNotify());
+
+        history.push(
+          `/checkout?room=${room.id}&checkInDate=${searchObj.checkInDate}&checkOutDate=${searchObj.checkOutDate}&guestCount=${searchObj.guestCount}&booking=${bookingId}`
+        );
+      };
+
+      getBooking();
+    }
+  }, [searchObj.booking, formatedRoom]);
 
   return (
     <>

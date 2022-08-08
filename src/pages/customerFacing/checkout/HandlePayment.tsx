@@ -68,7 +68,7 @@ function HandlePayment({}: Props) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU3MTc1MDg0LCJleHAiOjE2NTk3NjcwODR9._0taSbdEChGZp4oHS4_c6Fc9ka3tu077plN8_y3Oqsk`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU5OTI0MTU1LCJleHAiOjE2NjI1MTYxNTV9.qCQAn1Gg0rMTmjuBgmoSftbOVE9PhptEi6EdTmpuZaQ`,
           },
           body: JSON.stringify({
             to: user.email,
@@ -115,7 +115,7 @@ function HandlePayment({}: Props) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU3MTc1MDg0LCJleHAiOjE2NTk3NjcwODR9._0taSbdEChGZp4oHS4_c6Fc9ka3tu077plN8_y3Oqsk`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjU5OTI0MTU1LCJleHAiOjE2NjI1MTYxNTV9.qCQAn1Gg0rMTmjuBgmoSftbOVE9PhptEi6EdTmpuZaQ`,
           },
           body: JSON.stringify({
             to: user.email,
